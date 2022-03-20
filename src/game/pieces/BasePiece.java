@@ -93,6 +93,11 @@ public abstract class BasePiece {
 								graphics2D.setComposite(c);
 							}
 						}
+
+						//if current rect position < top of the --> board don't draw!
+						if (calcPosY < this.boardRef.getRenderPositionY()) {
+							continue;
+						}
 						
 						//draw the flat rect
 						graphics2D.setColor(color);
@@ -135,6 +140,59 @@ public abstract class BasePiece {
 		  	this.setPieceSmallSquareHeight(height);
 			int posX  				= ((Board.HOLD_BOX_LEFT) + (Board.HOLD_BOX_WIDTH / 2) - (this.getPieceWidth() / 2)); 
 		  	int posY 				= ((Board.HOLD_BOX_TOP) + (Board.HOLD_BOX_HEIGHT / 2) - (this.getPieceHeight() / 2));
+			int renderPositionX		= boardRef.getRenderPositionX();
+			int renderPositionY		= boardRef.getRenderPositionY() - 10;
+			
+		  	//take the piece (as array) and draw it (rect per rect)
+			for (int linhas = 0; linhas < pieceAsArray.length; linhas++) {
+				for (int colunas = 0; colunas < pieceAsArray[linhas].length; colunas++) { 
+					if (pieceAsArray[linhas][colunas] == 1) {
+
+						//calc the position 
+						calcPosX = posX + (colunas * (width)) + colunas;
+						calcPosY = posY + (linhas * (height)) + linhas;
+						
+						//draw the flat rect
+						graphics2D.setColor(color);
+						graphics2D.fill(new Rectangle(calcPosX + renderPositionX, calcPosY + renderPositionY, width, height));
+
+						//draw the bevel effect
+						graphics2D.setColor(Color.WHITE);
+						graphics2D.fill(new Rectangle(calcPosX + renderPositionX, calcPosY + renderPositionY, 1, height));
+						graphics2D.fill(new Rectangle(calcPosX + renderPositionX, calcPosY + renderPositionY, width, 1));
+
+						//draw the shadow
+						graphics2D.setColor(Color.DARK_GRAY);
+						graphics2D.fill(new Rectangle(calcPosX + renderPositionX + width, calcPosY + renderPositionY, 1, height));
+						graphics2D.fill(new Rectangle(calcPosX + renderPositionX, calcPosY + renderPositionY + height, width + 1, 1));
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Paint the piece in the next list
+	 * @param frametime
+	 * @param position
+	 */
+	public void drawNext(long frametime, byte position) {
+
+		//get the color & piece as array
+		Color color 			= this.getColor();
+		short [][] pieceAsArray = this.getActualPosition();
+
+		if (pieceAsArray != null) {
+			Graphics2D graphics2D 	= boardRef.getG2D();
+			int calcPosX 			= 0;
+			int calcPosY 			= 0;
+			byte width				= BasePiece.SMALL_SQUARE_WIDTH_HOLD;
+			byte height				= BasePiece.SMALL_SQUARE_HEIGHT_HOLD; 
+			this.setPieceSmallSquareWidth(width);
+		  	this.setPieceSmallSquareHeight(height);
+			int posX  				= Board.SORTED_BOX_LEFT + (Board.HOLD_BOX_WIDTH / 2) - (this.getPieceWidth() / 2); 
+		  	int posY 				= Board.SORTED_BOX_TOP + (Board.HOLD_BOX_HEIGHT / 2) - (this.getPieceHeight() / 2) + (position * (Board.HOLD_BOX_HEIGHT + 20));
 			int renderPositionX		= boardRef.getRenderPositionX();
 			int renderPositionY		= boardRef.getRenderPositionY() - 10;
 			
@@ -313,8 +371,18 @@ public abstract class BasePiece {
 		if (this.boardRef.canMoveDown()) {
 			this.actualPositionY++;
 		} else {
-			this.boardRef.sortPiece();
+			this.boardRef.sortPiecesList();
 		}
+	}
+
+	/**
+	 * Move the piece one line down
+	 */
+	public synchronized void allDown() {
+		while(this.boardRef.canMoveDown()) {
+			this.actualPositionY++;
+		}
+		this.boardRef.sortPiecesList();
 	}
 	
 	/**
