@@ -101,7 +101,7 @@ public class Game implements GameInterface {
                     this.skipDraw = true;
                 } else {
                     if (this.sortPiece) {
-                        this.board.sortPiece();
+                        this.board.sortPiecesList();
                         this.sortPiece = false;
                     }
                     
