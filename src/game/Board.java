@@ -109,7 +109,11 @@ public class Board {
 	public void update(long frametime) {
 		if (!this.stopped) {
 			//add framecounter
-			this.framecounter += frametime; 
+			this.framecounter += frametime;
+
+			if (this.drawPieceGhost) {
+				this.actualPiece.updateGhost(frametime);
+			}
 
 			//framecounter reach timer or actualPositionY == default
 			if ( (this.framecounter >= (1_000_000_000 / this.gameSpeed) ||
@@ -120,10 +124,6 @@ public class Board {
 
 				//reset counter
 				this.framecounter = 0;
-			}
-
-			if (this.drawPieceGhost) {
-				this.actualPiece.updateGhost(frametime);
 			}
 		}
 	}
@@ -167,12 +167,6 @@ public class Board {
 			placeholder = this.pieceList.get(cnt);
 			placeholder.draw(frametime, false);
 		}
-		
-		//hidde the piece before enter in the board
-		// this.graphics2D.setColor(Color.WHITE);
-		// this.graphics2D.fillRect(100, 0, 500 , BOARD_TOP);
-		// this.graphics2D.setColor(Color.LIGHT_GRAY);
-		// this.graphics2D.drawRect(BOARD_LEFT, BOARD_TOP, this.boardSquareWidth, this.boardSquareHeight);
 	}
 
 	/**
@@ -261,21 +255,23 @@ public class Board {
 	 * @param keyCode
 	 */
 	public synchronized void move(int keyCode) {
-		if (keyCode == 39) {
-			this.getActualPiece().moveRight();
-		} else if (keyCode == 37) {
-			this.getActualPiece().moveLeft();
-		} else if (keyCode == 38) {
-			if (this.canRotate) {
-				this.getActualPiece().rotateRight();
-				this.canRotate = false;
+		if (!this.stopped) {
+			if (keyCode == 39) { //right
+				this.getActualPiece().moveRight();
+			} else if (keyCode == 37) { //left
+				this.getActualPiece().moveLeft();
+			} else if (keyCode == 38) { //up
+				if (this.canRotate) {
+					this.getActualPiece().rotateRight();
+					this.canRotate = false;
+				}
+			} else if (keyCode == 40) { //down
+				this.getActualPiece().downOneLine();
+			} else if (keyCode == 17) { // r-control
+				this.holdPiece();
+			} else if (keyCode == 32) { //space
+				this.getActualPiece().allDown();
 			}
-		} else if (keyCode == 40) {
-			this.getActualPiece().downOneLine();
-		} else if (keyCode == 17) {
-			this.holdPiece();
-		} else if (keyCode == 32) {
-			this.getActualPiece().allDown();
 		}
 	}
 	
