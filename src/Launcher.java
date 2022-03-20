@@ -1,5 +1,8 @@
 import game.SplashScreen;
 
+/**
+ * Laucher class
+ */
 public class Launcher {
 
     public static final boolean setOpenGL = false;
@@ -17,7 +20,7 @@ public class Launcher {
         
         //start the thread
         //--->>> FPS options (SplashScreen constructor) - 0 (unlimited) - 30/60/90/120/240
-        Thread thread = new Thread(new SplashScreen(0), "engine");
+        Thread thread = new Thread(new SplashScreen(60), "engine");
         thread.setPriority(Thread.MAX_PRIORITY);
         thread.start();
     }
