@@ -25,6 +25,8 @@ public class Board {
 	public final static short HOLD_BOX_TOP 			= 20;
 	public final static short HOLD_BOX_WIDTH 		= 80;
 	public final static short HOLD_BOX_HEIGHT		= 80;
+	public final static short SORTED_BOX_LEFT		= 451;
+	public final static short SORTED_BOX_TOP		= 20;
 	protected final static short SHADOW_THICKNESS	= 4;
 	public final static short INITIAL_SQUARE_X		= 3;
 	protected final static short MAX_GAME_LEVEL		= 20;
@@ -45,6 +47,7 @@ public class Board {
 	private BasePiece holdPiece						= null;
 	private BasePiece actualPiece					= null;
 	private BasePiece lastPiece 					= null;
+	private LinkedList<BasePiece> nextPieces		= new LinkedList<BasePiece>();
 	private short [][] gameBoard					= null;
 	private boolean drawPieceGhost					= true;
 
@@ -151,6 +154,13 @@ public class Board {
 		}
 		this.actualPiece.draw(frametime, true);
 		
+		//draw list of sorted pieces
+		BasePiece nextPiece = null;
+		for (byte cnt = 0; this.nextPieces != null && cnt < this.nextPieces.size(); cnt++) {
+			nextPiece = this.nextPieces.get(cnt);
+			nextPiece.drawNext(frametime, cnt);
+		}
+
 		//draw list of pieces
 		BasePiece placeholder = null;
 		for (int cnt = 0; this.pieceList != null && cnt < this.pieceList.size(); cnt++) {
@@ -262,8 +272,10 @@ public class Board {
 			}
 		} else if (keyCode == 40) {
 			this.getActualPiece().downOneLine();
-		} else if (keyCode == 32) {
+		} else if (keyCode == 17) {
 			this.holdPiece();
+		} else if (keyCode == 32) {
+			this.getActualPiece().allDown();
 		}
 	}
 	
@@ -276,7 +288,7 @@ public class Board {
 			if (this.holdPiece == null) {
 				this.holdPiece = this.actualPiece;
 				this.canHold = false;
-				this.sortPiece();
+				this.sortPiecesList();
 			} else {
 				//there is a piece, so exchange
 				BasePiece temp = this.actualPiece;
@@ -289,12 +301,44 @@ public class Board {
 	}
 
 	/**
-	 * Sort a new piece
+	 * Sort the list of pieces
 	 */
-	public void sortPiece() {
-		this.actualPiece 	= this.nonePiece.sortNextPiece(this, this.actualPiece, this.lastPiece);
-		this.lastPiece 		= this.actualPiece;
-		this.canHold 		= true;
+	public void sortPiecesList() {
+
+		BasePiece temp = null;
+
+		//The list is complete
+		if (this.nextPieces.size() == 6) {
+			
+			//recover last piece
+			this.lastPiece = this.nextPieces.getLast();
+
+			//sort & add the next one
+			temp = this.nonePiece.sortNextPiece(this, temp, this.lastPiece);
+			this.nextPieces.add(temp);
+
+			//get actual piece
+			this.actualPiece = this.nextPieces.removeFirst();
+
+		} else {
+
+			//clear the list
+			this.nextPieces.clear();
+
+			//sort 7 pieces
+			for (byte cnt = 0; cnt < 7; cnt++) {
+				temp = this.nonePiece.sortNextPiece(this, temp, this.lastPiece);
+				this.lastPiece = temp;
+				this.nextPieces.add(temp);
+			}
+
+			//store the last & get the first
+			this.lastPiece = this.nextPieces.getLast();
+			this.actualPiece = this.nextPieces.removeFirst();
+		}
+
+		//allow hold
+		this.canHold = true;
 	}
 	
 	/**
@@ -331,7 +375,7 @@ public class Board {
 		}
 		
 		//Sort a new piece
-		this.sortPiece();
+		this.sortPiecesList();
 	}
 	
 	/**
