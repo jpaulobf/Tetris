@@ -9,7 +9,7 @@ import game.Board;
 public class SquarePiece extends BasePiece {
 
 	//piece properties
-	private Color color 				= Color.GRAY;
+	private Color color 				= Color.YELLOW;
 	protected short [][][] positions 	= {{{1, 1}, {1, 1}}};
 	protected short [][] assetsLeft		= {{0, 0}};
 	protected short [][] assetsRight	= {{0, 2}};
