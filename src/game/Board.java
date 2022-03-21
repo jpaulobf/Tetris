@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.GraphicsEnvironment;
 import java.awt.Transparency;
 import util.LoadingStuffs;
+import java.awt.Rectangle;
 
 /**
  * Class representing the game board
@@ -49,13 +50,13 @@ public class Board {
 	private BasePiece lastPiece 					= null;
 	private LinkedList<BasePiece> nextPieces		= new LinkedList<BasePiece>();
 	private short [][] gameBoard					= null;
+	private Color [][] gameBoardColor				= null;
 	private boolean drawPieceGhost					= true;
 
 	//Gameplay variables
 	private double TMP								= 1;
 	private double gameSpeed						= TMP;
 	private long framecounter						= 0;
-	private LinkedList<BasePiece> pieceList			= null;
 	protected short renderPositionX 				= 100;
 	protected short renderPositionY 				= 50;
 	protected GameInterface gameRef 				= null;
@@ -71,12 +72,12 @@ public class Board {
 		//recovery canvas g2d
 		this.gameRef				= game;
 		this.nonePiece 				= new NonePiece(this);
-		this.pieceList				= new LinkedList<BasePiece>();
 		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
 		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
 		this.boardSquareWidth 		= (short)((this.boardSmallSquareWidth * BOARD_COLUMNS) + BOARD_BORDER + BOARD_BORDER);
 		this.boardSquareHeight 		= (short)((this.boardSmallSquareHeight * BOARD_LINES) + BOARD_BORDER + BOARD_BORDER);
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
+		this.gameBoardColor			= new Color[BOARD_LINES][BOARD_COLUMNS];
 		this.gameSpeed 				= TMP;//(byte)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
 
 		//define the bg width/height
@@ -125,6 +126,71 @@ public class Board {
 				//reset counter
 				this.framecounter = 0;
 			}
+
+			this.checkLineClear();
+		}
+	}
+
+	public void checkLineClear() {
+
+		short 	value 	 = 1;
+		boolean lineFull = true;
+		byte lineCounter = 0;
+
+		short [][] tempGameBoardP1 = null;
+		short [][] tempGameBoardP2 = null;
+		Color [][] tempGameBoardColorP1 = null;
+		Color [][] tempGameBoardColorP2 = null;
+
+		for (byte linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
+			
+			lineFull = true;
+			
+			for (byte colunas = 0; colunas < gameBoard[linhas].length; colunas++) { 
+				value = gameBoard[linhas][colunas];
+				if (value != 1) {
+					lineFull = false;
+					break;
+				}
+			}
+
+			//we have a full line - drop it.
+			if (lineFull) {
+				
+				//count the number of droped lines, to point (WIP)
+				lineCounter++;
+				tempGameBoardP1	 		= new short[(linhas + 1)][BOARD_COLUMNS];
+				tempGameBoardP2 		= new short[BOARD_LINES - (linhas + 1)][BOARD_COLUMNS];
+				tempGameBoardColorP1 	= new Color[(linhas + 1)][BOARD_COLUMNS];
+				tempGameBoardColorP2 	= new Color[BOARD_LINES - (linhas + 1)][BOARD_COLUMNS];
+
+				//first line down
+				for (byte i = 0; i < BOARD_COLUMNS; i++) {
+					tempGameBoardP1[0][i] = -1;
+					tempGameBoardColorP1[0][i] = null;
+				}
+
+				for (byte i = 0; i < (linhas); i++) {
+					tempGameBoardP1[i + 1] = gameBoard[i];
+					tempGameBoardColorP1[i + 1] = gameBoardColor[i];
+				}
+
+				for (byte i = 0; i < BOARD_LINES - (linhas + 1); i++) {
+					tempGameBoardP2[i] = gameBoard[linhas + i + 1];
+					tempGameBoardColorP2[i] = gameBoardColor[linhas + i + 1];
+				}
+
+				this.gameBoard = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardP1), 
+																 java.util.Arrays.stream(tempGameBoardP2)).toArray(short[][]::new));
+
+				this.gameBoardColor = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardColorP1), 
+																  	  java.util.Arrays.stream(tempGameBoardColorP2)).toArray(Color[][]::new));
+
+				tempGameBoardP1 = null;
+				tempGameBoardP2 = null;
+				tempGameBoardColorP1 = null;
+				tempGameBoardColorP2 = null;
+			}
 		}
 	}
 	
@@ -161,11 +227,36 @@ public class Board {
 			nextPiece.drawNext(frametime, cnt);
 		}
 
-		//draw list of pieces
-		BasePiece placeholder = null;
-		for (int cnt = 0; this.pieceList != null && cnt < this.pieceList.size(); cnt++) {
-			placeholder = this.pieceList.get(cnt);
-			placeholder.draw(frametime, false);
+		//draw bag of pieces
+		this.drawBoardPieces();
+	}
+
+	/**
+	 * Draw the pieces in the board
+	 */
+	private void drawBoardPieces() {
+		for (int linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
+			for (int colunas = 0; colunas < gameBoard[linhas].length; colunas++) { 
+				if (gameBoard[linhas][colunas] == 1) {
+					//calc square by square the position 
+					int calcPosX = Board.BOARD_LEFT + Board.BOARD_BORDER + (colunas * (BasePiece.SMALL_SQUARE_WIDTH))  + colunas + renderPositionX;
+					int calcPosY = Board.BOARD_TOP  + Board.BOARD_BORDER + (linhas  * (BasePiece.SMALL_SQUARE_HEIGHT)) + linhas  + renderPositionY;
+
+					//draw the flat rect
+					this.getG2D().setColor(gameBoardColor[linhas][colunas]);
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, BasePiece.SMALL_SQUARE_WIDTH, BasePiece.SMALL_SQUARE_HEIGHT));
+					
+					//draw the bevel effect
+					this.getG2D().setColor(Color.WHITE);
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, 1, BasePiece.SMALL_SQUARE_HEIGHT));
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, BasePiece.SMALL_SQUARE_WIDTH, 1));
+					
+					//draw the shadow
+					this.getG2D().setColor(Color.DARK_GRAY);
+					this.getG2D().fill(new Rectangle(calcPosX + BasePiece.SMALL_SQUARE_WIDTH, calcPosY, 1, BasePiece.SMALL_SQUARE_HEIGHT));
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY + BasePiece.SMALL_SQUARE_HEIGHT, BasePiece.SMALL_SQUARE_WIDTH + 1, 1));
+				}
+			}
 		}
 	}
 
@@ -305,7 +396,6 @@ public class Board {
 
 		//The list is complete
 		if (this.nextPieces.size() == 6) {
-			
 			//recover last piece
 			this.lastPiece = this.nextPieces.getLast();
 
@@ -315,9 +405,7 @@ public class Board {
 
 			//get actual piece
 			this.actualPiece = this.nextPieces.removeFirst();
-
 		} else {
-
 			//clear the list
 			this.nextPieces.clear();
 
@@ -342,15 +430,8 @@ public class Board {
 	 */
 	public synchronized void resetGame() {
 		
-		//Clear the stored piece list
-		if (this.pieceList != null) {
-			this.pieceList.clear();
-			this.pieceList = null;
-		}
-
 		//re-initialize the variables
 		this.nonePiece 				= new NonePiece(this);
-		this.pieceList				= new LinkedList<BasePiece>();
 		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
 		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
 		this.boardSquareWidth 		= (short)((this.boardSmallSquareWidth * BOARD_COLUMNS) + BOARD_BORDER + BOARD_BORDER);
@@ -396,13 +477,13 @@ public class Board {
 			for (int cnt = 0; cnt < matrix.length; cnt++) {
 				int yPosition = startPositionY + matrix[cnt][0];
 				int xPosition = startPositionX + matrix[cnt][1] + assetLeft + 1;
-
 				if (yPosition >= 0 && this.gameBoard[yPosition][xPosition] == 1) {
 					return (false);
 				}
 			}
 		} else {
-			return false;
+			//the piece is touching right wall
+			return (false);
 		}
 		
 		//if reach here, isn't touching anything
@@ -441,7 +522,6 @@ public class Board {
 	public synchronized boolean canMoveDown() {
 		//if reach the base, return
 		if (this.actualPiece.getActualBottonPosition() == BOARD_LINES) {
-			this.pieceList.add(this.actualPiece);
 			this.storePiecePosition(this.actualPiece);
 			return (false);
 		} else {
@@ -456,7 +536,6 @@ public class Board {
 				int yPosition = startPositionY + matrix[cnt][0] + 1;
 				int xPosition = startPositionX + matrix[cnt][1] + assetLeft;
 				if (yPosition > -1 && this.gameBoard[yPosition][xPosition] == 1) {
-					this.pieceList.add(this.actualPiece);
 					this.storePiecePosition(this.actualPiece);
 					return (false);
 				}
@@ -545,7 +624,9 @@ public class Board {
 			}
 			
 			this.gameBoard[startPositionY + matrix[cnt][0]]
-						  [startPositionX + matrix[cnt][1] + assetLeft] = 1;	
+						  [startPositionX + matrix[cnt][1] + assetLeft] = 1;
+			this.gameBoardColor[startPositionY + matrix[cnt][0]]
+							   [startPositionX + matrix[cnt][1] + assetLeft] = piece.getColor();
 		}
 	}
 
