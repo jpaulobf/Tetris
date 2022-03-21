@@ -41,8 +41,8 @@ public abstract class BasePiece {
 			int calcPosX 			= 0;
 			int calcPosY 			= 0;
 			int calcPosYGhost 		= 0;
-			int piecePositionX 		= Board.BOARD_LEFT + (this.boardRef.getBoardSmallSquareWidth() * this.getActualPositionX()) + Board.BOARD_BORDER;
-			int piecePositionY 		= Board.BOARD_TOP + Board.BOARD_BORDER + (this.getActualPositionY() * this.boardRef.getBoardSmallSquareHeight());
+			int piecePositionX 		= Board.BOARD_LEFT + Board.BOARD_BORDER + (this.boardRef.getBoardSmallSquareWidth() * this.getActualPositionX());
+			int piecePositionY 		= Board.BOARD_TOP  + Board.BOARD_BORDER + (this.boardRef.getBoardSmallSquareHeight() * this.getActualPositionY());
 			int drawGhostInY		= -1;
 			byte width				= BasePiece.SMALL_SQUARE_WIDTH;
 			byte height				= BasePiece.SMALL_SQUARE_HEIGHT; 
