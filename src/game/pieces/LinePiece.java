@@ -9,7 +9,7 @@ import game.Board;
 public class LinePiece extends BasePiece {
 
 	//piece properties
-	private Color color 				= Color.YELLOW;
+	private Color color 				= Color.CYAN;
 	protected short [][] assetsLeft		= {{0, -1}, {1,  0}};
 	protected short [][] assetsRight	= {{0, 2}, {1, 4}};
 	protected short [][] assetsHeight	= {{0, 4}, {1, 2}};
