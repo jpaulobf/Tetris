@@ -134,20 +134,20 @@ public class Board {
 
 	public void checkLineClear() {
 
-		byte 	testValue 		= 0;
-		boolean hasLineFull 	= false;
-		boolean isContinuos 	= false;
-		byte lineCounter 		= 0;
-		byte maxLines			= 4;
-		byte firstline			= -1;
-		byte linesToEnd			= -1;
-
-		short [][] tempGameBoardP1 = null;
-		short [][] tempGameBoardP2 = null;
+		byte testValue 					= 0;
+		boolean hasLineFull 			= false;
+		byte maxLines					= 4;
+		byte firstline					= -1;
+		byte linesToEnd					= -1;
+		byte sumValue					= 0;
+		short [][] tempGameBoardP1 		= null;
+		short [][] tempGameBoardP2 		= null;
 		Color [][] tempGameBoardColorP1 = null;
 		Color [][] tempGameBoardColorP2 = null;
-		
+		//based on the sum of clear lines, how much lines to add at top (starting from 0 to 10)
+		final byte [] linesToAdd 		= {0, 1, 0, 2, 2, 2, 3, 3, 3, 0, 4};
 
+		//iterate through all lines in the board looking for lines to clear (completed)
 		for (byte linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
 
 			hasLineFull = false;
@@ -161,6 +161,7 @@ public class Board {
 			if (testValue == BOARD_COLUMNS) {
 				hasLineFull = true;
 				firstline = linhas;
+				sumValue = 1;
 
 				//test next 3 lines (or less depending from the 1st full line found)
 				//first calc maxLines until bottom
@@ -173,25 +174,129 @@ public class Board {
 						maxLines = linesToEnd;
 					}
 
+					/**
+					 * Possibles results (sums):
+					 * 1 (1)
+					 * 1, 2 (3)
+					 * 1, 3 (4)
+					 * 1, 4 (5)
+					 * 1, 2, 3 (6)
+					 * 1, 2, 4 (7)
+					 * 1, 3, 4 (8)
+					 * 1, 2, 3, 4 (tetris) (10)
+					 */
 					for (byte i = 1; i < (maxLines + 1); i++) {
 						testValue = 0;						
-						for (byte colunas = 0; colunas < gameBoard[linhas + i].length; colunas++) { 
-							testValue += gameBoard[linhas + i][colunas];
+						for (byte colunas = 0; colunas < gameBoard[firstline + i].length; colunas++) { 
+							testValue += gameBoard[firstline + i][colunas];
 						}
 						if (testValue == BOARD_COLUMNS) {
-							System.out.println(linhas + i);
-							//TODO: HERE....
-							//IDENTIFY IF IS CONTINUOUS...
+							sumValue += (i + 1);
 						}
 					}
 				}
 			}
 
+			if (hasLineFull) {
+
+				System.out.println("sumValue: " + sumValue);
+				
+				//continuous
+				if (sumValue == 1 || sumValue == 3 || sumValue == 6 || sumValue == 10) {
+
+					//Add on top, n white lines, with the exactly same number of lines, that will be dropped in bottom part
+					tempGameBoardP1 		= new short[(firstline + linesToAdd[sumValue])][BOARD_COLUMNS];
+					tempGameBoardColorP1 	= new Color[(firstline + linesToAdd[sumValue])][BOARD_COLUMNS];
+					for (byte i = 0; i < linesToAdd[sumValue]; i++) {
+						for (byte j = 0; j < BOARD_COLUMNS; j++) {
+							tempGameBoardP1[i][j] 		= -1;
+							tempGameBoardColorP1[i][j] 	= null;
+						}
+					}
+
+					//create the "second" part of board, ignoring the dropped lines
+					tempGameBoardP2 		= new short[BOARD_LINES - tempGameBoardP1.length][BOARD_COLUMNS];
+					tempGameBoardColorP2 	= new Color[BOARD_LINES - tempGameBoardP1.length][BOARD_COLUMNS];
+
+					//Now copy both parts, then join them...
+					for (byte i = linesToAdd[sumValue]; i < (firstline + linesToAdd[sumValue]); i++) {
+						tempGameBoardP1[i] = gameBoard[i - linesToAdd[sumValue]];
+						tempGameBoardColorP1[i] = gameBoardColor[i - linesToAdd[sumValue]];
+					}
+
+					//TODO: BUGGY... WIP
+					for (byte i = (byte)(firstline + linesToAdd[sumValue]); i < BOARD_LINES; i++) {
+						tempGameBoardP2[i] = gameBoard[i];
+						tempGameBoardColorP2[i] = gameBoardColor[i];
+					}
+
+					this.gameBoard = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardP1), 
+																	java.util.Arrays.stream(tempGameBoardP2)).toArray(short[][]::new));
+
+					this.gameBoardColor = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardColorP1), 
+																		java.util.Arrays.stream(tempGameBoardColorP2)).toArray(Color[][]::new));
+
+					tempGameBoardP1 = null;
+					tempGameBoardP2 = null;
+					tempGameBoardColorP1 = null;
+					tempGameBoardColorP2 = null;
+
+
+					//System.out.println(tempGameBoardP1.length);
+					//System.out.println(tempGameBoardP2.length);
+
+					/*
+					//first line down
+					for (byte i = 0; i < BOARD_COLUMNS; i++) {
+						tempGameBoardP1[0][i] = -1;
+						tempGameBoardColorP1[0][i] = null;
+					}
+
+					for (byte i = 0; i < (linhas); i++) {
+						tempGameBoardP1[i + 1] = gameBoard[i];
+						tempGameBoardColorP1[i + 1] = gameBoardColor[i];
+					}
+
+					for (byte i = 0; i < BOARD_LINES - (linhas + 1); i++) {
+						tempGameBoardP2[i] = gameBoard[linhas + i + 1];
+						tempGameBoardColorP2[i] = gameBoardColor[linhas + i + 1];
+					}
+
+					this.gameBoard = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardP1), 
+																	java.util.Arrays.stream(tempGameBoardP2)).toArray(short[][]::new));
+
+					this.gameBoardColor = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardColorP1), 
+																		java.util.Arrays.stream(tempGameBoardColorP2)).toArray(Color[][]::new));
+
+					tempGameBoardP1 = null;
+					tempGameBoardP2 = null;
+					tempGameBoardColorP1 = null;
+					tempGameBoardColorP2 = null;
+
+
+					*/
+
+
+
+				} else if (sumValue == 4 || sumValue == 5) {
+
+				} else if (sumValue == 7 || sumValue == 8) {
+
+				}
+
+				System.out.println("outing....");
+				break;
+
+			}
+
+			
+
+			/*
+
 			//we have a full line - drop it.
 			if (hasLineFull) {
 				
 				//count the number of droped lines, to point (WIP)
-				lineCounter++;
 				tempGameBoardP1	 		= new short[(linhas + 1)][BOARD_COLUMNS];
 				tempGameBoardP2 		= new short[BOARD_LINES - (linhas + 1)][BOARD_COLUMNS];
 				tempGameBoardColorP1 	= new Color[(linhas + 1)][BOARD_COLUMNS];
@@ -224,6 +329,7 @@ public class Board {
 				tempGameBoardColorP1 = null;
 				tempGameBoardColorP2 = null;
 			}
+			*/
 		}
 	}
 	
