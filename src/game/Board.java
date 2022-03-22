@@ -17,19 +17,19 @@ import java.awt.Rectangle;
  */
 public class Board {
 
-	public final static short BOARD_LINES 			= 20;
-	public final static short BOARD_COLUMNS 		= 10;
-	public final static short BOARD_TOP	 			= 10;
+	public final static byte BOARD_LINES 			= 20;
+	public final static byte BOARD_COLUMNS 			= 10;
+	public final static byte BOARD_TOP	 			= 10;
 	public final static short BOARD_LEFT 			= 110;
 	public final static short BOARD_BORDER 			= 1;
-	public final static short HOLD_BOX_LEFT 		= 10;
-	public final static short HOLD_BOX_TOP 			= 20;
-	public final static short HOLD_BOX_WIDTH 		= 80;
-	public final static short HOLD_BOX_HEIGHT		= 80;
+	public final static byte HOLD_BOX_LEFT 			= 10;
+	public final static byte HOLD_BOX_TOP 			= 20;
+	public final static byte HOLD_BOX_WIDTH 		= 80;
+	public final static byte HOLD_BOX_HEIGHT		= 80;
 	public final static short SORTED_BOX_LEFT		= 451;
 	public final static short SORTED_BOX_TOP		= 20;
-	protected final static short SHADOW_THICKNESS	= 4;
-	public final static short INITIAL_SQUARE_X		= 3;
+	protected final static byte SHADOW_THICKNESS	= 4;
+	public final static byte INITIAL_SQUARE_X		= 3;
 	protected final static short MAX_GAME_LEVEL		= 20;
 	protected final static short SPEED_FACTOR		= 2;
 	protected final static short MIN_GAME_SPEED		= 44;
@@ -125,37 +125,70 @@ public class Board {
 
 				//reset counter
 				this.framecounter = 0;
-			}
 
-			this.checkLineClear();
+				//check if at least one line is complete
+				this.checkLineClear();
+			}
 		}
 	}
 
 	public void checkLineClear() {
 
-		short 	value 	 = 1;
-		boolean lineFull = true;
-		byte lineCounter = 0;
+		byte 	testValue 		= 0;
+		boolean hasLineFull 	= false;
+		boolean isContinuos 	= false;
+		byte lineCounter 		= 0;
+		byte maxLines			= 4;
+		byte firstline			= -1;
+		byte linesToEnd			= -1;
 
 		short [][] tempGameBoardP1 = null;
 		short [][] tempGameBoardP2 = null;
 		Color [][] tempGameBoardColorP1 = null;
 		Color [][] tempGameBoardColorP2 = null;
+		
 
 		for (byte linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
-			
-			lineFull = true;
-			
+
+			hasLineFull = false;
+			testValue = 0;
+
 			for (byte colunas = 0; colunas < gameBoard[linhas].length; colunas++) { 
-				value = gameBoard[linhas][colunas];
-				if (value != 1) {
-					lineFull = false;
-					break;
+				testValue += gameBoard[linhas][colunas];
+			}
+
+			//I found one line full
+			if (testValue == BOARD_COLUMNS) {
+				hasLineFull = true;
+				firstline = linhas;
+
+				//test next 3 lines (or less depending from the 1st full line found)
+				//first calc maxLines until bottom
+				//(sum 1, because the 0 index)
+				linesToEnd = (byte)(BOARD_LINES - (firstline + 1));
+				if (linesToEnd > 0) {
+					if (linesToEnd > 3) {
+						maxLines = 3;
+					} else {
+						maxLines = linesToEnd;
+					}
+
+					for (byte i = 1; i < (maxLines + 1); i++) {
+						testValue = 0;						
+						for (byte colunas = 0; colunas < gameBoard[linhas + i].length; colunas++) { 
+							testValue += gameBoard[linhas + i][colunas];
+						}
+						if (testValue == BOARD_COLUMNS) {
+							System.out.println(linhas + i);
+							//TODO: HERE....
+							//IDENTIFY IF IS CONTINUOUS...
+						}
+					}
 				}
 			}
 
 			//we have a full line - drop it.
-			if (lineFull) {
+			if (hasLineFull) {
 				
 				//count the number of droped lines, to point (WIP)
 				lineCounter++;
