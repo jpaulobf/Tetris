@@ -44,6 +44,16 @@ public class LoadingStuffs {
                 stuffs.put("theme", audio);
             }
 
+            audio = new Audio("audio\\turn2.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("turn", audio);
+            }
+
+            audio = new Audio("audio\\move.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("move", audio);
+            }
+
             Logger.INFO("read all audio...", this);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
