@@ -11,6 +11,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Transparency;
 import util.LoadingStuffs;
 import java.awt.Rectangle;
+import util.Audio;
 
 /**
  * Class representing the game board
@@ -52,6 +53,8 @@ public class Board {
 	private short [][] gameBoard					= null;
 	private Color [][] gameBoardColor				= null;
 	private boolean drawPieceGhost					= true;
+	private volatile Audio turn            			= null;
+	private volatile Audio move            			= null;
 
 	//Gameplay variables
 	private double TMP								= 1;
@@ -106,6 +109,10 @@ public class Board {
 
 		//just one, draw game background
 		this.drawBackground(true);
+
+		//load audio.
+		this.turn = (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
+		this.move = (Audio)LoadingStuffs.getInstance().getStuff("move"); 
 	}
 
 	/**
@@ -463,15 +470,19 @@ public class Board {
 		if (!this.stopped) {
 			if (keyCode == 39) { //right
 				this.getActualPiece().moveRight();
+				this.move.play();
 			} else if (keyCode == 37) { //left
 				this.getActualPiece().moveLeft();
+				this.move.play();
 			} else if (keyCode == 38) { //up
 				if (this.canRotate) {
 					this.getActualPiece().rotateRight();
+					this.turn.play();
 					this.canRotate = false;
 				}
 			} else if (keyCode == 40) { //down
 				this.getActualPiece().downOneLine();
+				this.move.play();
 			} else if (keyCode == 17) { // r-control
 				this.holdPiece();
 			} else if (keyCode == 32) { //space
