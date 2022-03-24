@@ -29,6 +29,7 @@ public class ZPiece extends BasePiece {
 	 * @param board
 	 */
 	public ZPiece(Board board) {
+		super();
 		this.boardRef = board;
 	}
 

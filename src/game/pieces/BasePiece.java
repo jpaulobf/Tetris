@@ -28,6 +28,12 @@ public abstract class BasePiece {
 	protected volatile short ghostPieceCollision		= Board.BOARD_LINES;
 
 	/**
+	 * Constructor
+	 */
+	public BasePiece() {
+	}
+
+	/**
 	 * draw method
 	 * @param graphics2D
 	 */
@@ -170,7 +176,6 @@ public abstract class BasePiece {
 			}
 		}
 	}
-
 
 	/**
 	 * Paint the piece in the next list

@@ -25,6 +25,7 @@ public class LinePiece extends BasePiece {
 	 * @param board
 	 */
 	public LinePiece(Board board) {
+		super();
 		this.boardRef = board;
 	}
 	

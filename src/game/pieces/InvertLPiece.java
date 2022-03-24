@@ -29,6 +29,7 @@ public class InvertLPiece extends BasePiece {
 	 * @param board
 	 */
 	public InvertLPiece(Board board) {
+		super();
 		this.boardRef = board;
 	}
 

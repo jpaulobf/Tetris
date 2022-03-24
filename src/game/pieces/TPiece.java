@@ -29,6 +29,7 @@ public class TPiece extends BasePiece {
 	 * @param board
 	 */
 	public TPiece(Board board) {
+		super();
 		this.boardRef = board;
 	}
 

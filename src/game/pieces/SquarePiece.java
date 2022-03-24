@@ -23,6 +23,7 @@ public class SquarePiece extends BasePiece {
 	 * @param board
 	 */
 	public SquarePiece(Board board) {
+		super();
 		this.boardRef = board;
 		this.actualPositionX = 4;
 	}
