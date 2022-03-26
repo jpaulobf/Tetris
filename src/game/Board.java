@@ -55,6 +55,9 @@ public class Board {
 	private boolean drawPieceGhost					= true;
 	private volatile Audio turn            			= null;
 	private volatile Audio move            			= null;
+	private volatile Audio splash          			= null;
+	private volatile Audio drop          			= null;
+
 
 	//Gameplay variables
 	private double TMP								= 1;
@@ -113,6 +116,8 @@ public class Board {
 		//load audio.
 		this.turn = (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
 		this.move = (Audio)LoadingStuffs.getInstance().getStuff("move"); 
+		this.splash = (Audio)LoadingStuffs.getInstance().getStuff("splash");
+		this.drop = (Audio)LoadingStuffs.getInstance().getStuff("drop");
 	}
 
 	/**
@@ -308,6 +313,8 @@ public class Board {
 				tempGameBoardP2 = null;
 				tempGameBoardColorP1 = null;
 				tempGameBoardColorP2 = null;
+
+				this.drop.play();
 
 				//end
 				break;
@@ -752,7 +759,10 @@ public class Board {
 						  [startPositionX + matrix[cnt][1] + assetLeft] = 1;
 			this.gameBoardColor[startPositionY + matrix[cnt][0]]
 							   [startPositionX + matrix[cnt][1] + assetLeft] = piece.getColor();
+
 		}
+
+		this.splash.play();
 	}
 
 	/**
