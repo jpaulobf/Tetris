@@ -63,8 +63,8 @@ public class Board {
 	private double TMP								= 1;
 	private double gameSpeed						= TMP;
 	private long framecounter						= 0;
-	protected short renderPositionX 				= 100;
-	protected short renderPositionY 				= 50;
+	protected short renderPositionX 				= 0;
+	protected short renderPositionY 				= 0;
 	protected GameInterface gameRef 				= null;
 	protected volatile boolean canRotate			= true;
 	protected volatile boolean canHold				= true;
@@ -93,7 +93,7 @@ public class Board {
 		//define the bg width/height
 		int bgwidth 				= BOARD_LEFT + boardSquareWidth + 150;
 		int bgheight				= BOARD_TOP + boardSquareHeight + 150;
-
+		
 		//create the bg structure
 		this.bgimage				= (BufferedImage)LoadingStuffs.getInstance().getStuff("background");    
 		this.background				= GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -114,10 +114,17 @@ public class Board {
 		this.drawBackground(true);
 
 		//load audio.
-		this.turn = (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
-		this.move = (Audio)LoadingStuffs.getInstance().getStuff("move"); 
+		this.turn 	= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
+		this.move 	= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
 		this.splash = (Audio)LoadingStuffs.getInstance().getStuff("splash");
-		this.drop = (Audio)LoadingStuffs.getInstance().getStuff("drop");
+		this.drop 	= (Audio)LoadingStuffs.getInstance().getStuff("drop");
+
+		//calc the render position
+		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - BOARD_LEFT);
+		this.renderPositionY = (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
+
+		
+
 	}
 
 	/**
