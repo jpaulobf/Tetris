@@ -44,7 +44,7 @@ public class LoadingStuffs {
                 stuffs.put("theme", audio);
             }
 
-            audio = new Audio("audio\\turn2.wav", 0);
+            audio = new Audio("audio\\turn.wav", 0);
             if (audio != null && audio.isReady()) {
                 stuffs.put("turn", audio);
             }
@@ -52,6 +52,16 @@ public class LoadingStuffs {
             audio = new Audio("audio\\move.wav", 0);
             if (audio != null && audio.isReady()) {
                 stuffs.put("move", audio);
+            }
+
+            audio = new Audio("audio\\splash2.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("splash", audio);
+            }
+
+            audio = new Audio("audio\\drop.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("drop", audio);
             }
 
             Logger.INFO("read all audio...", this);
