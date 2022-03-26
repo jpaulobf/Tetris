@@ -34,8 +34,8 @@ public class Game implements GameInterface {
     private volatile boolean skipDraw       = false;
 
     //width and height of window for base metrics of the game
-    private final int wwm                   = 1600;
-    private final int whm                   = 900;
+    private final int wwm                   = 1366;
+    private final int whm                   = 768;
 
     //graphic device elements
     private VolatileImage bufferImage       = null;
