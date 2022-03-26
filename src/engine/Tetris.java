@@ -36,8 +36,8 @@ public class Tetris implements Runnable {
         private int positionY                       = 0;
 
         //width and height of the window
-        private int windowWidth                     = 1600;
-        private int windowHeight                    = 900;
+        private int windowWidth                     = 1366;
+        private int windowHeight                    = 768;
         private int fullScreenWidth                 = 0;
         private int fullScreenHeight                = 0;
         private int fullScreenXPos                  = 0;
