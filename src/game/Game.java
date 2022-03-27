@@ -26,7 +26,11 @@ public class Game implements GameInterface {
     //private GameOver gameOver               = null;
     //private volatile Audio gameoverTheme    = null;
 
+    private volatile byte currentMusicTheme = 0;
     private volatile Audio theme            = null;
+    private volatile Audio music1           = null;
+    private volatile Audio music2           = null;
+    private volatile Audio music3           = null;
     private volatile long framecounter      = 0;
     private volatile boolean mute           = false;
     private volatile boolean stopped        = false;
@@ -52,18 +56,48 @@ public class Game implements GameInterface {
      */
     public Game() {
         //create the double-buffering image
-        this.ge             = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        this.dsd            = ge.getDefaultScreenDevice();
-        this.bufferImage    = dsd.getDefaultConfiguration().createCompatibleVolatileImage(this.wwm, this.whm);
-        this.g2d            = (Graphics2D)bufferImage.getGraphics();
+        this.ge                 = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        this.dsd                = ge.getDefaultScreenDevice();
+        this.bufferImage        = dsd.getDefaultConfiguration().createCompatibleVolatileImage(this.wwm, this.whm);
+        this.g2d                = (Graphics2D)bufferImage.getGraphics();
         this.g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
         //////////////////////////////////////////////////////////////////////
         // ->>>  create the game elements objects
         //////////////////////////////////////////////////////////////////////
-        this.gameState      = new StateMachine(this);
-        this.theme          = (Audio)LoadingStuffs.getInstance().getStuff("theme");      
-        this.board          = new Board(this);
+        this.gameState          = new StateMachine(this);
+        this.music1             = (Audio)LoadingStuffs.getInstance().getStuff("theme1");
+        this.music2             = (Audio)LoadingStuffs.getInstance().getStuff("theme2");
+        this.music3             = (Audio)LoadingStuffs.getInstance().getStuff("theme3");
+        this.theme              = this.music1;
+        this.currentMusicTheme  = 0;
+        this.board              = new Board(this);
+    }
+
+    /**
+     * Switch the game theme
+     * @param theme
+     */
+    private void toogleSoundTheme() {
+        this.theme.stop();
+        this.currentMusicTheme = (byte)(++this.currentMusicTheme%3);
+
+        switch (this.currentMusicTheme) {
+            case 0:
+                this.music1.stop();
+                this.theme = this.music1;
+                break;
+            case 1:
+                this.music2.stop();
+                this.theme = this.music2;
+                break;
+            case 2:
+                this.music3.stop();
+                this.theme = this.music3;
+                break;
+        }
+
+        this.theme.playContinuously();
     }
     
     /**
@@ -234,7 +268,16 @@ public class Game implements GameInterface {
      */
     @Override
     public void softReset() {
+        this.reset();
         this.board.resetGame();
+    }
+
+    /**
+     * Aux reset method
+     */
+    private void reset() {
+        this.theme.stop();
+        this.theme.playContinuously();
     }
 
     /** 
@@ -270,11 +313,20 @@ public class Game implements GameInterface {
     }
 
     /**
+     * Toogle color theme
+     */
+    public void toogleColorTheme() {
+        this.board.toogleColorTheme();
+    }
+
+    /**
      * Game keyRelease
      */
     public void keyReleased(int keyCode) {
         if (!this.changingStage && !this.stopped) {
             this.board.canRotate = true;
+            if (keyCode == 49) {this.toogleSoundTheme();}
+            if (keyCode == 50) {this.toogleColorTheme();}
             if (keyCode == 77) {this.toogleMuteTheme();}
             if (keyCode == 80) {this.tooglePause();}
             if (keyCode == 82) {this.softReset();}
