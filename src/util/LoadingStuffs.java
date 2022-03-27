@@ -34,14 +34,45 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\splashImage.png"));
             stuffs.put("splashImage", image);
 
-            image = ImageIO.read(new File("images\\background.png"));
-            stuffs.put("background", image);
+            image = ImageIO.read(new File("images\\background1.png"));
+            stuffs.put("background1", image);
+
+            image = ImageIO.read(new File("images\\background2.png"));
+            stuffs.put("background2", image);
+
+            image = ImageIO.read(new File("images\\background3.png"));
+            stuffs.put("background3", image);
+
+            image = ImageIO.read(new File("images\\background4.png"));
+            stuffs.put("background4", image);
+
+            image = ImageIO.read(new File("images\\background5.png"));
+            stuffs.put("background5", image);
+
+            image = ImageIO.read(new File("images\\background6.png"));
+            stuffs.put("background6", image);
+
+            image = ImageIO.read(new File("images\\background7.png"));
+            stuffs.put("background7", image);
+
+            image = ImageIO.read(new File("images\\background8.png"));
+            stuffs.put("background8", image);
 
             Logger.INFO("read all images...", this);
 
-            Audio audio = new Audio("audio\\theme.wav", 0);
+            Audio audio = new Audio("audio\\theme1.wav", 0);
             if (audio != null && audio.isReady()) {
-                stuffs.put("theme", audio);
+                stuffs.put("theme1", audio);
+            }
+
+            audio = new Audio("audio\\theme2.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("theme2", audio);
+            }
+
+            audio = new Audio("audio\\theme3.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("theme3", audio);
             }
 
             audio = new Audio("audio\\turn.wav", 0);
