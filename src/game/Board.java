@@ -35,10 +35,11 @@ public class Board {
 	protected final static short SPEED_FACTOR		= 2;
 	protected final static short MIN_GAME_SPEED		= 44;
 	protected final static short MAX_GAME_SPEED		= 20;
-	private BufferedImage background         		= null;
+	private BufferedImage gameBoardBG         		= null;
     private Graphics2D bg2d             			= null;
-	private BufferedImage bgimage					= null;
 	private boolean fillColor						= false;
+	private Theme theme								= null;
+	private byte defaultTheme						= 0;
 
 	//Game variables
 	private NonePiece nonePiece 					= null;
@@ -57,7 +58,6 @@ public class Board {
 	private volatile Audio move            			= null;
 	private volatile Audio splash          			= null;
 	private volatile Audio drop          			= null;
-
 
 	//Gameplay variables
 	private double TMP								= 1;
@@ -88,20 +88,23 @@ public class Board {
 		this.boardSquareHeight 		= (short)((this.boardSmallSquareHeight * BOARD_LINES) + BOARD_BORDER + BOARD_BORDER);
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
 		this.gameBoardColor			= new Color[BOARD_LINES][BOARD_COLUMNS];
+		this.theme					= new Theme(defaultTheme);
 		this.gameSpeed 				= TMP;//(byte)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
 
 		//define the bg width/height
 		int bgwidth 				= BOARD_LEFT + boardSquareWidth + 150;
 		int bgheight				= BOARD_TOP + boardSquareHeight + 150;
 		
-		//create the bg structure
-		this.bgimage				= (BufferedImage)LoadingStuffs.getInstance().getStuff("background");    
-		this.background				= GraphicsEnvironment.getLocalGraphicsEnvironment()
+		//create the main game image structure
+		this.gameBoardBG			= GraphicsEnvironment.getLocalGraphicsEnvironment()
 														 .getDefaultScreenDevice().getDefaultConfiguration()
 														 .createCompatibleImage(bgwidth, bgheight, Transparency.TRANSLUCENT);
 		
 		//get the G2D (from backbuffered image)
-		this.bg2d					= (Graphics2D)this.background.getGraphics();
+		this.bg2d					= (Graphics2D)this.gameBoardBG.getGraphics();
+
+		//just one, draw game background
+		this.drawGameBoardBG();
 
 		//clear the gameboard
 		for (short i = 0; i < this.gameBoard.length; i++) {
@@ -110,9 +113,6 @@ public class Board {
 			}
 		}
 
-		//just one, draw game background
-		this.drawBackground(true);
-
 		//load audio.
 		this.turn 	= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
 		this.move 	= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
@@ -120,11 +120,17 @@ public class Board {
 		this.drop 	= (Audio)LoadingStuffs.getInstance().getStuff("drop");
 
 		//calc the render position
-		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - BOARD_LEFT);
+		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - 2*BOARD_LEFT);
 		this.renderPositionY = (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
+	}
 
-		
-
+	/** 
+	 * Toogle color theme
+	*/
+	public void toogleColorTheme() {
+		this.defaultTheme = (byte)(++this.defaultTheme%8);
+		this.theme.setTheme(this.defaultTheme);
+		this.drawGameBoardBG();
 	}
 
 	/**
@@ -336,8 +342,8 @@ public class Board {
 	public void draw(long frametime) {
 
 		//draw the background and bgimage
-		this.getG2D().drawImage(this.bgimage, 0, 0, null);
-		this.getG2D().drawImage(this.background, renderPositionX, renderPositionY, null);
+		this.getG2D().drawImage(this.theme.getBackgroundImage(), 0, 0, null);
+		this.getG2D().drawImage(this.gameBoardBG, renderPositionX, renderPositionY, null);
 
 		//Draw hold piece
 		if (this.holdPiece != null) {
@@ -367,7 +373,7 @@ public class Board {
 	}
 
 	/**
-	 * Draw the pieces in the board
+	 * Draw the bag of pieces in the board
 	 */
 	private void drawBoardPieces() {
 		for (int linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
@@ -398,11 +404,17 @@ public class Board {
 	/**
 	 * Draw game background (once).
 	 */
-	private void drawBackground(boolean filled) {
+	private void drawGameBoardBG() {
 
-		//fill the bg in white, case selected not checkered filled
+		this.bg2d.setComposite(java.awt.AlphaComposite.Clear);
+		this.bg2d.fillRect(0, 0, this.gameBoardBG.getWidth(), this.gameBoardBG.getHeight());
+		this.bg2d.setComposite(java.awt.AlphaComposite.SrcOver);
+
+		boolean filled = this.theme.getFilledGrid();
+		
+		//fill the bg with theme color, case selected not checkered filled
 		if (!filled) {
-			this.bg2d.setColor(Color.WHITE);
+			this.bg2d.setColor(this.theme.getBgBoardColor());
 			this.bg2d.fillRect(BOARD_LEFT, BOARD_TOP, this.boardSquareWidth-1, this.boardSquareHeight);
 		}
 
@@ -430,7 +442,8 @@ public class Board {
 									   this.boardSmallSquareWidth, 
 									   this.boardSmallSquareHeight);	
 				} else {
-					this.bg2d.setColor(Color.WHITE);
+					//the color of the line
+					this.bg2d.setColor(this.theme.getLineColor());
 
 					//draw just the rect (not filled)
 					this.bg2d.drawRect(BOARD_LEFT + BOARD_BORDER + (j * this.boardSmallSquareWidth), 
@@ -452,13 +465,13 @@ public class Board {
 		//Draw hold box
 		this.bg2d.setColor(Color.DARK_GRAY);
 		this.bg2d.drawString("HOLD", 33, 10);
-		this.bg2d.setColor(Color.LIGHT_GRAY);
-		this.bg2d.drawRect(HOLD_BOX_LEFT, HOLD_BOX_TOP - 8, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
-		this.bg2d.setColor(Color.WHITE);
+		this.bg2d.setColor(this.theme.getBgBoardColor());
 		this.bg2d.fillRect(HOLD_BOX_LEFT + 1, HOLD_BOX_TOP - 8 + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
 		this.bg2d.setColor(Color.DARK_GRAY);
 		this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH, HOLD_BOX_TOP - 8 + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
 		this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS, HOLD_BOX_TOP - 8 + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
+		this.bg2d.setColor(Color.LIGHT_GRAY);
+		this.bg2d.drawRect(HOLD_BOX_LEFT, HOLD_BOX_TOP - 8, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
 
 		//Next boxes
 		final short nextPosX = (short)(BOARD_LEFT + boardSquareWidth + 20);
@@ -466,13 +479,13 @@ public class Board {
 		this.bg2d.drawString("NEXT", nextPosX + 35, 10);
 		for (byte i = 0; i < 6; i++) {
 			short nextPosY = (short)((i * 100) - 8);
-			this.bg2d.setColor(Color.LIGHT_GRAY);
-			this.bg2d.drawRect(HOLD_BOX_LEFT + nextPosX, HOLD_BOX_TOP + nextPosY, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
-			this.bg2d.setColor(Color.WHITE);
+			this.bg2d.setColor(this.theme.getBgBoardColor());
 			this.bg2d.fillRect(HOLD_BOX_LEFT + 1 + nextPosX, HOLD_BOX_TOP + nextPosY + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
 			this.bg2d.setColor(Color.DARK_GRAY);
 			this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH + nextPosX, HOLD_BOX_TOP + nextPosY + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
 			this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS + nextPosX, HOLD_BOX_TOP + nextPosY + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
+			this.bg2d.setColor(Color.LIGHT_GRAY);
+			this.bg2d.drawRect(HOLD_BOX_LEFT + nextPosX, HOLD_BOX_TOP + nextPosY, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
 		}
 	}
 
