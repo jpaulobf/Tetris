@@ -24,7 +24,7 @@ public class Board {
 	public final static short BOARD_LEFT 			= 110;
 	public final static short BOARD_BORDER 			= 1;
 	public final static byte HOLD_BOX_LEFT 			= 10;
-	public final static byte HOLD_BOX_TOP 			= 20;
+	public final static byte HOLD_BOX_TOP 			= 48;
 	public final static byte HOLD_BOX_WIDTH 		= 80;
 	public final static byte HOLD_BOX_HEIGHT		= 80;
 	public final static short SORTED_BOX_LEFT		= 451;
@@ -36,6 +36,10 @@ public class Board {
 	protected final static short MIN_GAME_SPEED		= 44;
 	protected final static short MAX_GAME_SPEED		= 20;
 	private BufferedImage gameBoardBG         		= null;
+	private BufferedImage next         				= null;
+	private BufferedImage hold         				= null;
+	private BufferedImage score         			= null;
+	private BufferedImage hiscore 					= null;
     private Graphics2D bg2d             			= null;
 	private boolean fillColor						= false;
 	private Theme theme								= null;
@@ -89,6 +93,8 @@ public class Board {
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
 		this.gameBoardColor			= new Color[BOARD_LINES][BOARD_COLUMNS];
 		this.theme					= new Theme(defaultTheme);
+		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");;
+		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");;
 		this.gameSpeed 				= TMP;//(byte)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
 
 		//define the bg width/height
@@ -120,7 +126,7 @@ public class Board {
 		this.drop 	= (Audio)LoadingStuffs.getInstance().getStuff("drop");
 
 		//calc the render position
-		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - 2*BOARD_LEFT);
+		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
 		this.renderPositionY = (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
 	}
 
@@ -344,6 +350,9 @@ public class Board {
 		//draw the background and bgimage
 		this.getG2D().drawImage(this.theme.getBackgroundImage(), 0, 0, null);
 		this.getG2D().drawImage(this.gameBoardBG, renderPositionX, renderPositionY, null);
+		this.getG2D().drawImage(this.score, 	30, 11, null);
+		this.getG2D().drawImage(this.hiscore, 	this.gameRef.getInternalResolutionWidth() - this.hiscore.getWidth() - 30, 11, null);
+
 
 		//Draw hold piece
 		if (this.holdPiece != null) {
@@ -410,7 +419,9 @@ public class Board {
 		this.bg2d.fillRect(0, 0, this.gameBoardBG.getWidth(), this.gameBoardBG.getHeight());
 		this.bg2d.setComposite(java.awt.AlphaComposite.SrcOver);
 
-		boolean filled = this.theme.getFilledGrid();
+		boolean filled 	= this.theme.getFilledGrid();
+		this.next		= this.theme.getNextLabel();
+		this.hold		= this.theme.getHoldLabel();
 		
 		//fill the bg with theme color, case selected not checkered filled
 		if (!filled) {
@@ -463,8 +474,7 @@ public class Board {
 		this.bg2d.fillRect(BOARD_LEFT + SHADOW_THICKNESS, BOARD_TOP + this.boardSquareHeight + 1, this.boardSquareWidth, SHADOW_THICKNESS);
 		
 		//Draw hold box
-		this.bg2d.setColor(Color.DARK_GRAY);
-		this.bg2d.drawString("HOLD", 33, 10);
+		this.bg2d.drawImage(this.hold, 5, 11, null);
 		this.bg2d.setColor(this.theme.getBgBoardColor());
 		this.bg2d.fillRect(HOLD_BOX_LEFT + 1, HOLD_BOX_TOP - 8 + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
 		this.bg2d.setColor(Color.DARK_GRAY);
@@ -475,8 +485,8 @@ public class Board {
 
 		//Next boxes
 		final short nextPosX = (short)(BOARD_LEFT + boardSquareWidth + 20);
-		this.bg2d.setColor(Color.DARK_GRAY);
-		this.bg2d.drawString("NEXT", nextPosX + 35, 10);
+		this.bg2d.drawImage(this.next, nextPosX + 3, 11, null);
+
 		for (byte i = 0; i < 6; i++) {
 			short nextPosY = (short)((i * 100) - 8);
 			this.bg2d.setColor(this.theme.getBgBoardColor());
