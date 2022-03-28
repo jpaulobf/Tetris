@@ -311,7 +311,7 @@ public class Tetris implements Runnable {
             //verify if the user want to show the FPS
             if (this.showFPS) {
                 this.g2d.setColor(Color.BLACK);
-                this.g2d.drawString("fps: " + (int)(1_000_000_000D / frametime), 10, 20);
+                this.g2d.drawString("fps: " + (int)(1_000_000_000D / frametime), this.windowWidth - 50, this.windowHeight - 10);
             }
         }
 
