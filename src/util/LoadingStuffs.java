@@ -58,6 +58,42 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\background8.png"));
             stuffs.put("background8", image);
 
+            image = ImageIO.read(new File("images\\score.png"));
+            stuffs.put("score", image);
+
+            image = ImageIO.read(new File("images\\hiscore.png"));
+            stuffs.put("hiscore", image);
+
+            image = ImageIO.read(new File("images\\hold_b.png"));
+            stuffs.put("hold_b", image);
+
+            image = ImageIO.read(new File("images\\hold_bl.png"));
+            stuffs.put("hold_bl", image);
+
+            image = ImageIO.read(new File("images\\hold_bb.png"));
+            stuffs.put("hold_bb", image);
+
+            image = ImageIO.read(new File("images\\hold_w.png"));
+            stuffs.put("hold_w", image);
+
+            image = ImageIO.read(new File("images\\hold_ww.png"));
+            stuffs.put("hold_ww", image);
+
+            image = ImageIO.read(new File("images\\next_b.png"));
+            stuffs.put("next_b", image);
+
+            image = ImageIO.read(new File("images\\next_bl.png"));
+            stuffs.put("next_bl", image);
+
+            image = ImageIO.read(new File("images\\next_bb.png"));
+            stuffs.put("next_bb", image);
+
+            image = ImageIO.read(new File("images\\next_w.png"));
+            stuffs.put("next_w", image);
+
+            image = ImageIO.read(new File("images\\next_ww.png"));
+            stuffs.put("next_ww", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
