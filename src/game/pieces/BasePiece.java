@@ -208,7 +208,7 @@ public abstract class BasePiece {
 
 						//calc the position 
 						calcPosX = posX + (colunas * (width)) + colunas;
-						calcPosY = posY + (linhas * (height)) + linhas;
+						calcPosY = posY + (linhas * (height)) + linhas + 29;
 						
 						//draw the flat rect
 						graphics2D.setColor(color);
