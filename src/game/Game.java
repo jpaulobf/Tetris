@@ -9,6 +9,7 @@ import java.awt.image.VolatileImage;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
+import java.awt.Point;
 
 /**
  * Class responsable for the game
@@ -50,6 +51,7 @@ public class Game implements GameInterface {
 
     //game components
 	private Board board						= null;
+    private Score score                     = null;
 
     /**
      * Game constructor
@@ -72,6 +74,7 @@ public class Game implements GameInterface {
         this.theme              = this.music1;
         this.currentMusicTheme  = 0;
         this.board              = new Board(this);
+        this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
     }
 
     /**
@@ -142,7 +145,7 @@ public class Game implements GameInterface {
                     this.board.update(frametime);
                 }
 
-                //this.score.update(frametime);
+                this.score.update(frametime);
                
                 // if (true) { //this.tetris.getLives() == 0) { //after possible colision, check lives.
                 //     this.gameState.setCurrentState(StateMachine.GAME_OVER);
@@ -190,6 +193,7 @@ public class Game implements GameInterface {
                     //todo...
                 } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
                     this.board.draw(frametime);
+                    this.score.draw(frametime);
                 } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
                     //this.gameOver.draw(frametime);
                 }
