@@ -94,6 +94,18 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\next_ww.png"));
             stuffs.put("next_ww", image);
 
+            image = ImageIO.read(new File("images\\circle.png"));
+            stuffs.put("circle", image);
+
+            image = ImageIO.read(new File("images\\circle100.png"));
+            stuffs.put("circle100", image);
+
+            image = ImageIO.read(new File("images\\lb_level.png"));
+            stuffs.put("labelLevel", image);
+
+            image = ImageIO.read(new File("images\\lb_line.png"));
+            stuffs.put("labelLine", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
