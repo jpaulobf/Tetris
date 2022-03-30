@@ -1,10 +1,8 @@
 package game;
 
 import java.awt.Graphics2D;
-import java.awt.image.VolatileImage;
 import java.awt.image.BufferedImage;
 import java.awt.GraphicsEnvironment;
-import java.awt.Color;
 import java.io.File;
 import java.util.Scanner;
 import util.LoadingStuffs;
@@ -13,6 +11,8 @@ import java.util.Date;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.Transparency;
+import java.awt.Point;
 
 /**
  * Class responsible for score control.
@@ -20,27 +20,33 @@ import java.io.IOException;
 public class Score {
     
     private Game gameRef                = null;
-    private VolatileImage scoreBG       = null;
-    private BufferedImage oneupTile     = null;
-    private BufferedImage hiscoreTile   = null;
-    private BufferedImage [] numbers    = null;
-    private Graphics2D bg2d             = null;
+    private BufferedImage scoreBG       = null;
+    private BufferedImage hiscoreBG     = null;
+    private BufferedImage levelBG       = null;
+    private BufferedImage linesBG       = null;
+    private Graphics2D g2d              = null;
+
+    //numbers
+    private BufferedImage [] numbers_m  = null;
+    private BufferedImage [] numbers_b  = null;
+    
+
     private volatile String sHiscore    = null;
     private volatile String sDate       = "";
     private volatile String sScore      = "0000000";
+    private volatile String sLevel      = "00";
+    private volatile String sLines      = "000";
+    
     private volatile int score          = 0;
     private volatile int hiscore        = 0;
+    private volatile int level          = 0;
+    private volatile int lines          = 0;
     private volatile Date dateHiscore   = null;
-    private int wwm                     = 0;
-    private byte scoreHeight            = 0;
-    private final short initialScoreL   = 200;
-    private final short initialScoreX   = 350;
-    private final short initialHiscoreX = 850;
-    private final short initialHiscoreL = 600;
-    private final byte initialScoreY    = 10;
-    private short currentScoreX         = 0;
-    private short currentHiscoreX       = 0;
-    private int skipPoint               = 0;
+
+    private Point scorePos              = null;
+    private Point hiScorePos            = null;
+    private Point levelPos              = null;
+    private Point linesPos              = null;
 
     /**
      * Score constructor
@@ -49,66 +55,178 @@ public class Score {
      * @param whm
      * @param scoreHeight
      */
-    public Score(Game game, int wwm, byte scoreHeight) {
-        this.scoreHeight        = scoreHeight;
-        this.wwm                = wwm;
+    public Score(Game game, Point scorePos, Point hiScorePos, Point levelPos, Point linesPos) {
+        this.scorePos           = scorePos;
+        this.hiScorePos         = hiScorePos;
+        this.levelPos           = levelPos;
+        this.linesPos           = linesPos;
         this.gameRef            = game;
         this.score              = 0;
         this.hiscore            = 0;
-        this.numbers            = new BufferedImage[10];
-        this.scoreBG            = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleVolatileImage(wwm, scoreHeight);
-        this.bg2d               = (Graphics2D)this.scoreBG.getGraphics();
-        this.oneupTile          = (BufferedImage)LoadingStuffs.getInstance().getStuff("oneupTile");
-        this.hiscoreTile        = (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscoreTile");
-        this.numbers[0]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-0");
-        this.numbers[1]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-1");
-        this.numbers[2]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-2");
-        this.numbers[3]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-3");
-        this.numbers[4]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-4");
-        this.numbers[5]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-5");
-        this.numbers[6]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-6");
-        this.numbers[7]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-7");
-        this.numbers[8]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-8");
-        this.numbers[9]         = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-9");
-        this.currentScoreX      = this.initialScoreX;
-        this.currentHiscoreX    = this.initialHiscoreX;
+        this.scoreBG            = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(160, 23, Transparency.TRANSLUCENT);
+        this.hiscoreBG          = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(160, 23, Transparency.TRANSLUCENT);
+        this.levelBG            = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage( 80, 49, Transparency.TRANSLUCENT);
+        this.linesBG            = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(120, 49, Transparency.TRANSLUCENT);
+        this.numbers_m          = new BufferedImage[10];
+        this.numbers_b          = new BufferedImage[10];
+        this.numbers_m[0]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-0-m");
+        this.numbers_m[1]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-1-m");
+        this.numbers_m[2]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-2-m");
+        this.numbers_m[3]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-3-m");
+        this.numbers_m[4]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-4-m");
+        this.numbers_m[5]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-5-m");
+        this.numbers_m[6]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-6-m");
+        this.numbers_m[7]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-7-m");
+        this.numbers_m[8]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-8-m");
+        this.numbers_m[9]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-9-m");
+        this.numbers_b[0]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-0-b");
+        this.numbers_b[1]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-1-b");
+        this.numbers_b[2]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-2-b");
+        this.numbers_b[3]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-3-b");
+        this.numbers_b[4]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-4-b");
+        this.numbers_b[5]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-5-b");
+        this.numbers_b[6]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-6-b");
+        this.numbers_b[7]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-7-b");
+        this.numbers_b[8]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-8-b");
+        this.numbers_b[9]       = (BufferedImage)LoadingStuffs.getInstance().getStuff("number-9-b");
 
         //load the file containing the hi score
         this.loadHighScore();
     }
 
     /**
-     * Draw the BG
+     * Update the score
+     * @param frametime
+     */
+    public void update(long frametime) {
+        if (this.score > 9_999_999) {
+            this.hiscore = 9_999_999;
+            this.score = 0;
+        } else if (this.score > this.hiscore) {
+            this.hiscore = this.score;
+        }
+        this.sHiscore   = String.format("%07d", this.hiscore);
+        this.sScore     = String.format("%07d", this.score);
+        this.sLevel     = String.format("%02d", this.level);
+        this.sLines     = String.format("%03d", this.lines);
+    }
+
+    /**
+     * Draw the score
+     * @param frametime
+     */
+    public void draw(long frametime) {
+
+        this.drawScoreBG();
+
+        this.drawHiScoreBG();
+
+        this.drawLevelBG();
+
+        this.drawLinesBG();
+
+        //draw the score
+        this.gameRef.getG2D().drawImage(this.scoreBG, this.scorePos.x, this.scorePos.y, (this.scorePos.x + this.scoreBG.getWidth()), (this.scorePos.y + this.scoreBG.getHeight()), //dest w1, h1, w2, h2
+                                                      0, 0, this.scoreBG.getWidth(), this.scoreBG.getHeight(),  //source w1, h1, w2, h2
+                                                      null);
+
+        //draw the hi-score
+        this.gameRef.getG2D().drawImage(this.hiscoreBG, this.hiScorePos.x, this.hiScorePos.y, (this.hiScorePos.x + this.hiscoreBG.getWidth()), (this.hiScorePos.y + this.hiscoreBG.getHeight()), //dest w1, h1, w2, h2
+                                                        0, 0, this.hiscoreBG.getWidth(), this.hiscoreBG.getHeight(),  //source w1, h1, w2, h2
+                                                        null);
+
+        //draw the level
+        this.gameRef.getG2D().drawImage(this.levelBG, this.levelPos.x, this.levelPos.y, (this.levelPos.x + this.levelBG.getWidth()), (this.levelPos.y + this.levelBG.getHeight()), //dest w1, h1, w2, h2
+                                                      0, 0, this.levelBG.getWidth(), this.levelBG.getHeight(),  //source w1, h1, w2, h2
+                                                      null);
+
+        //draw the lines
+        this.gameRef.getG2D().drawImage(this.linesBG, this.linesPos.x, this.linesPos.y, (this.linesPos.x + this.linesBG.getWidth()), (this.linesPos.y + this.linesBG.getHeight()),   //dest w1, h1, w2, h2
+                                                      0, 0, this.linesBG.getWidth(), this.linesBG.getHeight(),  //source w1, h1, w2, h2
+                                                      null);
+    }
+
+    /**
+     * Draw the Score Panel
      */
     private void drawScoreBG() {
         //clear the backbuffer
-        this.bg2d.setBackground(new Color(0, 0, 100));
-        this.bg2d.clearRect(0, 0, this.wwm, scoreHeight);
+        this.g2d = (Graphics2D)this.scoreBG.getGraphics();
+        this.g2d.setComposite(java.awt.AlphaComposite.Clear);
+		this.g2d.fillRect(0, 0, this.scoreBG.getWidth(), this.scoreBG.getHeight());
+		this.g2d.setComposite(java.awt.AlphaComposite.SrcOver);
         
-        //draw the oneup tile
-        this.bg2d.drawImage(this.oneupTile,     this.initialScoreL, this.initialScoreY, (this.initialScoreL + this.oneupTile.getWidth()), this.initialScoreY + this.oneupTile.getHeight(),
-                                                0, 0, this.oneupTile.getWidth(), this.oneupTile.getHeight(),
-                                                null);
-
-        //draw the hiscore tile
-        this.bg2d.drawImage(this.hiscoreTile,   this.initialHiscoreL, this.initialScoreY, (this.initialHiscoreL + this.hiscoreTile.getWidth()), this.initialScoreY + this.hiscoreTile.getHeight(),
-                                                0, 0, this.hiscoreTile.getWidth(), this.hiscoreTile.getHeight(),
-                                                null);
+        int currentPosX = 0;
 
         //convert the score & hiscore into image
-        this.currentScoreX = this.initialScoreX;
-        this.currentHiscoreX = this.initialHiscoreX;
         for (int i = 0; i < this.sScore.length(); i++) {
-            BufferedImage temp = this.numbers[Byte.parseByte(sScore.charAt(i)+"")];
-            this.bg2d.drawImage(temp, this.currentScoreX, this.initialScoreY, this.currentScoreX + temp.getWidth(), this.initialScoreY + temp.getHeight(),
-                                        0, 0, temp.getWidth(), temp.getHeight(),
-                                        null);
-            this.currentScoreX += temp.getWidth();
-            temp = this.numbers[Byte.parseByte(this.sHiscore.charAt(i)+"")];
-            this.bg2d.drawImage(temp, this.currentHiscoreX, this.initialScoreY, this.currentHiscoreX + temp.getWidth(), this.initialScoreY + temp.getHeight(),
-                                        0, 0, temp.getWidth(), temp.getHeight(),
-                                        null);
-            this.currentHiscoreX += temp.getWidth();
+            BufferedImage temp = this.numbers_m[Byte.parseByte(sScore.charAt(i)+"")];
+            this.g2d.drawImage(temp, currentPosX, 0, currentPosX + temp.getWidth(), temp.getHeight(), 
+                                     0, 0, temp.getWidth(), temp.getHeight(), null);
+            currentPosX += temp.getWidth();
+        }
+    }
+
+    /**
+     * Draw the Hiscore Panel
+     */
+    private void drawHiScoreBG() {
+        //clear the backbuffer
+        this.g2d = (Graphics2D)this.hiscoreBG.getGraphics();
+        this.g2d.setComposite(java.awt.AlphaComposite.Clear);
+		this.g2d.fillRect(0, 0, this.hiscoreBG.getWidth(), this.hiscoreBG.getHeight());
+		this.g2d.setComposite(java.awt.AlphaComposite.SrcOver);
+        
+        int currentPosX = 0;
+
+        //convert the score & hiscore into image
+        for (int i = 0; i < this.sHiscore.length(); i++) {
+            BufferedImage temp = this.numbers_m[Byte.parseByte(sHiscore.charAt(i)+"")];
+            this.g2d.drawImage(temp, currentPosX, 0, currentPosX + temp.getWidth(), temp.getHeight(), 
+                                     0, 0, temp.getWidth(), temp.getHeight(), null);
+            currentPosX += temp.getWidth();
+        }
+    }
+
+    /**
+     * Draw the Level Panel
+     */
+    private void drawLevelBG() {
+        //clear the backbuffer
+        this.g2d = (Graphics2D)this.levelBG.getGraphics();
+        this.g2d.setComposite(java.awt.AlphaComposite.Clear);
+		this.g2d.fillRect(0, 0, this.levelBG.getWidth(), this.levelBG.getHeight());
+		this.g2d.setComposite(java.awt.AlphaComposite.SrcOver);
+        
+        int currentPosX = 0;
+
+        //convert the score & hiscore into image
+        for (int i = 0; i < this.sLevel.length(); i++) {
+            BufferedImage temp = this.numbers_b[Byte.parseByte(sLevel.charAt(i)+"")];
+            this.g2d.drawImage(temp, currentPosX, 0, currentPosX + temp.getWidth(), temp.getHeight(), 
+                                     0, 0, temp.getWidth(), temp.getHeight(), null);
+            currentPosX += temp.getWidth();
+        }
+    }
+
+    /**
+     * Draw the Level Panel
+     */
+    private void drawLinesBG() {
+        //clear the backbuffer
+        this.g2d = (Graphics2D)this.linesBG.getGraphics();
+        this.g2d.setComposite(java.awt.AlphaComposite.Clear);
+		this.g2d.fillRect(0, 0, this.linesBG.getWidth(), this.linesBG.getHeight());
+		this.g2d.setComposite(java.awt.AlphaComposite.SrcOver);
+        
+        int currentPosX = 0;
+
+        //convert the score & hiscore into image
+        for (int i = 0; i < this.sLines.length(); i++) {
+            BufferedImage temp = this.numbers_b[Byte.parseByte(sLines.charAt(i)+"")];
+            this.g2d.drawImage(temp, currentPosX, 0, currentPosX + temp.getWidth(), temp.getHeight(), 
+                                     0, 0, temp.getWidth(), temp.getHeight(), null);
+            currentPosX += temp.getWidth();
         }
     }
 
@@ -211,58 +329,12 @@ public class Score {
     }
 
     /**
-     * Update the score
-     * @param frametime
-     */
-    public void update(long frametime) {
-        if (this.score > 9_999_999) {
-            this.hiscore = this.score;
-            this.score = 0;
-        } else if (this.score > this.hiscore) {
-            this.hiscore = this.score;
-            this.sHiscore = String.format("%07d", this.score);
-        }
-        this.sScore = String.format("%07d", this.score);
-    }
-
-    /**
-     * Draw the score
-     * @param frametime
-     */
-    public void draw(long frametime) {
-
-        this.drawScoreBG();
-
-        //After HUD rendered, copy to G2D
-        this.gameRef.getG2D().drawImage(this.scoreBG, 0, 0, this.wwm, this.scoreHeight,   //dest w1, h1, w2, h2
-                                                      0, 0, this.scoreBG.getWidth(), this.scoreBG.getHeight(),  //source w1, h1, w2, h2
-                                                      null);
-    }
-
-    /**
      * Public method to add points
      * @param type
      */
+    //TODO
     public void addScore(byte type) {
-        if (this.skipPoint > 0) {
-            this.skipPoint--;
-        } else {
-            //TODO:
-        }
-    }
-
-    /**
-     * When necessary, skip point acumulation
-     */
-    public void skipPoint() {
-        this.skipPoint++;
-    }
-
-    /**
-     * Reset the skip point controller
-     */
-    public void resetSkipPoint() {
-        this.skipPoint = 0;
+      
     }
 
     /**
@@ -270,11 +342,12 @@ public class Score {
      */
     public void reset() {
         this.score = 0;
+        this.level = 1;
+        this.lines = 0;
         if (this.sHiscore != null && !"".equals(this.sHiscore)) {
             this.hiscore = Integer.parseInt(this.sHiscore);
         } else {
             this.hiscore = 0;
         }
-        this.skipPoint = 0;
     }
 }
