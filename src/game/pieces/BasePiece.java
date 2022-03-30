@@ -26,6 +26,7 @@ public abstract class BasePiece {
 	protected volatile short actualPositionX			= Board.INITIAL_SQUARE_X;
 	protected volatile short actualPositionY			= this.getDefaultInitialSquareY();
 	protected volatile short ghostPieceCollision		= Board.BOARD_LINES;
+	private volatile byte lastPipe						= 0;
 
 	/**
 	 * Constructor
@@ -415,21 +416,31 @@ public abstract class BasePiece {
 			//--- 	-> 15% for T		   	---//
 			//---------------------------------//
 			int pesoPeca = (int)(Math.random() * 100);
-		
+			
 			if (pesoPeca >= 0 && pesoPeca < 10) {
 				piece = new LinePiece(this.boardRef);
-			} else if (pesoPeca >= 10 && pesoPeca < 25) {
-				piece = new LPiece(this.boardRef);
-			} else if (pesoPeca >= 25 && pesoPeca < 40) {
-				piece = new InvertLPiece(this.boardRef);
-			} else if (pesoPeca >= 40 && pesoPeca < 51) {
-				piece = new SquarePiece(this.boardRef);
-			} else if (pesoPeca >= 51 && pesoPeca < 68) {
-				piece = new SPiece(this.boardRef);
-			} else if (pesoPeca >= 68 && pesoPeca < 85) {
-				piece = new ZPiece(this.boardRef);
-			} else if (pesoPeca >= 85 && pesoPeca <= 100) {
-				piece = new TPiece(this.boardRef);
+				this.lastPipe = 0;
+			} else {
+				if (pesoPeca >= 10 && pesoPeca < 25) {
+					piece = new LPiece(this.boardRef);
+				} else if (pesoPeca >= 25 && pesoPeca < 40) {
+					piece = new InvertLPiece(this.boardRef);
+				} else if (pesoPeca >= 40 && pesoPeca < 51) {
+					piece = new SquarePiece(this.boardRef);
+				} else if (pesoPeca >= 51 && pesoPeca < 68) {
+					piece = new SPiece(this.boardRef);
+				} else if (pesoPeca >= 68 && pesoPeca < 85) {
+					piece = new ZPiece(this.boardRef);
+				} else if (pesoPeca >= 85 && pesoPeca <= 100) {
+					piece = new TPiece(this.boardRef);
+				}
+				this.lastPipe++;
+			}
+
+			//max sort without Pipe = 8;
+			if (this.lastPipe > 8) {
+				piece = new LinePiece(this.boardRef);
+				this.lastPipe = 0;
 			}
 		}
 		return (piece);
