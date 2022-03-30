@@ -19,7 +19,7 @@ public class Theme {
     private boolean [] filledThemes     = {true, false, false, false, false, false, false, false};
     private Color [] boardColors        = {new Color(1f, 1f, 1f, 1f),       new Color(0f, 0f, 0f, 0.4f),    new Color(0f, 0f, 0f, 0.8f),    new Color(0f, 0f, 0f, 0.3f),        new Color(0.1f, 0.1f, 0.1f, 0.3f),      new Color(1, 1, 1, 0.6f),       new Color(1f, 1f, 1f, 0.6f),      new Color(0.3f, 0.5f, 0.9f, 0.4f)};
     private Color [] lineColors         = {new Color(1f, 0.8f, 0.2f, 0.2f), new Color(0f, 0f, 0f, 0.1f),    new Color(1f, 1f, 1f, 0.2f),    new Color(1, 0.8f, 0.2f, 0.4f),     new Color(0f, 0f, 0f, 0.2f),            new Color(0f, 0f, 0f, 0.05f),   new Color(0f, 0f, 0f, 0.05f),     new Color(1f, 1f, 1f, 0.2f)};
-    private String[] circles            = {"circle100", "circle", "circle", "circle100", "circle", "circle", "circle100", "circle"};
+    private String[] circles            = {"circle120", "circle", "circle70", "circle100", "circle", "circle", "circle100", "circle70"};
 
     /**
      * Constructor
