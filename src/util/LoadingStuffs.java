@@ -97,14 +97,80 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\circle.png"));
             stuffs.put("circle", image);
 
+            image = ImageIO.read(new File("images\\circle70.png"));
+            stuffs.put("circle70", image);
+            
             image = ImageIO.read(new File("images\\circle100.png"));
             stuffs.put("circle100", image);
+
+            image = ImageIO.read(new File("images\\circle120.png"));
+            stuffs.put("circle120", image);
 
             image = ImageIO.read(new File("images\\lb_level.png"));
             stuffs.put("labelLevel", image);
 
             image = ImageIO.read(new File("images\\lb_line.png"));
             stuffs.put("labelLine", image);
+
+            image = ImageIO.read(new File("images\\n0m.png"));
+            stuffs.put("number-0-m", image);
+
+            image = ImageIO.read(new File("images\\n1m.png"));
+            stuffs.put("number-1-m", image);
+
+            image = ImageIO.read(new File("images\\n2m.png"));
+            stuffs.put("number-2-m", image);
+
+            image = ImageIO.read(new File("images\\n3m.png"));
+            stuffs.put("number-3-m", image);
+
+            image = ImageIO.read(new File("images\\n4m.png"));
+            stuffs.put("number-4-m", image);
+
+            image = ImageIO.read(new File("images\\n5m.png"));
+            stuffs.put("number-5-m", image);
+
+            image = ImageIO.read(new File("images\\n6m.png"));
+            stuffs.put("number-6-m", image);
+
+            image = ImageIO.read(new File("images\\n7m.png"));
+            stuffs.put("number-7-m", image);
+
+            image = ImageIO.read(new File("images\\n8m.png"));
+            stuffs.put("number-8-m", image);
+
+            image = ImageIO.read(new File("images\\n9m.png"));
+            stuffs.put("number-9-m", image);
+
+            image = ImageIO.read(new File("images\\n0b.png"));
+            stuffs.put("number-0-b", image);
+
+            image = ImageIO.read(new File("images\\n1b.png"));
+            stuffs.put("number-1-b", image);
+
+            image = ImageIO.read(new File("images\\n2b.png"));
+            stuffs.put("number-2-b", image);
+
+            image = ImageIO.read(new File("images\\n3b.png"));
+            stuffs.put("number-3-b", image);
+
+            image = ImageIO.read(new File("images\\n4b.png"));
+            stuffs.put("number-4-b", image);
+
+            image = ImageIO.read(new File("images\\n5b.png"));
+            stuffs.put("number-5-b", image);
+
+            image = ImageIO.read(new File("images\\n6b.png"));
+            stuffs.put("number-6-b", image);
+
+            image = ImageIO.read(new File("images\\n7b.png"));
+            stuffs.put("number-7-b", image);
+
+            image = ImageIO.read(new File("images\\n8b.png"));
+            stuffs.put("number-8-b", image);
+
+            image = ImageIO.read(new File("images\\n9b.png"));
+            stuffs.put("number-9-b", image);
 
             Logger.INFO("read all images...", this);
 
