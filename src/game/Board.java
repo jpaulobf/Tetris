@@ -40,6 +40,10 @@ public class Board {
 	private BufferedImage hold         				= null;
 	private BufferedImage score         			= null;
 	private BufferedImage hiscore 					= null;
+	private BufferedImage labelLevel				= null;
+	private BufferedImage labelLine					= null;
+	private BufferedImage circle 					= null;
+
     private Graphics2D bg2d             			= null;
 	private boolean fillColor						= false;
 	private Theme theme								= null;
@@ -93,8 +97,11 @@ public class Board {
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
 		this.gameBoardColor			= new Color[BOARD_LINES][BOARD_COLUMNS];
 		this.theme					= new Theme(defaultTheme);
-		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");;
-		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");;
+		this.circle 				= this.theme.getCircle();
+		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");
+		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");
+		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
+		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
 		this.gameSpeed 				= TMP;//(byte)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
 
 		//define the bg width/height
@@ -136,6 +143,7 @@ public class Board {
 	public void toogleColorTheme() {
 		this.defaultTheme = (byte)(++this.defaultTheme%8);
 		this.theme.setTheme(this.defaultTheme);
+		this.circle = this.theme.getCircle();
 		this.drawGameBoardBG();
 	}
 
@@ -353,6 +361,10 @@ public class Board {
 		this.getG2D().drawImage(this.score, 	30, 11, null);
 		this.getG2D().drawImage(this.hiscore, 	this.gameRef.getInternalResolutionWidth() - this.hiscore.getWidth() - 30, 11, null);
 
+		this.getG2D().drawImage(this.circle, 	 37, 362, null);
+		this.getG2D().drawImage(this.circle, 	 37, 568, null);
+		this.getG2D().drawImage(this.labelLevel, 83, 345, null);
+		this.getG2D().drawImage(this.labelLine,  76, 553, null);
 
 		//Draw hold piece
 		if (this.holdPiece != null) {
@@ -419,9 +431,9 @@ public class Board {
 		this.bg2d.fillRect(0, 0, this.gameBoardBG.getWidth(), this.gameBoardBG.getHeight());
 		this.bg2d.setComposite(java.awt.AlphaComposite.SrcOver);
 
-		boolean filled 	= this.theme.getFilledGrid();
-		this.next		= this.theme.getNextLabel();
-		this.hold		= this.theme.getHoldLabel();
+		boolean filled 		= this.theme.getFilledGrid();
+		this.next			= this.theme.getNextLabel();
+		this.hold			= this.theme.getHoldLabel();
 		
 		//fill the bg with theme color, case selected not checkered filled
 		if (!filled) {
