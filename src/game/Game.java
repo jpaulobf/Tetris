@@ -52,6 +52,7 @@ public class Game implements GameInterface {
     //game components
 	private Board board						= null;
     private Score score                     = null;
+    private ScreenTransition screenT        = null;
 
     /**
      * Game constructor
@@ -75,6 +76,7 @@ public class Game implements GameInterface {
         this.currentMusicTheme  = 0;
         this.board              = new Board(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
+        this.screenT            = new ScreenTransition(this);
     }
 
     /**
@@ -146,6 +148,7 @@ public class Game implements GameInterface {
                 }
 
                 this.score.update(frametime);
+                this.screenT.update(frametime);
                
                 // if (true) { //this.tetris.getLives() == 0) { //after possible colision, check lives.
                 //     this.gameState.setCurrentState(StateMachine.GAME_OVER);
@@ -194,6 +197,7 @@ public class Game implements GameInterface {
                 } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
                     this.board.draw(frametime);
                     this.score.draw(frametime);
+                    this.screenT.draw(frametime);
                 } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
                     //this.gameOver.draw(frametime);
                 }
@@ -274,6 +278,7 @@ public class Game implements GameInterface {
     public void softReset() {
         this.reset();
         this.board.resetGame();
+        this.screenT.reset();
     }
 
     /**
