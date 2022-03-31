@@ -172,6 +172,9 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\n9b.png"));
             stuffs.put("number-9-b", image);
 
+            image = ImageIO.read(new File("images\\bean.png"));
+            stuffs.put("bean", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
@@ -207,6 +210,11 @@ public class LoadingStuffs {
             audio = new Audio("audio\\drop.wav", 0);
             if (audio != null && audio.isReady()) {
                 stuffs.put("drop", audio);
+            }
+
+            audio = new Audio("audio\\hold.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("hold", audio);
             }
 
             Logger.INFO("read all audio...", this);
