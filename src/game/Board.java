@@ -66,6 +66,7 @@ public class Board {
 	private volatile Audio move            			= null;
 	private volatile Audio splash          			= null;
 	private volatile Audio drop          			= null;
+	private volatile Audio holdSound				= null;
 
 	//Gameplay variables
 	private double TMP								= 1;
@@ -127,10 +128,11 @@ public class Board {
 		}
 
 		//load audio.
-		this.turn 	= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
-		this.move 	= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
-		this.splash = (Audio)LoadingStuffs.getInstance().getStuff("splash");
-		this.drop 	= (Audio)LoadingStuffs.getInstance().getStuff("drop");
+		this.turn 		= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
+		this.move 		= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
+		this.splash 	= (Audio)LoadingStuffs.getInstance().getStuff("splash");
+		this.drop 		= (Audio)LoadingStuffs.getInstance().getStuff("drop");
+		this.holdSound	= (Audio)LoadingStuffs.getInstance().getStuff("hold"); 
 
 		//calc the render position
 		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
@@ -558,6 +560,8 @@ public class Board {
 				this.holdPiece = temp;
 				this.canHold = false;
 			}
+
+			this.holdSound.play();
 		}
 	}
 
