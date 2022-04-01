@@ -48,6 +48,14 @@ public class Score {
     private Point levelPos              = null;
     private Point linesPos              = null;
 
+    //constants
+    public static byte SOFTDROP         = -1;
+    public static byte HARDDROP         = 0;
+    public static byte SINGLELINE       = 1;
+    public static byte DOUBLELINE       = 3;
+    public static byte TRIPELINE        = 6;
+    public static byte TETRIS           = 10;
+
     /**
      * Score constructor
      * @param game
@@ -332,17 +340,37 @@ public class Score {
      * Public method to add points
      * @param type
      */
-    //TODO
-    public void addScore(byte type) {
-      
+    public void addScore(byte type, byte level) {
+        if (type == SOFTDROP) {
+            this.score += (1 * level);
+        } else if (type == HARDDROP) {
+            this.score += (2 * level);
+        } else if (type == SINGLELINE) {
+            this.score += ((level) * 100);
+        } else if (type == DOUBLELINE) {
+            this.score += ((level) * 300);
+        } else if (type == TRIPELINE) {
+            this.score += ((level) * 500);
+        } else if (type == TETRIS) {
+            this.score += ((level) * 500);
+        }
     }
+
+    public void setLines(short lines) {
+        this.lines = lines;
+    }
+
+    public void setCurrentLevel(byte level) {
+        this.level = level;
+    }
+
 
     /**
      * Reset method
      */
     public void reset() {
         this.score = 0;
-        this.level = 1;
+        this.level = this.gameRef.getBoard().getCurrentLevel();
         this.lines = 0;
         if (this.sHiscore != null && !"".equals(this.sHiscore)) {
             this.hiscore = Integer.parseInt(this.sHiscore);
