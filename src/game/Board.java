@@ -18,6 +18,7 @@ import util.Audio;
  */
 public class Board {
 
+	//constants
 	public final static byte BOARD_LINES 			= 20;
 	public final static byte BOARD_COLUMNS 			= 10;
 	public final static byte BOARD_TOP	 			= 10;
@@ -35,6 +36,8 @@ public class Board {
 	protected final static short SPEED_FACTOR		= 2;
 	protected final static short MIN_GAME_SPEED		= 44;
 	protected final static short MAX_GAME_SPEED		= 20;
+	
+	//images
 	private BufferedImage gameBoardBG         		= null;
 	private BufferedImage next         				= null;
 	private BufferedImage hold         				= null;
@@ -44,28 +47,30 @@ public class Board {
 	private BufferedImage labelLine					= null;
 	private BufferedImage circle 					= null;
 
+	//theme
     private Graphics2D bg2d             			= null;
 	private boolean fillColor						= false;
 	private Theme theme								= null;
 	private byte defaultTheme						= 0;
 
 	//Game variables
+	private LinkedList<BasePiece> nextPieces		= new LinkedList<BasePiece>();
 	private NonePiece nonePiece 					= null;
+	private BasePiece holdPiece						= null;
+	private BasePiece actualPiece					= null;
+	private BasePiece lastPiece 					= null;
 	protected short boardSmallSquareWidth 			= 0;
 	protected short boardSmallSquareHeight 			= 0;
 	protected short boardSquareWidth 				= 0;
 	protected short boardSquareHeight 				= 0;
-	private BasePiece holdPiece						= null;
-	private BasePiece actualPiece					= null;
-	private BasePiece lastPiece 					= null;
-	private LinkedList<BasePiece> nextPieces		= new LinkedList<BasePiece>();
+	private boolean drawPieceGhost					= true;
 	private short [][] gameBoard					= null;
 	private Color [][] gameBoardColor				= null;
-	private boolean drawPieceGhost					= true;
 	private volatile Audio turn            			= null;
 	private volatile Audio move            			= null;
 	private volatile Audio splash          			= null;
 	private volatile Audio drop          			= null;
+	private volatile Audio tetris          			= null;
 	private volatile Audio holdSound				= null;
 
 	//Gameplay variables
@@ -74,14 +79,36 @@ public class Board {
 	private long framecounter						= 0;
 	protected short renderPositionX 				= 0;
 	protected short renderPositionY 				= 0;
-	protected GameInterface gameRef 				= null;
+	protected Game gameRef 							= null;
 	protected volatile boolean canRotate			= true;
 	protected volatile boolean canHold				= true;
 	protected volatile boolean stopped				= false;
+	private volatile byte currentLevel             	= 1;
+	private volatile short linesCleared				= 0;
 
 	//Variables to control lines to drop
 	protected volatile boolean hasLineFull			= false;
 	protected volatile byte firstline				= -1;
+
+	public byte getCurrentLevel() {
+        return (this.currentLevel);
+    }
+
+	public short getLinesCleared() {
+		return (this.linesCleared);
+	}
+
+	public void nextLevel() {
+		this.currentLevel += (this.currentLevel < 20)?1:0;
+	}
+
+	public void nextGameSpeed() {
+		this.gameSpeed += 1.25D;
+	}
+
+	public Game getGameRef() {
+		return (this.gameRef);
+	}
 
 	/**
 	 * Construtor
@@ -89,7 +116,7 @@ public class Board {
 	public Board(GameInterface game) {
 
 		//recovery canvas g2d
-		this.gameRef				= game;
+		this.gameRef				= (Game)game;
 		this.nonePiece 				= new NonePiece(this);
 		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
 		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
@@ -132,7 +159,8 @@ public class Board {
 		this.move 		= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
 		this.splash 	= (Audio)LoadingStuffs.getInstance().getStuff("splash");
 		this.drop 		= (Audio)LoadingStuffs.getInstance().getStuff("drop");
-		this.holdSound	= (Audio)LoadingStuffs.getInstance().getStuff("hold"); 
+		this.holdSound	= (Audio)LoadingStuffs.getInstance().getStuff("hold");
+		this.tetris		= (Audio)LoadingStuffs.getInstance().getStuff("tetris");
 
 		//calc the render position
 		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
@@ -145,6 +173,19 @@ public class Board {
 	public void toogleColorTheme() {
 		this.defaultTheme = (byte)(++this.defaultTheme%8);
 		this.theme.setTheme(this.defaultTheme);
+		this.circle = this.theme.getCircle();
+		this.drawGameBoardBG();
+	}
+
+	public void resetColorTheme() {
+		this.setColorTheme((byte)0);
+	}
+
+	/** 
+	 * set the color theme
+	*/
+	public void setColorTheme(byte colorTheme) {
+		this.theme.setTheme(colorTheme);
 		this.circle = this.theme.getCircle();
 		this.drawGameBoardBG();
 	}
@@ -166,7 +207,7 @@ public class Board {
 				(this.actualPiece.getActualPositionY() == this.actualPiece.getDefaultInitialSquareY())) ) {
 
 				//down one line
-				this.actualPiece.downOneLine();
+				this.actualPiece.downOneLine(true);
 
 				//reset counter
 				this.framecounter = 0;
@@ -174,6 +215,14 @@ public class Board {
 				//check if at least one line is complete
 				this.checkLineClear();
 			}
+
+			byte tempLevel = (byte)((this.linesCleared / 10) + 1);
+			if (tempLevel != this.currentLevel) {
+				this.currentLevel = tempLevel;
+				this.gameRef.nextLevel();
+			}
+			this.gameRef.getScore().setCurrentLevel(this.currentLevel);
+			this.gameRef.getScore().setLines(this.linesCleared);
 		}
 	}
 
@@ -293,6 +342,8 @@ public class Board {
 						tempGameBoardColorP2[j] = gameBoardColor[i];
 					}
 
+					this.gameRef.getScore().addScore(sumValue, this.currentLevel);
+
 				//2nd:
 				//--->> the lines are not continuous, drop the elements (1 & 3) or (1 & 4)
 				} else if (sumValue == 4 || sumValue == 5) { 
@@ -316,6 +367,8 @@ public class Board {
 						tempGameBoardP2[j] 		= gameBoard[i];
 						tempGameBoardColorP2[j] = gameBoardColor[i];
 					}
+
+					this.gameRef.getScore().addScore(Score.DOUBLELINE, this.currentLevel);
 				//3rd:
 				//--->> the lines are part continuos and part not (1, 2, 4) or (1, 3, 4)
 				//--->> we just have to save 1 line
@@ -330,6 +383,8 @@ public class Board {
 						tempGameBoardP2[j] = gameBoard[i];
 						tempGameBoardColorP2[j] = gameBoardColor[i];
 					}
+
+					this.gameRef.getScore().addScore(Score.TRIPELINE, this.currentLevel);
 				}				
 
 				this.gameBoard = (java.util.stream.Stream.concat(java.util.Arrays.stream(tempGameBoardP1), 
@@ -343,7 +398,13 @@ public class Board {
 				tempGameBoardColorP1 = null;
 				tempGameBoardColorP2 = null;
 
-				this.drop.play();
+				if (sumValue != 10) {
+					this.drop.play();
+				} else {
+					this.tetris.play();
+				}
+
+				this.linesCleared += linesToAdd[sumValue];
 
 				//end
 				break;
@@ -532,7 +593,8 @@ public class Board {
 					this.canRotate = false;
 				}
 			} else if (keyCode == 40) { //down
-				this.getActualPiece().downOneLine();
+				this.getActualPiece().downOneLine(false);
+				this.gameRef.getScore().addScore(Score.HARDDROP, this.currentLevel);
 				this.move.play();
 			} else if (keyCode == 17) { // r-control
 				this.holdPiece();
@@ -621,6 +683,8 @@ public class Board {
 		this.lastPiece 				= null;
 		this.holdPiece 				= null;
 		this.actualPiece 			= null;
+		this.currentLevel           = 1;
+		this.linesCleared			= 0;
 		
 		//Clear the gameboard
 		for (int cnt = 0; cnt < this.gameBoard.length; cnt++) {
@@ -631,6 +695,9 @@ public class Board {
 		
 		//Sort a new piece
 		this.sortPiecesList();
+		
+		//reset the color theme
+		this.resetColorTheme();
 	}
 	
 	/**
@@ -810,6 +877,30 @@ public class Board {
 
 		this.splash.play();
 	}
+
+	/**
+	 * Decrease SFX Volume
+	 */
+	public void decVolumeSFX() {
+		this.turn.decVolume(1);
+		this.move.decVolume(1);
+		this.splash.decVolume(1);
+		this.drop.decVolume(1);
+		this.tetris.decVolume(1);
+		this.holdSound.decVolume(1);
+    }
+
+	/**
+	 * Decrease SFX Volume
+	 */
+	public void incVolumeSFX() {
+		this.turn.addVolume(1);
+		this.move.addVolume(1);
+		this.splash.addVolume(1);
+		this.drop.addVolume(1);
+		this.tetris.addVolume(1);
+		this.holdSound.addVolume(1);
+    }
 
 	/**
 	 * Toogle game pause
