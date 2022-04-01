@@ -217,6 +217,11 @@ public class LoadingStuffs {
                 stuffs.put("hold", audio);
             }
 
+            audio = new Audio("audio\\tetris.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("tetris", audio);
+            }
+
             Logger.INFO("read all audio...", this);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
