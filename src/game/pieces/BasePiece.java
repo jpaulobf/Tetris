@@ -6,6 +6,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import game.Board;
+import game.Score;
 
 /**
  * Class representing the base piece
@@ -373,9 +374,12 @@ public abstract class BasePiece {
 	/**
 	 * Move the piece one line down
 	 */
-	public synchronized void downOneLine() {
+	public synchronized void downOneLine(boolean addPoint) {
 		if (this.boardRef.canMoveDown()) {
 			this.actualPositionY++;
+			if (addPoint) {
+				this.boardRef.getGameRef().getScore().addScore(Score.SINGLELINE, this.boardRef.getCurrentLevel());
+			}
 		} else {
 			this.boardRef.sortPiecesList();
 		}
@@ -437,8 +441,8 @@ public abstract class BasePiece {
 				this.lastPipe++;
 			}
 
-			//max sort without Pipe = 8;
-			if (this.lastPipe > 8) {
+			//max sort without Pipe = 12;
+			if (this.lastPipe > 12) {
 				piece = new LinePiece(this.boardRef);
 				this.lastPipe = 0;
 			}
