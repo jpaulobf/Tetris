@@ -4,6 +4,7 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
   
 public class Audio {
   
@@ -49,7 +50,21 @@ public class Audio {
     public void play() {
         play(0);
     }
-      
+
+    public void addVolume(float volume) {
+        FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+        float value = control.getValue() + volume;
+        if (value < control.getMaximum()) {
+            control.setValue(value);
+        }
+    }
+
+    public void decVolume(float volume) {
+        FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+        float value = control.getValue() - volume;
+        control.setValue(value);
+    }
+
     public void play(int loop) {
         if (clip.isRunning()) {
             clip.stop();
