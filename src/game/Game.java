@@ -53,6 +53,21 @@ public class Game implements GameInterface {
 	private Board board						= null;
     private Score score                     = null;
     private ScreenTransition screenT        = null;
+    
+
+    public Score getScore() {
+        return (this.score);
+    }
+
+    public Board getBoard() {
+        return (this.board);
+    }
+
+    public void nextLevel() {
+        this.screenT.reset();
+        this.board.nextGameSpeed();
+        this.toogleColorTheme();
+    }
 
     /**
      * Game constructor
@@ -279,6 +294,7 @@ public class Game implements GameInterface {
         this.reset();
         this.board.resetGame();
         this.screenT.reset();
+        this.score.reset();
     }
 
     /**
@@ -318,6 +334,8 @@ public class Game implements GameInterface {
     public void keyPressed(int keyCode) {
         if (!this.changingStage && !this.stopped) {
             this.movement(keyCode);
+            if (keyCode == 45) {this.decMasterVolume();}
+            if (keyCode == 61) {this.incMasterVolume();}
         }
     }
 
@@ -340,6 +358,50 @@ public class Game implements GameInterface {
             if (keyCode == 80) {this.tooglePause();}
             if (keyCode == 82) {this.softReset();}
         }
+    }
+
+    /**
+     * Decrease the Master Volume
+     */
+    public void decMasterVolume() {
+        this.decVolumeSFX();
+        this.decVolumeTheme();
+    }
+
+    /**
+     * Increase the Master Volume
+     */
+    public void incMasterVolume() {
+        this.incVolumeSFX();
+        this.incVolumeTheme();
+    }
+
+    /**
+     * Decrease only the theme
+     */
+    public void decVolumeTheme() {
+        this.theme.decVolume(1);
+    }
+
+    /**
+     * Increase the theme volume
+     */    
+    public void incVolumeTheme() {
+        this.theme.addVolume(1);
+    }
+
+    /**
+     * Decrease the SFX Volume
+     */
+    public void decVolumeSFX() {
+        this.board.decVolumeSFX();
+    }
+
+    /**
+     * Increase the SFX Volume
+     */
+    public void incVolumeSFX() {
+        this.board.incVolumeSFX();
     }
 
     /**
