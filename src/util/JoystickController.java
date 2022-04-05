@@ -128,13 +128,20 @@ public class JoystickController implements Runnable {
                                     this.R = false;
                                 }
                             } else {
-                                if ("2".equals(comp.getIdentifier().toString()) || "0".equals(comp.getIdentifier().toString())) {
+                                if ("0".equals(comp.getIdentifier().toString())) {
+                                    if (event.getValue() == 1.0f) {
+                                        this.ROTATE = true;
+                                    } else {
+                                        this.ROTATE = false;
+                                    }
+                                } else if ("2".equals(comp.getIdentifier().toString())) {
                                     if (event.getValue() == 1.0f) {
                                         this.HOLD = true;
                                     } else {
                                         this.HOLD = false;
                                     }
-                                } else if ("3".equals(comp.getIdentifier().toString()) || "1".equals(comp.getIdentifier().toString())) {
+                                } else if ("3".equals(comp.getIdentifier().toString()) || 
+                                           "1".equals(comp.getIdentifier().toString())) {
                                     if (event.getValue() == 1.0f) {
                                         this.DROP = true;
                                     } else {
@@ -146,7 +153,7 @@ public class JoystickController implements Runnable {
                     }
                 }
 
-                this.listener.notify(this.U, this.D, this.L, this.R);
+                this.listener.notify(this.U, this.D, this.L, this.R, this.HOLD, this.DROP, this.ROTATE);
             
                 /*
                 */
