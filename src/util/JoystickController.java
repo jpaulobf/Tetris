@@ -18,8 +18,9 @@ public class JoystickController implements Runnable {
     protected boolean D                 = false;
     protected boolean L                 = false;
     protected boolean R                 = false;
-    protected boolean S                 = false;
-    protected boolean B                 = false;
+    protected boolean HOLD              = false;
+    protected boolean DROP              = false;
+    protected boolean ROTATE            = false;
     private long sleepMillis            = 100;
     private ControllerListener listener = null;
 
@@ -61,8 +62,8 @@ public class JoystickController implements Runnable {
                     this.D          = false;
                     this.L          = false;
                     this.R          = false;
-                    this.S          = false;
-                    this.B          = false;
+                    this.HOLD          = false;
+                    this.DROP          = false;
                     this.controller = null;
                     break;
                 } else {
@@ -125,6 +126,20 @@ public class JoystickController implements Runnable {
                                     this.D = false;
                                     this.L = false;
                                     this.R = false;
+                                }
+                            } else {
+                                if ("2".equals(comp.getIdentifier().toString()) || "0".equals(comp.getIdentifier().toString())) {
+                                    if (event.getValue() == 1.0f) {
+                                        this.HOLD = true;
+                                    } else {
+                                        this.HOLD = false;
+                                    }
+                                } else if ("3".equals(comp.getIdentifier().toString()) || "1".equals(comp.getIdentifier().toString())) {
+                                    if (event.getValue() == 1.0f) {
+                                        this.DROP = true;
+                                    } else {
+                                        this.DROP = false;
+                                    }
                                 }
                             }
                         }
