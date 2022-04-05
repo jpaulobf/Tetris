@@ -20,7 +20,7 @@ public class JoystickController implements Runnable {
     protected boolean R                 = false;
     protected boolean S                 = false;
     protected boolean B                 = false;
-    private long sleepMillis            = 10;
+    private long sleepMillis            = 100;
     private ControllerListener listener = null;
 
     /**
