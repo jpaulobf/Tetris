@@ -116,6 +116,12 @@ public interface GameInterface {
     public void keyPressed(int keyCode);
 
     /**
+     * Key pressed
+     * @param keyCode
+     */
+    public void keyPressed(int keyCode, boolean releaseAfter);
+
+    /**
      * Key released
      * @param keyCode
      */
