@@ -62,8 +62,8 @@ public class JoystickController implements Runnable {
                     this.D          = false;
                     this.L          = false;
                     this.R          = false;
-                    this.HOLD          = false;
-                    this.DROP          = false;
+                    this.HOLD       = false;
+                    this.DROP       = false;
                     this.controller = null;
                     break;
                 } else {
