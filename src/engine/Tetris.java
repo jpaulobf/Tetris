@@ -334,16 +334,20 @@ public class Tetris implements Runnable {
         @Override
         public void notify(boolean U, boolean D, boolean L, boolean R, boolean HOLD, boolean DROP, boolean ROTATE) {
             if (U) {
-                this.game.keyPressed(38);
+                this.game.keyPressed(38, true);
             } else if (D) {
                 this.game.keyPressed(40);
             } else if (L) {
                 this.game.keyPressed(37);
             } else if (R) {
                 this.game.keyPressed(39);
+            } else if (HOLD) {
+                this.game.keyPressed(17);
+            } else if (DROP) {
+                this.game.keyPressed(32);
+            } else if (ROTATE) {
+                this.game.keyPressed(38, true);
             }
-
-            //TODO
 
             if (!U && !D && !L && !R) {
                 //this.game.keyReleased(0);
