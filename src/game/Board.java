@@ -578,7 +578,7 @@ public class Board {
 	 * Move the game
 	 * @param keyCode
 	 */
-	public synchronized void move(int keyCode) {
+	public synchronized void move(int keyCode, boolean releaseAfter) {
 		if (!this.stopped) {
 			if (keyCode == 39) { //right
 				this.getActualPiece().moveRight();
@@ -590,7 +590,7 @@ public class Board {
 				if (this.canRotate) {
 					this.getActualPiece().rotateRight();
 					this.turn.play();
-					this.canRotate = false;
+					this.canRotate = releaseAfter;
 				}
 			} else if (keyCode == 40) { //down
 				this.getActualPiece().downOneLine(false);
@@ -602,6 +602,14 @@ public class Board {
 				this.getActualPiece().allDown();
 			}
 		}
+	}
+
+	/**
+	 * Move the game
+	 * @param keyCode
+	 */
+	public synchronized void move(int keyCode) {
+		this.move(keyCode, false);
 	}
 	
 	/**
