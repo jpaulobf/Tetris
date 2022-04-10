@@ -241,6 +241,16 @@ public class Game implements GameInterface {
     }
 
     /**
+     * Control the game main character movement
+     * @param keyDirection
+     */
+    private synchronized void movement(int keyDirection, boolean releaseAfter) {
+        if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+            this.board.move(keyDirection, releaseAfter);
+        }
+    }
+
+    /**
      * Mute / unmute the game theme
      */
     @Override
@@ -331,11 +341,23 @@ public class Game implements GameInterface {
     /**
      * Game keypress
      */
+    @Override
     public void keyPressed(int keyCode) {
         if (!this.changingStage && !this.stopped) {
             this.movement(keyCode);
             if (keyCode == 45) {this.decMasterVolume();}
             if (keyCode == 61) {this.incMasterVolume();}
+        }
+    }
+
+    /**
+     * Key pressed
+     * @param keyCode
+     */
+    @Override
+    public void keyPressed(int keyCode, boolean releaseAfter) {
+        if (!this.changingStage && !this.stopped) {
+            this.movement(keyCode, releaseAfter);
         }
     }
 
