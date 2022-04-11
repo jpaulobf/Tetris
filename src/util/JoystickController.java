@@ -11,7 +11,7 @@ import net.java.games.input.Component.Identifier;
 /**
  * Responsible for JInput
  */
-public class JoystickController implements Runnable {
+public class JoystickController {
 
     private Controller controller       = null;
     protected boolean U                 = false;
@@ -21,8 +21,8 @@ public class JoystickController implements Runnable {
     protected boolean HOLD              = false;
     protected boolean DROP              = false;
     protected boolean ROTATE            = false;
-    private long sleepMillis            = 100;
     private ControllerListener listener = null;
+    private volatile long framecounter  = 0;
 
     /**
      * Constructor
@@ -44,125 +44,110 @@ public class JoystickController implements Runnable {
     }
 
     /**
-     * Verify if any controller is connected
+     * Update Method
      */
-    public boolean hasAnyConnectedController() {
-        return (this.controller != null);
-    }
+    public void update(long frametime) {
+        this.framecounter += frametime;
 
-    /**
-     * Run method
-     */
-    @Override
-    public void run() {
-        if (this.controller != null) {
-            while (true) {
-                if (!controller.poll()) {
-                    this.U          = false;
-                    this.D          = false;
-                    this.L          = false;
-                    this.R          = false;
-                    this.HOLD       = false;
-                    this.DROP       = false;
-                    this.controller = null;
-                    break;
-                } else {
-                    /* Get the controllers event queue */
-                    EventQueue queue = controller.getEventQueue();
+        if (this.controller != null && this.framecounter > 40_000_000) {
+            this.framecounter = 0;
+            if (!controller.poll()) {
+                this.U          = false;
+                this.D          = false;
+                this.L          = false;
+                this.R          = false;
+                this.HOLD       = false;
+                this.DROP       = false;
+                this.controller = null;
+            } else {
+                /* Get the controllers event queue */
+                EventQueue queue = controller.getEventQueue();
 
-                    /* Create an event object for the underlying plugin to populate */
-                    Event event = new Event();
+                /* Create an event object for the underlying plugin to populate */
+                Event event = new Event();
 
-                    /* For each object in the queue */
-                    while (queue.getNextEvent(event)) {
-                        
-                        Component comp = event.getComponent();
-                        Identifier id = comp.getIdentifier();
-                        
-                        if (null != id) {
-                            if ("pov".equals(id.toString())) {
-                                if (comp.getPollData() == 0.25f) {
-                                    this.U = true;
-                                    this.D = false;
-                                    this.L = false;
-                                    this.R = false;
-                                } else if (comp.getPollData() == 0.375f) {
-                                    this.U = true;
-                                    this.L = false;
-                                    this.R = true;
-                                    this.D = false;
-                                } else if (comp.getPollData() == 0.5f) {
-                                    this.L = false;
-                                    this.R = true;
-                                    this.U = false;
-                                    this.D = false;
-                                }  else if (comp.getPollData() == 0.625f) {
-                                    this.L = false;
-                                    this.D = true;
-                                    this.U = false;
-                                    this.R = true;
-                                } else if (comp.getPollData() == 0.75f) {
-                                    this.D = true;
-                                    this.U = false;
-                                    this.L = false;
-                                    this.R = false;
-                                } else if (comp.getPollData() == 0.875f) {
-                                    this.D = true;
-                                    this.R = false;
-                                    this.U = false;
-                                    this.L = true;
-                                } else if (comp.getPollData() == 1f) {
-                                    this.R = false;
-                                    this.L = true;
-                                    this.U = false;
-                                    this.D = false;
-                                } else if (comp.getPollData() == 0.125f) {
-                                    this.R = false;
-                                    this.U = true;
-                                    this.L = true;
-                                    this.D = false;
-                                } else if (comp.getPollData() == 0f) {
-                                    this.U = false;
-                                    this.D = false;
-                                    this.L = false;
-                                    this.R = false;
+                /* For each object in the queue */
+                while (queue.getNextEvent(event)) {
+                    
+                    Component comp = event.getComponent();
+                    Identifier id = comp.getIdentifier();
+                    
+                    if (null != id) {
+                        if ("pov".equals(id.toString())) {
+                            if (comp.getPollData() == 0.25f) {
+                                this.U = true;
+                                this.D = false;
+                                this.L = false;
+                                this.R = false;
+                            } else if (comp.getPollData() == 0.375f) {
+                                this.U = true;
+                                this.L = false;
+                                this.R = true;
+                                this.D = false;
+                            } else if (comp.getPollData() == 0.5f) {
+                                this.L = false;
+                                this.R = true;
+                                this.U = false;
+                                this.D = false;
+                            }  else if (comp.getPollData() == 0.625f) {
+                                this.L = false;
+                                this.D = true;
+                                this.U = false;
+                                this.R = true;
+                            } else if (comp.getPollData() == 0.75f) {
+                                this.D = true;
+                                this.U = false;
+                                this.L = false;
+                                this.R = false;
+                            } else if (comp.getPollData() == 0.875f) {
+                                this.D = true;
+                                this.R = false;
+                                this.U = false;
+                                this.L = true;
+                            } else if (comp.getPollData() == 1f) {
+                                this.R = false;
+                                this.L = true;
+                                this.U = false;
+                                this.D = false;
+                            } else if (comp.getPollData() == 0.125f) {
+                                this.R = false;
+                                this.U = true;
+                                this.L = true;
+                                this.D = false;
+                            } else if (comp.getPollData() == 0f) {
+                                this.U = false;
+                                this.D = false;
+                                this.L = false;
+                                this.R = false;
+                            }
+                        } else {
+                            if ("0".equals(comp.getIdentifier().toString())) {
+                                if (event.getValue() == 1.0f) {
+                                    this.ROTATE = true;
+                                } else {
+                                    this.ROTATE = false;
                                 }
-                            } else {
-                                if ("0".equals(comp.getIdentifier().toString())) {
-                                    if (event.getValue() == 1.0f) {
-                                        this.ROTATE = true;
-                                    } else {
-                                        this.ROTATE = false;
-                                    }
-                                } else if ("2".equals(comp.getIdentifier().toString())) {
-                                    if (event.getValue() == 1.0f) {
-                                        this.HOLD = true;
-                                    } else {
-                                        this.HOLD = false;
-                                    }
-                                } else if ("3".equals(comp.getIdentifier().toString()) || 
-                                           "1".equals(comp.getIdentifier().toString())) {
-                                    if (event.getValue() == 1.0f) {
-                                        this.DROP = true;
-                                    } else {
-                                        this.DROP = false;
-                                    }
+                            } else if ("2".equals(comp.getIdentifier().toString())) {
+                                if (event.getValue() == 1.0f) {
+                                    this.HOLD = true;
+                                } else {
+                                    this.HOLD = false;
+                                }
+                            } else if ("3".equals(comp.getIdentifier().toString()) || 
+                                        "1".equals(comp.getIdentifier().toString())) {
+                                if (event.getValue() == 1.0f) {
+                                    this.DROP = true;
+                                } else {
+                                    this.DROP = false;
                                 }
                             }
                         }
                     }
                 }
-
-                this.listener.notify(this.U, this.D, this.L, this.R, this.HOLD, this.DROP, this.ROTATE);
-            
-                /*
-                */
-                try {
-                    Thread.sleep(this.sleepMillis);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
+
+            this.listener.notify(this.U, this.D, this.L, this.R, this.HOLD, this.DROP, this.ROTATE);
+            
         }
     }
 }
