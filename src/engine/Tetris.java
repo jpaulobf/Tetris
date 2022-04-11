@@ -146,10 +146,6 @@ public class Tetris implements Runnable {
 
             //thread para o controle (quando presente)
             this.controller = new JoystickController(this);
-            Thread thread   = new Thread(this.controller, "controller");
-            if (thread != null && controller.hasAnyConnectedController()) {
-                thread.start();
-            }
 
             //KeyListener
             this.addKeyListener(new KeyAdapter() {
@@ -177,6 +173,7 @@ public class Tetris implements Runnable {
          */
         public synchronized void update(long frametime) {
             this.game.update(frametime);
+            this.controller.update(frametime);
         }
         
         /**
