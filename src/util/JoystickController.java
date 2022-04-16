@@ -51,24 +51,25 @@ public class JoystickController {
      * Update Method
      */
     public void update(long frametime) {
+
         this.framecounter += frametime;
+
+        if (this.actionTrigger) {
+            this.actionCounter += frametime;
+            
+            if (this.actionCounter >= this.TRIGGER_MAXTIME) {
+                this.canAction      = true;
+                this.actionCounter  = 0;
+                this.actionTrigger  = false;
+            } else {
+                this.ROTATE         = false;
+                this.HOLD           = false;
+                this.DROP           = false;
+            }
+        }
 
         if (this.controller != null && this.framecounter > 50_000_000L) {
             this.framecounter = 0;
-            
-            if (this.actionTrigger) {
-                this.actionCounter += frametime;
-                
-                if (this.actionCounter >= this.TRIGGER_MAXTIME) {
-                    this.canAction      = true;
-                    this.actionCounter  = 0;
-                    this.actionTrigger  = false;
-                } else {
-                    this.ROTATE         = false;
-                    this.HOLD           = false;
-                    this.DROP           = false;
-                }
-            }
 
             if (!controller.poll()) {
                 this.U          = false;
