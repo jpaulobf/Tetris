@@ -58,11 +58,11 @@ public class JoystickController {
             
             if (this.actionTrigger) {
                 this.actionCounter += frametime;
+                
                 if (this.actionCounter >= this.TRIGGER_MAXTIME) {
                     this.canAction      = true;
                     this.actionCounter  = 0;
                     this.actionTrigger  = false;
-                    System.out.println("aqui...");
                 } else {
                     this.ROTATE         = false;
                     this.HOLD           = false;
@@ -87,82 +87,87 @@ public class JoystickController {
 
                 /* For each object in the queue */
                 while (queue.getNextEvent(event)) {
-                    System.out.println("entrei");
-                    
-                    Component comp = event.getComponent();
-                    Identifier id = comp.getIdentifier();
-                    
-                    if (null != id) {
-                        //if () { //Movements
-                            if ("pov".equals(id.toString()) && comp.getPollData() == 0.25f) {
-                                this.U = true;
-                                this.D = false;
-                                this.L = false;
-                                this.R = false;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 0.375f) {
-                                this.U = true;
-                                this.L = false;
-                                this.R = true;
-                                this.D = false;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 0.5f) {
-                                this.L = false;
-                                this.R = true;
-                                this.U = false;
-                                this.D = false;
-                            }  else if ("pov".equals(id.toString()) && comp.getPollData() == 0.625f) {
-                                this.L = false;
-                                this.D = true;
-                                this.U = false;
-                                this.R = true;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 0.75f) {
-                                this.D = true;
-                                this.U = false;
-                                this.L = false;
-                                this.R = false;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 0.875f) {
-                                this.D = true;
-                                this.R = false;
-                                this.U = false;
-                                this.L = true;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 1f) {
-                                this.R = false;
-                                this.L = true;
-                                this.U = false;
-                                this.D = false;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 0.125f) {
-                                this.R = false;
-                                this.U = true;
-                                this.L = true;
-                                this.D = false;
-                            } else if ("pov".equals(id.toString()) && comp.getPollData() == 0f) {
-                                this.U = false;
-                                this.D = false;
-                                this.L = false;
-                                this.R = false;
-                            }
-                        //} else { //Actions
-                            
-                            String action = comp.getIdentifier().toString();
-                            if (("0".equals(action) ||
-                                 "1".equals(action) ||
-                                 "2".equals(action) ||
-                                 "3".equals(action) || 
-                                 "5".equals(action)) && canAction) {
 
-                                if (event.getValue() == 1.0f) {
-                                    if ("0".equals(action) || "2".equals(action)) {
-                                        this.ROTATE = true;
-                                    } else if ("5".equals(action)) {
-                                        this.HOLD = true;
-                                    } else if ("1".equals(action) || "3".equals(action)) {
-                                        this.DROP = true;
-                                    }
-                                    //action triggered
-                                    this.actionTrigger  = true;
-                                    this.canAction      = false;
-                                }
+                    Component comp  = event.getComponent();
+                    Identifier id   = comp.getIdentifier();
+                    String action   = comp.getIdentifier().toString();
+
+                    if (id != null) {
+                        String sid  = id.toString();
+                        float pdata = comp.getPollData();
+
+                        if ("pov".equals(sid)) {
+                            if (pdata == 0.375f) {
+                                this.U = true;
+                                this.L = false;
+                                this.R = true;
+                                this.D = false;
+                            } else if (pdata == 0.5f) {
+                                this.L = false;
+                                this.R = true;
+                                this.U = false;
+                                this.D = false;
+                            }  else if (pdata == 0.625f) {
+                                this.L = false;
+                                this.D = true;
+                                this.U = false;
+                                this.R = true;
+                            } else if (pdata == 0.75f) {
+                                this.D = true;
+                                this.U = false;
+                                this.L = false;
+                                this.R = false;
+                            } else if (pdata == 0.875f) {
+                                this.D = true;
+                                this.R = false;
+                                this.U = false;
+                                this.L = true;
+                            } else if (pdata == 1f) {
+                                this.R = false;
+                                this.L = true;
+                                this.U = false;
+                                this.D = false;
+                            } else if (pdata == 0.125f) {
+                                this.R = false;
+                                this.U = true;
+                                this.L = true;
+                                this.D = false;
+                            } else if (pdata == 0f) {
+                                this.U = false;
+                                this.D = false;
+                                this.L = false;
+                                this.R = false;
                             }
-                        //}
+                        }
+                        
+                        //rotate
+                        if ("pov".equals(sid)) {
+                            if (pdata == 0.25f && canAction) {
+                                this.ROTATE         = true;
+                                this.actionTrigger  = true;
+                                this.canAction      = false;
+                            } 
+                        }
+                        
+                        if (("0".equals(action) ||
+                             "1".equals(action) ||
+                             "2".equals(action) ||
+                             "3".equals(action) || 
+                             "5".equals(action)) && canAction) {
+
+                            if (event.getValue() == 1.0f) {
+                                if ("0".equals(action) || "2".equals(action)) {
+                                    this.ROTATE = true;
+                                } else if ("5".equals(action)) {
+                                    this.HOLD = true;
+                                } else if ("1".equals(action) || "3".equals(action)) {
+                                    this.DROP = true;
+                                }
+                                //action triggered
+                                this.actionTrigger  = true;
+                                this.canAction      = false;
+                            }
+                        }
                     }
                 }
             }
