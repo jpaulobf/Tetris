@@ -23,7 +23,6 @@ public class Game implements GameInterface {
     private Graphics2D g2d                  = null;
 
     //the game variables go here...
-    //private Score score                     = null;
     //private GameOver gameOver               = null;
     //private volatile Audio gameoverTheme    = null;
 
@@ -50,19 +49,11 @@ public class Game implements GameInterface {
     private boolean sortPiece 				= true;
 
     //game components
+    private Menu menu                       = null;
 	private Board board						= null;
     private Score score                     = null;
     private ScreenTransition screenT        = null;
     
-
-    public Score getScore() {
-        return (this.score);
-    }
-
-    public Board getBoard() {
-        return (this.board);
-    }
-
     public void nextLevel() {
         this.screenT.reset();
         this.board.nextGameSpeed();
@@ -89,6 +80,7 @@ public class Game implements GameInterface {
         this.music3             = (Audio)LoadingStuffs.getInstance().getStuff("theme3");
         this.theme              = this.music1;
         this.currentMusicTheme  = 0;
+        this.menu               = new Menu(this);
         this.board              = new Board(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
@@ -339,6 +331,13 @@ public class Game implements GameInterface {
     }
 
     /**
+     * Toogle color theme
+     */
+    public void toogleColorTheme() {
+        this.board.toogleColorTheme();
+    }
+
+    /**
      * Game keypress
      */
     @Override
@@ -359,13 +358,6 @@ public class Game implements GameInterface {
         if (!this.changingStage && !this.stopped) {
             this.movement(keyCode, releaseAfter);
         }
-    }
-
-    /**
-     * Toogle color theme
-     */
-    public void toogleColorTheme() {
-        this.board.toogleColorTheme();
     }
 
     /**
@@ -437,4 +429,6 @@ public class Game implements GameInterface {
     public int getInternalResolutionHeight()    {   return (this.whm);          }
     public VolatileImage getBufferedImage()     {   return (this.bufferImage);  }
     public Graphics2D getG2D()                  {   return (this.g2d);          }
+    public Score getScore()                     {   return (this.score);        }
+    public Board getBoard()                     {   return (this.board);        }
 }
