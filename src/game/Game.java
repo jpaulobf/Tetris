@@ -85,32 +85,6 @@ public class Game implements GameInterface {
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
     }
-
-    /**
-     * Switch the game theme
-     * @param theme
-     */
-    private void toogleSoundTheme() {
-        this.theme.stop();
-        this.currentMusicTheme = (byte)(++this.currentMusicTheme%3);
-
-        switch (this.currentMusicTheme) {
-            case 0:
-                this.music1.stop();
-                this.theme = this.music1;
-                break;
-            case 1:
-                this.music2.stop();
-                this.theme = this.music2;
-                break;
-            case 2:
-                this.music3.stop();
-                this.theme = this.music3;
-                break;
-        }
-
-        this.theme.playContinuously();
-    }
     
     /**
      * Update the game logic / receives the frametime
@@ -256,20 +230,37 @@ public class Game implements GameInterface {
     }
 
     /**
+     * Switch the game theme
+     * @param theme
+     */
+    private void toogleSoundTheme() {
+        this.theme.stop();
+        this.currentMusicTheme = (byte)(++this.currentMusicTheme%3);
+
+        switch (this.currentMusicTheme) {
+            case 0:
+                this.music1.stop();
+                this.theme = this.music1;
+                break;
+            case 1:
+                this.music2.stop();
+                this.theme = this.music2;
+                break;
+            case 2:
+                this.music3.stop();
+                this.theme = this.music3;
+                break;
+        }
+
+        this.theme.playContinuously();
+    }
+
+    /**
      * Stop the theme position
      */
     @Override
     public void stopTheme() {
         this.theme.stop();
-    }
-
-    /**
-     * Update game graphics
-     * @param g2d
-     */
-    @Override
-    public void updateGraphics2D(Graphics2D g2d) {
-        this.g2dFS = g2d;
     }
 
     /**
@@ -424,11 +415,12 @@ public class Game implements GameInterface {
      */
     //public Score getScore()                     {   return (this.score);        }
     //public GameOver getGameOver()               {   return this.gameOver;       }
-    public StateMachine getGameState()          {   return this.gameState;      }
-    public int getInternalResolutionWidth()     {   return (this.wwm);          }
-    public int getInternalResolutionHeight()    {   return (this.whm);          }
-    public VolatileImage getBufferedImage()     {   return (this.bufferImage);  }
-    public Graphics2D getG2D()                  {   return (this.g2d);          }
-    public Score getScore()                     {   return (this.score);        }
-    public Board getBoard()                     {   return (this.board);        }
+    public StateMachine getGameState()              {   return this.gameState;      }
+    public int getInternalResolutionWidth()         {   return (this.wwm);          }
+    public int getInternalResolutionHeight()        {   return (this.whm);          }
+    public VolatileImage getBufferedImage()         {   return (this.bufferImage);  }
+    public Graphics2D getG2D()                      {   return (this.g2d);          }
+    public Score getScore()                         {   return (this.score);        }
+    public Board getBoard()                         {   return (this.board);        }
+    public void updateGraphics2D(Graphics2D g2d)    {   this.g2dFS = g2d;           }
 }
