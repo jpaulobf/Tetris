@@ -23,8 +23,8 @@ public class StateMachine {
      * @param game
      */
     public StateMachine(Game game) {
-        this.currentState = STAGING;
-        this.referencetToGame = game;
+        this.currentState       = MENU;
+        this.referencetToGame   = game;
     }
 
     /**
