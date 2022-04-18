@@ -96,7 +96,26 @@ public class Game implements GameInterface {
         if (!this.changingStage && !this.stopped) {
             
             //update based on game state
-            if (this.gameState.getCurrentState() == StateMachine.STAGING) {
+            if (this.gameState.getCurrentState() == StateMachine.MENU) {
+
+                //sum framecounter
+                this.framecounter += frametime;
+                                
+                //update just one time
+                if (this.framecounter == frametime) { 
+                    //if necessary
+                    this.menu.firstUpdate(frametime);
+                } else {
+                    this.menu.update(frametime);
+
+                    if (this.menu.goOptions()) {
+                        this.gameState.setCurrentState(StateMachine.OPTIONS);
+                    } else if (this.menu.goGame()) {
+                        this.gameState.setCurrentState(StateMachine.STAGING);
+                    }
+                }
+            }
+            else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
                 
                 //sum framecounter
                 this.framecounter += frametime;
@@ -173,7 +192,9 @@ public class Game implements GameInterface {
                 //////////////////////////////////////////////////////////////////////
                 // ->>>  draw the game elements
                 //////////////////////////////////////////////////////////////////////
-                if (this.gameState.getCurrentState() == StateMachine.STAGING) {
+                if (this.gameState.getCurrentState() == StateMachine.MENU) { 
+                    this.menu.draw(frametime);
+                } else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
                     //todo...
                 } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
                     this.board.draw(frametime);
