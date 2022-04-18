@@ -9,6 +9,10 @@ public class Menu {
     @SuppressWarnings("unused")
     private GameInterface gameRef       = null;
 
+    private volatile boolean goOptions  = false;
+    private volatile boolean goGame     = false;
+    private volatile boolean goExit     = false;
+
     /**
      * Constructor
      * @param game
@@ -25,4 +29,12 @@ public class Menu {
 
     }
 
+    public synchronized void firstUpdate(long frametime) {
+        
+    }
+
+    //getters
+    public boolean goOptions() {return (this.goOptions);}
+    public boolean goGame() {return (this.goGame);}
+    public boolean goExit() {return (this.goExit);}
 }
