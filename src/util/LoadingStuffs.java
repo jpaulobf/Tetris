@@ -175,6 +175,21 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\bean.png"));
             stuffs.put("bean", image);
 
+            image = ImageIO.read(new File("images\\tlogo.png"));
+            stuffs.put("tlogo", image);
+
+            image = ImageIO.read(new File("images\\selector.png"));
+            stuffs.put("selector", image);
+
+            image = ImageIO.read(new File("images\\lexit.png"));
+            stuffs.put("lexit", image);
+
+            image = ImageIO.read(new File("images\\loptions.png"));
+            stuffs.put("loptions", image);
+
+            image = ImageIO.read(new File("images\\lplaygame.png"));
+            stuffs.put("lplaygame", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
