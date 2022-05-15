@@ -34,7 +34,7 @@ public class JoystickController {
      * @param listener
      */
     public JoystickController(ControllerListener listener) {
-        /* Get the available controllers */
+        /* Get the available controllers
         ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment();
 		Controller[] controllers = ce.getControllers();    
         this.listener = listener;
@@ -44,13 +44,16 @@ public class JoystickController {
                 this.controller = temp;
                 break;
             }
-        }
+        } */
+    }
+
+    public void update(long frametime) {
     }
 
     /**
      * Update Method
      */
-    public void update(long frametime) {
+    public void update2(long frametime) {
 
         this.framecounter += frametime;
 
