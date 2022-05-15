@@ -210,6 +210,7 @@ public class Tetris implements Runnable {
             } else {
                 //verify if the Graphics element isn't lost
                 if (this.g2d != null) {
+
                     //render the game elements
                     this.game.draw(frametime);
         
