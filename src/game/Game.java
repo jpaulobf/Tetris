@@ -112,6 +112,8 @@ public class Game implements GameInterface {
                         this.gameState.setCurrentState(StateMachine.OPTIONS);
                     } else if (this.menu.goGame()) {
                         this.gameState.setCurrentState(StateMachine.STAGING);
+                    } else if (this.menu.goExit()) {
+                        System.exit(0);
                     }
                 }
             }
@@ -222,7 +224,9 @@ public class Game implements GameInterface {
      * @param keyDirection
      */
     private synchronized void movement(int keyDirection) {
-        if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+        if (this.gameState.getCurrentState() == StateMachine.MENU) {
+            this.menu.keyMovement(keyDirection);
+        } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
             this.board.move(keyDirection);
         }
     }
