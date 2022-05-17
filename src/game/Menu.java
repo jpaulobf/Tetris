@@ -29,7 +29,6 @@ public class Menu {
     private byte selectorPosition           = 0;
     private byte selectors[]                = {0, 2, 3};
     private short optionsSpace              = 65;
-
     private byte level                      = 1;
 
     /**
@@ -157,4 +156,6 @@ public class Menu {
             }
         }
     }
+
+    public byte getLevel() {return (this.level);}
 }
