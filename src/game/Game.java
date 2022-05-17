@@ -53,7 +53,8 @@ public class Game implements GameInterface {
 	private Board board						= null;
     private Score score                     = null;
     private ScreenTransition screenT        = null;
-    
+    private volatile byte startLevel        = 1;
+       
     public void nextLevel() {
         this.screenT.reset();
         this.board.nextGameSpeed();
@@ -81,7 +82,6 @@ public class Game implements GameInterface {
         this.theme              = this.music1;
         this.currentMusicTheme  = 0;
         this.menu               = new Menu(this);
-        this.board              = new Board(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
     }
@@ -112,6 +112,8 @@ public class Game implements GameInterface {
                         this.gameState.setCurrentState(StateMachine.OPTIONS);
                     } else if (this.menu.goGame()) {
                         this.gameState.setCurrentState(StateMachine.STAGING);
+                        this.startLevel = this.menu.getLevel();
+                        this.board      = new Board(this, this.startLevel);
                     } else if (this.menu.goExit()) {
                         System.exit(0);
                     }
@@ -381,12 +383,14 @@ public class Game implements GameInterface {
      */
     public void keyReleased(int keyCode) {
         if (!this.changingStage && !this.stopped) {
-            this.board.canRotate = true;
-            if (keyCode == 49) {this.toogleSoundTheme();}
-            if (keyCode == 50) {this.toogleColorTheme();}
-            if (keyCode == 77) {this.toogleMuteTheme();}
-            if (keyCode == 80) {this.tooglePause();}
-            if (keyCode == 82) {this.softReset();}
+            if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+                this.board.canRotate = true;
+                if (keyCode == 49) {this.toogleSoundTheme();}
+                if (keyCode == 50) {this.toogleColorTheme();}
+                if (keyCode == 77) {this.toogleMuteTheme();}
+                if (keyCode == 80) {this.tooglePause();}
+                if (keyCode == 82) {this.softReset();}
+            }
         }
     }
 
@@ -448,4 +452,5 @@ public class Game implements GameInterface {
     public Score getScore()                         {   return (this.score);        }
     public Board getBoard()                         {   return (this.board);        }
     public void updateGraphics2D(Graphics2D g2d)    {   this.g2dFS = g2d;           }
+    public void setStartLevel(byte level)           {   this.startLevel = level;    }
 }
