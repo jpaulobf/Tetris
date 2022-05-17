@@ -18,6 +18,29 @@ import util.Audio;
  */
 public class Board {
 
+	private class Level {
+		
+		private byte level 				= 1;
+		private double gameSpeed 		= 1D;
+		private double speedFactor 		= 1.15D;
+		private final static byte MIN 	= 1;
+		private final static byte MAX 	= 8;
+
+		public Level(byte level) {
+			if (level >= MIN && level <= MAX) {
+				this.level = level;
+			}
+		}
+
+		public double getGameSpeed() {
+			for (int i = MIN; i < level; i++) {
+				this.gameSpeed *= speedFactor;
+			}
+
+			return (this.gameSpeed);
+		}
+	}
+
 	//constants
 	public final static byte BOARD_LINES 			= 20;
 	public final static byte BOARD_COLUMNS 			= 10;
@@ -66,12 +89,13 @@ public class Board {
 	private boolean drawPieceGhost					= true;
 	private short [][] gameBoard					= null;
 	private Color [][] gameBoardColor				= null;
-	private volatile Audio turn            			= null;
-	private volatile Audio move            			= null;
-	private volatile Audio splash          			= null;
-	private volatile Audio drop          			= null;
-	private volatile Audio tetris          			= null;
-	private volatile Audio holdSound				= null;
+	private Audio turn            					= null;
+	private Audio move            					= null;
+	private Audio splash          					= null;
+	private Audio drop          					= null;
+	private Audio tetris          					= null;
+	private Audio holdSound							= null;
+	private Level level								= null;
 
 	//Gameplay variables
 	private double TMP								= 1;
@@ -113,7 +137,7 @@ public class Board {
 	/**
 	 * Construtor
 	 */
-	public Board(GameInterface game) {
+	public Board(GameInterface game, byte level) {
 
 		//recovery canvas g2d
 		this.gameRef				= (Game)game;
@@ -131,6 +155,7 @@ public class Board {
 		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
 		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
 		this.gameSpeed 				= TMP;//(byte)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
+		this.level 					= new Level(level);
 
 		//define the bg width/height
 		int bgwidth 				= BOARD_LEFT + boardSquareWidth + 150;
@@ -802,7 +827,6 @@ public class Board {
 	/**
 	 * Verify if can rotate to the right
 	 * @return
-	 * TODO: LPiece is buggy
 	 */
 	public boolean canRotateRight() {
 		byte nextState			= this.actualPiece.getPieceNextState();
