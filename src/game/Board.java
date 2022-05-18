@@ -63,6 +63,21 @@ public class Board {
 		}
 	}
 
+	public byte getCurrentLevel() {
+        return (this.currentLevel);
+    }
+
+	public void nextLevel() {
+		this.currentLevel += (this.currentLevel < 20)?1:0;
+	}
+
+	/**
+	 * Set the next speed of the game
+	 */
+	public void nextGameSpeed() {
+		this.level.nextLevel();
+	}
+
 	//constants
 	public final static byte BOARD_LINES 			= 20;
 	public final static byte BOARD_COLUMNS 			= 10;
@@ -133,23 +148,6 @@ public class Board {
 	//Variables to control lines to drop
 	protected volatile boolean hasLineFull			= false;
 	protected volatile byte firstline				= -1;
-
-
-
-	public byte getCurrentLevel() {
-        return (this.currentLevel);
-    }
-
-	public void nextLevel() {
-		this.currentLevel += (this.currentLevel < 20)?1:0;
-	}
-
-	/**
-	 * Set the next speed of the game
-	 */
-	public void nextGameSpeed() {
-		this.level.nextLevel();
-	}
 
 	/**
 	 * Construtor
