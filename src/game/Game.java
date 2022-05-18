@@ -128,7 +128,9 @@ public class Game implements GameInterface {
                 if (this.framecounter == frametime) { 
                     //if necessary
                 } else {
-                    //TODO: in a condition, advance to the next game-state...
+                    //
+                    //do whatever is necessary to start the game...
+                    //
                     this.framecounter = 0;
                     this.skipDraw = true;
                     this.gameState.setCurrentState(StateMachine.IN_GAME);
@@ -198,8 +200,6 @@ public class Game implements GameInterface {
                 //////////////////////////////////////////////////////////////////////
                 if (this.gameState.getCurrentState() == StateMachine.MENU) { 
                     this.menu.draw(frametime);
-                } else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
-                    //todo...
                 } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
                     this.board.draw(frametime);
                     this.score.draw(frametime);
@@ -222,6 +222,43 @@ public class Game implements GameInterface {
     }
 
     /**
+     * Toogle the pause button
+     */
+    @Override
+    public synchronized void tooglePause() {
+        this.toogleMuteTheme();
+        this.board.tooglePause();
+    }
+
+    /**
+     * Game reset
+     */
+    @Override
+    public void softReset() {
+        this.resetTheme();
+        this.board.resetGame();
+        this.screenT.reset();
+        this.score.reset();
+    }
+
+    /**
+     * Toogle changing stage controller
+     */
+    public synchronized void toogleChangingStage() {
+        this.changingStage = !this.changingStage;
+    }
+
+    /**
+     * Toogle color theme
+     */
+    public void toogleColorTheme() {
+        this.board.toogleColorTheme();
+    }
+
+    //----------------------------------------------------//
+    //--------------- Keyboard & Joystick ----------------//
+    //----------------------------------------------------//
+    /**
      * Control the game main character movement
      * @param keyDirection
      */
@@ -243,6 +280,48 @@ public class Game implements GameInterface {
         }
     }
 
+    /**
+     * Game keypress
+     */
+    @Override
+    public void keyPressed(int keyCode) {
+        if (!this.changingStage && !this.stopped) {
+            this.movement(keyCode);
+            if (keyCode == 45) {this.decMasterVolume();}
+            if (keyCode == 61) {this.incMasterVolume();}
+        }
+    }
+
+    /**
+     * Key pressed
+     * @param keyCode
+     */
+    @Override
+    public void keyPressed(int keyCode, boolean releaseAfter) {
+        if (!this.changingStage && !this.stopped) {
+            this.movement(keyCode, releaseAfter);
+        }
+    }
+
+    /**
+     * Game keyRelease
+     */
+    public void keyReleased(int keyCode) {
+        if (!this.changingStage && !this.stopped) {
+            if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+                this.board.canRotate = true;
+                if (keyCode == N1)  {this.toogleSoundTheme();   }
+                if (keyCode == N2)  {this.toogleColorTheme();   }
+                if (keyCode == M)   {this.toogleMuteTheme();    }
+                if (keyCode == P)   {this.tooglePause();        }
+                if (keyCode == R)   {this.softReset();          }
+            }
+        }
+    }
+
+    //----------------------------------------------------//
+    //--------------- Music & SFX  -----------------------//
+    //----------------------------------------------------//
     /**
      * Mute / unmute the game theme
      */
@@ -291,134 +370,35 @@ public class Game implements GameInterface {
     }
 
     /**
-     * Toogle the pause button
-     */
-    @Override
-    public synchronized void tooglePause() {
-        this.toogleMuteTheme();
-        this.board.tooglePause();
-    }
-
-    /**
-     * Toogle changing stage controller
-     */
-    public synchronized void toogleChangingStage() {
-        this.changingStage = !this.changingStage;
-    }
-
-    /**
-     * Game reset
-     */
-    @Override
-    public void softReset() {
-        this.reset();
-        this.board.resetGame();
-        this.screenT.reset();
-        this.score.reset();
-    }
-
-    /**
      * Aux reset method
      */
-    private void reset() {
-        this.theme.stop();
+    private void resetTheme() {
+        this.stopTheme();
         this.theme.playContinuously();
     }
 
     /**
-     * Toogle color theme
+     * Increase/Decrease the Master Volume
      */
-    public void toogleColorTheme() {
-        this.board.toogleColorTheme();
-    }
+    public void decMasterVolume() {this.decVolumeSFX(); this.decVolumeTheme();}
+    public void incMasterVolume() {this.incVolumeSFX(); this.incVolumeTheme();}
 
     /**
-     * Game keypress
+     * Increase/Decrease only the theme
      */
-    @Override
-    public void keyPressed(int keyCode) {
-        if (!this.changingStage && !this.stopped) {
-            this.movement(keyCode);
-            if (keyCode == 45) {this.decMasterVolume();}
-            if (keyCode == 61) {this.incMasterVolume();}
-        }
-    }
+    public void decVolumeTheme() {this.theme.decVolume(1);}
+    public void incVolumeTheme() {this.theme.addVolume(1);}
 
     /**
-     * Key pressed
-     * @param keyCode
+     * Increase/Decrease the SFX Volume
      */
-    @Override
-    public void keyPressed(int keyCode, boolean releaseAfter) {
-        if (!this.changingStage && !this.stopped) {
-            this.movement(keyCode, releaseAfter);
-        }
-    }
+    public void decVolumeSFX() {this.board.decVolumeSFX();}
+    public void incVolumeSFX() {this.board.incVolumeSFX();}
 
-    /**
-     * Game keyRelease
-     */
-    public void keyReleased(int keyCode) {
-        if (!this.changingStage && !this.stopped) {
-            if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
-                this.board.canRotate = true;
-                if (keyCode == 49) {this.toogleSoundTheme();}
-                if (keyCode == 50) {this.toogleColorTheme();}
-                if (keyCode == 77) {this.toogleMuteTheme();}
-                if (keyCode == 80) {this.tooglePause();}
-                if (keyCode == 82) {this.softReset();}
-            }
-        }
-    }
 
-    /**
-     * Decrease the Master Volume
-     */
-    public void decMasterVolume() {
-        this.decVolumeSFX();
-        this.decVolumeTheme();
-    }
-
-    /**
-     * Increase the Master Volume
-     */
-    public void incMasterVolume() {
-        this.incVolumeSFX();
-        this.incVolumeTheme();
-    }
-
-    /**
-     * Decrease only the theme
-     */
-    public void decVolumeTheme() {
-        this.theme.decVolume(1);
-    }
-
-    /**
-     * Increase the theme volume
-     */    
-    public void incVolumeTheme() {
-        this.theme.addVolume(1);
-    }
-
-    /**
-     * Decrease the SFX Volume
-     */
-    public void decVolumeSFX() {
-        this.board.decVolumeSFX();
-    }
-
-    /**
-     * Increase the SFX Volume
-     */
-    public void incVolumeSFX() {
-        this.board.incVolumeSFX();
-    }
-
-    /**
-     * Accessor methods
-     * @return
-     */
+    //----------------------------------------------------//
+    //------------------- Accessors ----------------------//
+    //----------------------------------------------------//
     //public Score getScore()                     {   return (this.score);        }
     //public GameOver getGameOver()               {   return this.gameOver;       }
     public StateMachine getGameState()              {   return this.gameState;      }
