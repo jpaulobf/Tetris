@@ -7,6 +7,13 @@ import java.awt.image.VolatileImage;
  * All games need to implement the IGame interface
  */
 public interface GameInterface {
+
+    public static final int R = 82;
+    public static final int P = 80;
+    public static final int M = 77;
+    public static final int N1 = 49;
+    public static final int N2 = 50;
+
     /**
      * Game update
      * @param frametime
