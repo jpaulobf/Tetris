@@ -325,29 +325,6 @@ public class Game implements GameInterface {
         this.theme.playContinuously();
     }
 
-    /** 
-     * go to the next stage 
-     */
-    public synchronized void nextStage() {
-
-        //disable elements update
-        this.toogleChangingStage();
-
-        //this.board.reset();
-
-        //Stages.CURRENT_STAGE[0]++;
-
-        //unpause timer & frog
-        //this.board.tooglePause();
-        
-        //return to initial position & play
-        this.theme.stop();
-        this.toogleMuteTheme();
-
-        //enable elements update
-        this.toogleChangingStage();
-    }
-
     /**
      * Toogle color theme
      */
