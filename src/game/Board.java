@@ -18,32 +18,48 @@ import util.Audio;
  */
 public class Board {
 
+	/**
+	 * Private Level Class
+	 */
 	private class Level {
 		
-		private byte level 				= 1;
-		private double gameSpeed 		= 1D;
-		private double speedFactor 		= 1.3D;
-		private final static byte MIN 	= 1;
-		private final static byte MAX 	= 8;
+		private byte firstLevelDef				= 1;
+		private final double defaultGameSpeed 	= 1D;
+		private byte level 						= this.firstLevelDef;
+		private double gameSpeed 				= this.defaultGameSpeed;
+		private double speedFactor 				= 1.3D;
+		private final static byte MIN 			= 1;
+		private final static byte MAX 			= 8;
+
+		public Level(byte level) {
+			if (level >= MIN && level <= MAX) {
+				this.firstLevelDef = level;
+				this.level = this.firstLevelDef;
+				this.defGameSpeed();
+			}
+		}
 
 		public void nextLevel() {
 			if (this.level < MAX) {
 				this.level++;
-			}
-		}
-
-		public Level(byte level) {
-			if (level >= MIN && level <= MAX) {
-				this.level = level;
+				this.defGameSpeed();
 			}
 		}
 
 		public double getGameSpeed() {
-			for (int i = MIN; i < level; i++) {
+			return (this.gameSpeed);
+		}
+
+		public void reset() {
+			this.level = this.firstLevelDef;
+			this.gameSpeed = this.defaultGameSpeed;
+			this.defGameSpeed();
+		}
+
+		private void defGameSpeed() {
+			for (int i = MIN; i < this.level; i++) {
 				this.gameSpeed *= speedFactor;
 			}
-
-			return (this.gameSpeed);
 		}
 	}
 
@@ -104,8 +120,6 @@ public class Board {
 	private Level level								= null;
 
 	//Gameplay variables
-	private double TMP								= 1;
-	private double gameSpeed						= TMP;
 	private long framecounter						= 0;
 	protected short renderPositionX 				= 0;
 	protected short renderPositionY 				= 0;
@@ -120,24 +134,21 @@ public class Board {
 	protected volatile boolean hasLineFull			= false;
 	protected volatile byte firstline				= -1;
 
+
+
 	public byte getCurrentLevel() {
         return (this.currentLevel);
     }
-
-	public short getLinesCleared() {
-		return (this.linesCleared);
-	}
 
 	public void nextLevel() {
 		this.currentLevel += (this.currentLevel < 20)?1:0;
 	}
 
+	/**
+	 * Set the next speed of the game
+	 */
 	public void nextGameSpeed() {
-		this.gameSpeed += 1.25D;
-	}
-
-	public Game getGameRef() {
-		return (this.gameRef);
+		this.level.nextLevel();
 	}
 
 	/**
@@ -145,26 +156,34 @@ public class Board {
 	 */
 	public Board(GameInterface game, byte level) {
 
-		//recovery canvas g2d
+		//parent object
 		this.gameRef				= (Game)game;
+
+		//base piece
 		this.nonePiece 				= new NonePiece(this);
+		
+		//base measures
 		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
 		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
 		this.boardSquareWidth 		= (short)((this.boardSmallSquareWidth * BOARD_COLUMNS) + BOARD_BORDER + BOARD_BORDER);
 		this.boardSquareHeight 		= (short)((this.boardSmallSquareHeight * BOARD_LINES) + BOARD_BORDER + BOARD_BORDER);
+		
+		//define the game board
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
 		this.gameBoardColor			= new Color[BOARD_LINES][BOARD_COLUMNS];
+
+		//set the current theme
 		this.theme					= new Theme(defaultTheme);
 		this.circle 				= this.theme.getCircle();
+
+		//load the labels
 		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");
 		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");
 		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
 		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
-		
-		this.level 					= new Level(level);
-		this.gameSpeed 				= this.level.getGameSpeed();
 
-		System.out.println(this.gameSpeed);
+		//define the game level
+		this.level 					= new Level(level);
 
 		//define the bg width/height
 		int bgwidth 				= BOARD_LEFT + boardSquareWidth + 150;
@@ -188,7 +207,7 @@ public class Board {
 			}
 		}
 
-		//load audio.
+		//load audios
 		this.turn 		= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
 		this.move 		= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
 		this.splash 	= (Audio)LoadingStuffs.getInstance().getStuff("splash");
@@ -210,6 +229,7 @@ public class Board {
 		this.circle = this.theme.getCircle();
 		this.drawGameBoardBG();
 	}
+
 
 	public void resetColorTheme() {
 		this.setColorTheme((byte)0);
@@ -237,7 +257,7 @@ public class Board {
 			}
 
 			//framecounter reach timer or actualPositionY == default
-			if ( (this.framecounter >= (1_000_000_000 / this.gameSpeed) ||
+			if ( (this.framecounter >= (1_000_000_000 / this.level.getGameSpeed()) ||
 				(this.actualPiece.getActualPositionY() == this.actualPiece.getDefaultInitialSquareY())) ) {
 
 				//down one line
@@ -708,41 +728,6 @@ public class Board {
 	}
 	
 	/**
-	 * Reset game method
-	 */
-	public synchronized void resetGame() {
-		
-		//re-initialize the variables
-		this.nonePiece 				= new NonePiece(this);
-		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
-		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
-		this.boardSquareWidth 		= (short)((this.boardSmallSquareWidth * BOARD_COLUMNS) + BOARD_BORDER + BOARD_BORDER);
-		this.boardSquareHeight 		= (short)((this.boardSmallSquareHeight * BOARD_LINES) + BOARD_BORDER + BOARD_BORDER);
-		this.gameSpeed 				= TMP;//(short)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
-		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
-
-		//clear the hold, last & actual piece
-		this.lastPiece 				= null;
-		this.holdPiece 				= null;
-		this.actualPiece 			= null;
-		this.currentLevel           = 1;
-		this.linesCleared			= 0;
-		
-		//Clear the gameboard
-		for (int cnt = 0; cnt < this.gameBoard.length; cnt++) {
-			for (int cnt2 = 0; cnt2 < this.gameBoard[cnt].length; cnt2++) {
-				this.gameBoard[cnt][cnt2] = -1;
-			}
-		}
-		
-		//Sort a new piece
-		this.sortPiecesList();
-		
-		//reset the color theme
-		this.resetColorTheme();
-	}
-	
-	/**
 	 * Verify if can move to the right
 	 * @return
 	 */
@@ -902,7 +887,6 @@ public class Board {
 		short [][] matrix 	= piece.getPieceMatrix();
 
 		for (int cnt = 0; cnt < matrix.length; cnt++) {
-			
 			//--- TODO: gameover...
 			if ((startPositionY + matrix[cnt][0]) >= BOARD_LINES || ((startPositionY + matrix[cnt][0]) < 0)) {
 				this.resetGame();
@@ -944,6 +928,41 @@ public class Board {
     }
 
 	/**
+	 * Reset game method
+	 */
+	public synchronized void resetGame() {
+		
+		//re-initialize the variables
+		this.nonePiece 				= new NonePiece(this);
+		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
+		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
+		this.boardSquareWidth 		= (short)((this.boardSmallSquareWidth * BOARD_COLUMNS) + BOARD_BORDER + BOARD_BORDER);
+		this.boardSquareHeight 		= (short)((this.boardSmallSquareHeight * BOARD_LINES) + BOARD_BORDER + BOARD_BORDER);
+		this.level.reset();
+		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
+
+		//clear the hold, last & actual piece
+		this.lastPiece 				= null;
+		this.holdPiece 				= null;
+		this.actualPiece 			= null;
+		this.currentLevel           = 1;
+		this.linesCleared			= 0;
+		
+		//Clear the gameboard
+		for (int cnt = 0; cnt < this.gameBoard.length; cnt++) {
+			for (int cnt2 = 0; cnt2 < this.gameBoard[cnt].length; cnt2++) {
+				this.gameBoard[cnt][cnt2] = -1;
+			}
+		}
+		
+		//Sort a new piece
+		this.sortPiecesList();
+		
+		//reset the color theme
+		this.resetColorTheme();
+	}
+
+	/**
 	 * Toogle game pause
 	 */
 	public void tooglePause() {
@@ -959,4 +978,6 @@ public class Board {
 	public short getRenderPositionX() 			{	return (this.renderPositionX);			}
 	public short getRenderPositionY() 			{ 	return (this.renderPositionY);			}
 	public Graphics2D getG2D()					{ 	return (this.gameRef.getG2D());			}
+	public Game getGameRef() 					{	return (this.gameRef);					}
+	public short getLinesCleared() 				{	return (this.linesCleared);				}
 }
