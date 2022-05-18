@@ -22,9 +22,15 @@ public class Board {
 		
 		private byte level 				= 1;
 		private double gameSpeed 		= 1D;
-		private double speedFactor 		= 1.15D;
+		private double speedFactor 		= 1.3D;
 		private final static byte MIN 	= 1;
 		private final static byte MAX 	= 8;
+
+		public void nextLevel() {
+			if (this.level < MAX) {
+				this.level++;
+			}
+		}
 
 		public Level(byte level) {
 			if (level >= MIN && level <= MAX) {
@@ -154,8 +160,11 @@ public class Board {
 		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");
 		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
 		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
-		this.gameSpeed 				= TMP;//(byte)(MIN_GAME_SPEED - (this.actualLevel * SPEED_FACTOR));
+		
 		this.level 					= new Level(level);
+		this.gameSpeed 				= this.level.getGameSpeed();
+
+		System.out.println(this.gameSpeed);
 
 		//define the bg width/height
 		int bgwidth 				= BOARD_LEFT + boardSquareWidth + 150;
