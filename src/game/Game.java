@@ -53,13 +53,7 @@ public class Game implements GameInterface {
 	private Board board						= null;
     private Score score                     = null;
     private ScreenTransition screenT        = null;
-    private volatile byte startLevel        = 1;
-       
-    public void nextLevel() {
-        this.screenT.reset();
-        this.board.nextGameSpeed();
-        this.toogleColorTheme();
-    }
+    private GameLevel gameLevel			    = null;
 
     /**
      * Game constructor
@@ -112,8 +106,8 @@ public class Game implements GameInterface {
                         this.gameState.setCurrentState(StateMachine.OPTIONS);
                     } else if (this.menu.goGame()) {
                         this.gameState.setCurrentState(StateMachine.STAGING);
-                        this.startLevel = this.menu.getLevel();
-                        this.board      = new Board(this, this.startLevel);
+                        this.gameLevel  = new GameLevel(this.menu.getLevel());
+                        this.board      = new Board(this);
                     } else if (this.menu.goExit()) {
                         System.exit(0);
                     }
@@ -395,6 +389,94 @@ public class Game implements GameInterface {
     public void decVolumeSFX() {this.board.decVolumeSFX();}
     public void incVolumeSFX() {this.board.incVolumeSFX();}
 
+    //----------------------------------------------------//
+    //--------------- 	Game Level  ----------------------//
+    //----------------------------------------------------//
+    /**
+     * Advance to the next game level.
+     */
+    public void nextLevel() {
+        this.screenT.reset();
+        this.nextGameSpeed();
+        this.toogleColorTheme();
+    }
+    
+	/**
+	 * Bridge to the gameLevel getCurrentGameLevel
+	 */
+	public byte getCurrentLevel() {
+        return (this.gameLevel.getCurrentGameLevel());
+    }
+
+	/**
+	 * Bridge to the gameLevel nextGameLevel
+	 */
+	public void nextGameSpeed() {
+		this.gameLevel.nextGameLevel();
+	}
+
+    /**
+	 * Bridge to the gameLevel resetGameLevel
+	 */
+    public void resetGameLevel() {
+        this.gameLevel.resetGameLevel();
+    }
+
+    /**
+	 * Bridge to the gameLevel getGameSpeed
+	 */
+    public double getGameSpeed() {
+        return (this.gameLevel.getGameSpeed());
+    }
+
+	/**
+	 * Private Game Level Class
+	 */
+	private class GameLevel {
+		
+		private byte firstLevelDefinition		= 1;
+		private final double defaultGameSpeed 	= 1D;
+		private byte level 						= this.firstLevelDefinition;
+		private double gameSpeed 				= this.defaultGameSpeed;
+		private double speedFactor 				= 1.3D;
+		private final static byte MIN 			= 1;
+		private final static byte MAX 			= 8;
+
+		public GameLevel(byte level) {
+			if (level >= MIN && level <= MAX) {
+				this.firstLevelDefinition = level;
+				this.level = this.firstLevelDefinition;
+				this.defGameSpeed();
+			}
+		}
+
+		public byte getCurrentGameLevel() {
+			return (this.level);
+		}
+
+		public void nextGameLevel() {
+			if (this.level < MAX) {
+				this.level++;
+				this.defGameSpeed();
+			}
+		}
+
+		public double getGameSpeed() {
+			return (this.gameSpeed);
+		}
+
+		public void resetGameLevel() {
+			this.level = this.firstLevelDefinition;
+			this.gameSpeed = this.defaultGameSpeed;
+			this.defGameSpeed();
+		}
+
+		private void defGameSpeed() {
+			for (int i = MIN; i < this.level; i++) {
+				this.gameSpeed *= speedFactor;
+			}
+		}
+	}
 
     //----------------------------------------------------//
     //------------------- Accessors ----------------------//
@@ -409,5 +491,4 @@ public class Game implements GameInterface {
     public Score getScore()                         {   return (this.score);        }
     public Board getBoard()                         {   return (this.board);        }
     public void updateGraphics2D(Graphics2D g2d)    {   this.g2dFS = g2d;           }
-    public void setStartLevel(byte level)           {   this.startLevel = level;    }
 }
