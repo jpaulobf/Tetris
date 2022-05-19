@@ -18,66 +18,6 @@ import util.Audio;
  */
 public class Board {
 
-	/**
-	 * Private Level Class
-	 */
-	private class Level {
-		
-		private byte firstLevelDef				= 1;
-		private final double defaultGameSpeed 	= 1D;
-		private byte level 						= this.firstLevelDef;
-		private double gameSpeed 				= this.defaultGameSpeed;
-		private double speedFactor 				= 1.3D;
-		private final static byte MIN 			= 1;
-		private final static byte MAX 			= 8;
-
-		public Level(byte level) {
-			if (level >= MIN && level <= MAX) {
-				this.firstLevelDef = level;
-				this.level = this.firstLevelDef;
-				this.defGameSpeed();
-			}
-		}
-
-		public void nextLevel() {
-			if (this.level < MAX) {
-				this.level++;
-				this.defGameSpeed();
-			}
-		}
-
-		public double getGameSpeed() {
-			return (this.gameSpeed);
-		}
-
-		public void reset() {
-			this.level = this.firstLevelDef;
-			this.gameSpeed = this.defaultGameSpeed;
-			this.defGameSpeed();
-		}
-
-		private void defGameSpeed() {
-			for (int i = MIN; i < this.level; i++) {
-				this.gameSpeed *= speedFactor;
-			}
-		}
-	}
-
-	public byte getCurrentLevel() {
-        return (this.currentLevel);
-    }
-
-	public void nextLevel() {
-		this.currentLevel += (this.currentLevel < 20)?1:0;
-	}
-
-	/**
-	 * Set the next speed of the game
-	 */
-	public void nextGameSpeed() {
-		this.level.nextLevel();
-	}
-
 	//constants
 	public final static byte BOARD_LINES 			= 20;
 	public final static byte BOARD_COLUMNS 			= 10;
@@ -92,10 +32,6 @@ public class Board {
 	public final static short SORTED_BOX_TOP		= 20;
 	protected final static byte SHADOW_THICKNESS	= 4;
 	public final static byte INITIAL_SQUARE_X		= 3;
-	protected final static short MAX_GAME_LEVEL		= 20;
-	protected final static short SPEED_FACTOR		= 2;
-	protected final static short MIN_GAME_SPEED		= 44;
-	protected final static short MAX_GAME_SPEED		= 20;
 	
 	//images
 	private BufferedImage gameBoardBG         		= null;
@@ -132,7 +68,6 @@ public class Board {
 	private Audio drop          					= null;
 	private Audio tetris          					= null;
 	private Audio holdSound							= null;
-	private Level level								= null;
 
 	//Gameplay variables
 	private long framecounter						= 0;
@@ -152,7 +87,7 @@ public class Board {
 	/**
 	 * Construtor
 	 */
-	public Board(GameInterface game, byte level) {
+	public Board(GameInterface game) {
 
 		//parent object
 		this.gameRef				= (Game)game;
@@ -170,23 +105,21 @@ public class Board {
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
 		this.gameBoardColor			= new Color[BOARD_LINES][BOARD_COLUMNS];
 
-		//set the current theme
+		//clear the gameboard
+		for (short i = 0; i < this.gameBoard.length; i++) {
+			for (short j = 0; j < this.gameBoard[i].length; j++) {
+				this.gameBoard[i][j] = -1;
+			}
+		}
+
+		//set the current theme & load the circle image, based on theme
 		this.theme					= new Theme(defaultTheme);
 		this.circle 				= this.theme.getCircle();
-
-		//load the labels
-		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");
-		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");
-		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
-		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
-
-		//define the game level
-		this.level 					= new Level(level);
 
 		//define the bg width/height
 		int bgwidth 				= BOARD_LEFT + boardSquareWidth + 150;
 		int bgheight				= BOARD_TOP + boardSquareHeight + 150;
-		
+
 		//create the main game image structure
 		this.gameBoardBG			= GraphicsEnvironment.getLocalGraphicsEnvironment()
 														 .getDefaultScreenDevice().getDefaultConfiguration()
@@ -198,48 +131,23 @@ public class Board {
 		//just one, draw game background
 		this.drawGameBoardBG();
 
-		//clear the gameboard
-		for (short i = 0; i < this.gameBoard.length; i++) {
-			for (short j = 0; j < this.gameBoard[i].length; j++) {
-				this.gameBoard[i][j] = -1;
-			}
-		}
+		//load the labels
+		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");
+		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");
+		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
+		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
 
 		//load audios
-		this.turn 		= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
-		this.move 		= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
-		this.splash 	= (Audio)LoadingStuffs.getInstance().getStuff("splash");
-		this.drop 		= (Audio)LoadingStuffs.getInstance().getStuff("drop");
-		this.holdSound	= (Audio)LoadingStuffs.getInstance().getStuff("hold");
-		this.tetris		= (Audio)LoadingStuffs.getInstance().getStuff("tetris");
+		this.turn 					= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
+		this.move 					= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
+		this.splash 				= (Audio)LoadingStuffs.getInstance().getStuff("splash");
+		this.drop 					= (Audio)LoadingStuffs.getInstance().getStuff("drop");
+		this.holdSound				= (Audio)LoadingStuffs.getInstance().getStuff("hold");
+		this.tetris					= (Audio)LoadingStuffs.getInstance().getStuff("tetris");
 
 		//calc the render position
-		this.renderPositionX = (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
-		this.renderPositionY = (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
-	}
-
-	/** 
-	 * Toogle color theme
-	*/
-	public void toogleColorTheme() {
-		this.defaultTheme = (byte)(++this.defaultTheme%8);
-		this.theme.setTheme(this.defaultTheme);
-		this.circle = this.theme.getCircle();
-		this.drawGameBoardBG();
-	}
-
-
-	public void resetColorTheme() {
-		this.setColorTheme((byte)0);
-	}
-
-	/** 
-	 * set the color theme
-	*/
-	public void setColorTheme(byte colorTheme) {
-		this.theme.setTheme(colorTheme);
-		this.circle = this.theme.getCircle();
-		this.drawGameBoardBG();
+		this.renderPositionX 		= (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
+		this.renderPositionY 		= (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
 	}
 
 	/**
@@ -255,7 +163,7 @@ public class Board {
 			}
 
 			//framecounter reach timer or actualPositionY == default
-			if ( (this.framecounter >= (1_000_000_000 / this.level.getGameSpeed()) ||
+			if ((this.framecounter >= (1_000_000_000 / this.gameRef.getGameSpeed()) ||
 				(this.actualPiece.getActualPositionY() == this.actualPiece.getDefaultInitialSquareY())) ) {
 
 				//down one line
@@ -279,10 +187,174 @@ public class Board {
 	}
 
 	/**
+	 * Draw method
+	 * @param frametime
+	 */
+	public void draw(long frametime) {
+
+		//draw the background and bgimage
+		this.getG2D().drawImage(this.theme.getBackgroundImage(), 0, 0, null);
+		this.getG2D().drawImage(this.gameBoardBG, renderPositionX, renderPositionY, null);
+		this.getG2D().drawImage(this.score, 	30, 11, null);
+		this.getG2D().drawImage(this.hiscore, 	this.gameRef.getInternalResolutionWidth() - this.hiscore.getWidth() - 30, 11, null);
+
+		this.getG2D().drawImage(this.circle, 	 37, 362, null);
+		this.getG2D().drawImage(this.circle, 	 37, 568, null);
+		this.getG2D().drawImage(this.labelLevel, 83, 345, null);
+		this.getG2D().drawImage(this.labelLine,  76, 553, null);
+
+		//Draw hold piece
+		if (this.holdPiece != null) {
+			byte actual = 0;
+			this.holdPiece.setPieceActualState(actual);
+			this.holdPiece.drawHold(frametime);
+		}
+		
+		//Draw actual piece
+		if (this.actualPiece.getActualPositionX() == -10) {
+			this.actualPiece.setActualPositionX(INITIAL_SQUARE_X);
+		}
+		if (this.actualPiece.getActualPositionY() == -10) {
+			this.actualPiece.setActualPositionY(this.actualPiece.getDefaultInitialSquareY());
+		}
+		this.actualPiece.draw(frametime, true);
+		
+		//draw list of sorted pieces
+		BasePiece nextPiece = null;
+		for (byte cnt = 0; this.nextPieces != null && cnt < this.nextPieces.size(); cnt++) {
+			nextPiece = this.nextPieces.get(cnt);
+			nextPiece.drawNext(frametime, cnt);
+		}
+
+		//draw bag of pieces
+		this.drawBoardPieces();
+	}
+
+	/**
+	 * Draw the bag of pieces in the board
+	 */
+	private void drawBoardPieces() {
+		for (int linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
+			for (int colunas = 0; colunas < gameBoard[linhas].length; colunas++) { 
+				if (gameBoard[linhas][colunas] == 1) {
+					//calc square by square the position 
+					int calcPosX = Board.BOARD_LEFT + Board.BOARD_BORDER + (colunas * (BasePiece.SMALL_SQUARE_WIDTH))  + colunas + renderPositionX;
+					int calcPosY = Board.BOARD_TOP  + Board.BOARD_BORDER + (linhas  * (BasePiece.SMALL_SQUARE_HEIGHT)) + linhas  + renderPositionY;
+
+					//draw the flat rect
+					this.getG2D().setColor(gameBoardColor[linhas][colunas]);
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, BasePiece.SMALL_SQUARE_WIDTH, BasePiece.SMALL_SQUARE_HEIGHT));
+					
+					//draw the bevel effect
+					this.getG2D().setColor(Color.WHITE);
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, 1, BasePiece.SMALL_SQUARE_HEIGHT));
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, BasePiece.SMALL_SQUARE_WIDTH, 1));
+					
+					//draw the shadow
+					this.getG2D().setColor(Color.DARK_GRAY);
+					this.getG2D().fill(new Rectangle(calcPosX + BasePiece.SMALL_SQUARE_WIDTH, calcPosY, 1, BasePiece.SMALL_SQUARE_HEIGHT));
+					this.getG2D().fill(new Rectangle(calcPosX, calcPosY + BasePiece.SMALL_SQUARE_HEIGHT, BasePiece.SMALL_SQUARE_WIDTH + 1, 1));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Draw game background (once).
+	 */
+	private void drawGameBoardBG() {
+
+		this.bg2d.setComposite(java.awt.AlphaComposite.Clear);
+		this.bg2d.fillRect(0, 0, this.gameBoardBG.getWidth(), this.gameBoardBG.getHeight());
+		this.bg2d.setComposite(java.awt.AlphaComposite.SrcOver);
+
+		boolean filled 		= this.theme.getFilledGrid();
+		this.next			= this.theme.getNextLabel();
+		this.hold			= this.theme.getHoldLabel();
+		
+		//fill the bg with theme color, case selected not checkered filled
+		if (!filled) {
+			this.bg2d.setColor(this.theme.getBgBoardColor());
+			this.bg2d.fillRect(BOARD_LEFT, BOARD_TOP, this.boardSquareWidth-1, this.boardSquareHeight);
+		}
+
+		//Draw the board
+		for (short i = 0; i < BOARD_LINES; i++) {
+			for (short j = 0; j < BOARD_COLUMNS; j++) {
+				if (filled) {
+					if (this.fillColor) {
+						this.bg2d.setColor(new Color(235, 235, 240));
+					} else {
+						this.bg2d.setColor(Color.WHITE);
+					}
+
+					//exchange color
+					this.fillColor = !this.fillColor;
+
+					//in the last column exchange twice
+					if (j == (BOARD_COLUMNS - 1)) {
+						this.fillColor = !this.fillColor;
+					}
+
+					//draw filled rect
+					this.bg2d.fillRect(BOARD_LEFT + BOARD_BORDER + (j * this.boardSmallSquareWidth), 
+									   BOARD_TOP + BOARD_BORDER + (i * this.boardSmallSquareHeight), 
+									   this.boardSmallSquareWidth, 
+									   this.boardSmallSquareHeight);	
+				} else {
+					//the color of the line
+					this.bg2d.setColor(this.theme.getLineColor());
+
+					//draw just the rect (not filled)
+					this.bg2d.drawRect(BOARD_LEFT + BOARD_BORDER + (j * this.boardSmallSquareWidth), 
+									   BOARD_TOP + BOARD_BORDER + (i * this.boardSmallSquareHeight), 
+									   this.boardSmallSquareWidth, 
+									   this.boardSmallSquareHeight);	
+				}
+			}	
+		}
+		
+		//draw lines & shadows
+		this.bg2d.setColor(Color.LIGHT_GRAY);
+		this.bg2d.drawRect(BOARD_LEFT, BOARD_TOP, this.boardSquareWidth-1, this.boardSquareHeight);
+		this.bg2d.setColor(Color.DARK_GRAY);
+		this.bg2d.fillRect(BOARD_LEFT + this.boardSquareWidth, BOARD_TOP + SHADOW_THICKNESS, SHADOW_THICKNESS, this.boardSquareHeight);
+		this.bg2d.setColor(Color.DARK_GRAY);
+		this.bg2d.fillRect(BOARD_LEFT + SHADOW_THICKNESS, BOARD_TOP + this.boardSquareHeight + 1, this.boardSquareWidth, SHADOW_THICKNESS);
+		
+		//Draw hold box
+		this.bg2d.drawImage(this.hold, 5, 11, null);
+		this.bg2d.setColor(this.theme.getBgBoardColor());
+		this.bg2d.fillRect(HOLD_BOX_LEFT + 1, HOLD_BOX_TOP - 8 + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
+		this.bg2d.setColor(Color.DARK_GRAY);
+		this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH, HOLD_BOX_TOP - 8 + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
+		this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS, HOLD_BOX_TOP - 8 + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
+		this.bg2d.setColor(Color.LIGHT_GRAY);
+		this.bg2d.drawRect(HOLD_BOX_LEFT, HOLD_BOX_TOP - 8, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
+
+		//Next boxes
+		final short nextPosX = (short)(BOARD_LEFT + boardSquareWidth + 20);
+		this.bg2d.drawImage(this.next, nextPosX + 3, 11, null);
+
+		for (byte i = 0; i < 6; i++) {
+			short nextPosY = (short)((i * 100) - 8);
+			this.bg2d.setColor(this.theme.getBgBoardColor());
+			this.bg2d.fillRect(HOLD_BOX_LEFT + 1 + nextPosX, HOLD_BOX_TOP + nextPosY + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
+			this.bg2d.setColor(Color.DARK_GRAY);
+			this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH + nextPosX, HOLD_BOX_TOP + nextPosY + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
+			this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS + nextPosX, HOLD_BOX_TOP + nextPosY + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
+			this.bg2d.setColor(Color.LIGHT_GRAY);
+			this.bg2d.drawRect(HOLD_BOX_LEFT + nextPosX, HOLD_BOX_TOP + nextPosY, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
+		}
+	}
+
+	//----------------------------------------------------//
+    //------------------ Main logic ----------------------//
+    //----------------------------------------------------//
+	/**
 	 * Very fast algorithm to drop lines & control what lines has to be deleted
 	 */
 	private void checkLineClear() {
-
 		byte testValue 					= 0;
 		byte maxLines					= 4;
 		byte linesToEnd					= -1;
@@ -463,211 +535,11 @@ public class Board {
 			}
 		}
 	}
-	
-	/**
-	 * Draw method
-	 * @param frametime
-	 */
-	public void draw(long frametime) {
 
-		//draw the background and bgimage
-		this.getG2D().drawImage(this.theme.getBackgroundImage(), 0, 0, null);
-		this.getG2D().drawImage(this.gameBoardBG, renderPositionX, renderPositionY, null);
-		this.getG2D().drawImage(this.score, 	30, 11, null);
-		this.getG2D().drawImage(this.hiscore, 	this.gameRef.getInternalResolutionWidth() - this.hiscore.getWidth() - 30, 11, null);
-
-		this.getG2D().drawImage(this.circle, 	 37, 362, null);
-		this.getG2D().drawImage(this.circle, 	 37, 568, null);
-		this.getG2D().drawImage(this.labelLevel, 83, 345, null);
-		this.getG2D().drawImage(this.labelLine,  76, 553, null);
-
-		//Draw hold piece
-		if (this.holdPiece != null) {
-			byte actual = 0;
-			this.holdPiece.setPieceActualState(actual);
-			this.holdPiece.drawHold(frametime);
-		}
-		
-		//Draw actual piece
-		if (this.actualPiece.getActualPositionX() == -10) {
-			this.actualPiece.setActualPositionX(INITIAL_SQUARE_X);
-		}
-		if (this.actualPiece.getActualPositionY() == -10) {
-			this.actualPiece.setActualPositionY(this.actualPiece.getDefaultInitialSquareY());
-		}
-		this.actualPiece.draw(frametime, true);
-		
-		//draw list of sorted pieces
-		BasePiece nextPiece = null;
-		for (byte cnt = 0; this.nextPieces != null && cnt < this.nextPieces.size(); cnt++) {
-			nextPiece = this.nextPieces.get(cnt);
-			nextPiece.drawNext(frametime, cnt);
-		}
-
-		//draw bag of pieces
-		this.drawBoardPieces();
-	}
-
-	/**
-	 * Draw the bag of pieces in the board
-	 */
-	private void drawBoardPieces() {
-		for (int linhas = 0; this.gameBoard != null && linhas < this.gameBoard.length; linhas++) {
-			for (int colunas = 0; colunas < gameBoard[linhas].length; colunas++) { 
-				if (gameBoard[linhas][colunas] == 1) {
-					//calc square by square the position 
-					int calcPosX = Board.BOARD_LEFT + Board.BOARD_BORDER + (colunas * (BasePiece.SMALL_SQUARE_WIDTH))  + colunas + renderPositionX;
-					int calcPosY = Board.BOARD_TOP  + Board.BOARD_BORDER + (linhas  * (BasePiece.SMALL_SQUARE_HEIGHT)) + linhas  + renderPositionY;
-
-					//draw the flat rect
-					this.getG2D().setColor(gameBoardColor[linhas][colunas]);
-					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, BasePiece.SMALL_SQUARE_WIDTH, BasePiece.SMALL_SQUARE_HEIGHT));
-					
-					//draw the bevel effect
-					this.getG2D().setColor(Color.WHITE);
-					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, 1, BasePiece.SMALL_SQUARE_HEIGHT));
-					this.getG2D().fill(new Rectangle(calcPosX, calcPosY, BasePiece.SMALL_SQUARE_WIDTH, 1));
-					
-					//draw the shadow
-					this.getG2D().setColor(Color.DARK_GRAY);
-					this.getG2D().fill(new Rectangle(calcPosX + BasePiece.SMALL_SQUARE_WIDTH, calcPosY, 1, BasePiece.SMALL_SQUARE_HEIGHT));
-					this.getG2D().fill(new Rectangle(calcPosX, calcPosY + BasePiece.SMALL_SQUARE_HEIGHT, BasePiece.SMALL_SQUARE_WIDTH + 1, 1));
-				}
-			}
-		}
-	}
-
-	/**
-	 * Draw game background (once).
-	 */
-	private void drawGameBoardBG() {
-
-		this.bg2d.setComposite(java.awt.AlphaComposite.Clear);
-		this.bg2d.fillRect(0, 0, this.gameBoardBG.getWidth(), this.gameBoardBG.getHeight());
-		this.bg2d.setComposite(java.awt.AlphaComposite.SrcOver);
-
-		boolean filled 		= this.theme.getFilledGrid();
-		this.next			= this.theme.getNextLabel();
-		this.hold			= this.theme.getHoldLabel();
-		
-		//fill the bg with theme color, case selected not checkered filled
-		if (!filled) {
-			this.bg2d.setColor(this.theme.getBgBoardColor());
-			this.bg2d.fillRect(BOARD_LEFT, BOARD_TOP, this.boardSquareWidth-1, this.boardSquareHeight);
-		}
-
-		//Draw the board
-		for (short i = 0; i < BOARD_LINES; i++) {
-			for (short j = 0; j < BOARD_COLUMNS; j++) {
-				if (filled) {
-					if (this.fillColor) {
-						this.bg2d.setColor(new Color(235, 235, 240));
-					} else {
-						this.bg2d.setColor(Color.WHITE);
-					}
-
-					//exchange color
-					this.fillColor = !this.fillColor;
-
-					//in the last column exchange twice
-					if (j == (BOARD_COLUMNS - 1)) {
-						this.fillColor = !this.fillColor;
-					}
-
-					//draw filled rect
-					this.bg2d.fillRect(BOARD_LEFT + BOARD_BORDER + (j * this.boardSmallSquareWidth), 
-									   BOARD_TOP + BOARD_BORDER + (i * this.boardSmallSquareHeight), 
-									   this.boardSmallSquareWidth, 
-									   this.boardSmallSquareHeight);	
-				} else {
-					//the color of the line
-					this.bg2d.setColor(this.theme.getLineColor());
-
-					//draw just the rect (not filled)
-					this.bg2d.drawRect(BOARD_LEFT + BOARD_BORDER + (j * this.boardSmallSquareWidth), 
-									   BOARD_TOP + BOARD_BORDER + (i * this.boardSmallSquareHeight), 
-									   this.boardSmallSquareWidth, 
-									   this.boardSmallSquareHeight);	
-				}
-			}	
-		}
-		
-		//draw lines & shadows
-		this.bg2d.setColor(Color.LIGHT_GRAY);
-		this.bg2d.drawRect(BOARD_LEFT, BOARD_TOP, this.boardSquareWidth-1, this.boardSquareHeight);
-		this.bg2d.setColor(Color.DARK_GRAY);
-		this.bg2d.fillRect(BOARD_LEFT + this.boardSquareWidth, BOARD_TOP + SHADOW_THICKNESS, SHADOW_THICKNESS, this.boardSquareHeight);
-		this.bg2d.setColor(Color.DARK_GRAY);
-		this.bg2d.fillRect(BOARD_LEFT + SHADOW_THICKNESS, BOARD_TOP + this.boardSquareHeight + 1, this.boardSquareWidth, SHADOW_THICKNESS);
-		
-		//Draw hold box
-		this.bg2d.drawImage(this.hold, 5, 11, null);
-		this.bg2d.setColor(this.theme.getBgBoardColor());
-		this.bg2d.fillRect(HOLD_BOX_LEFT + 1, HOLD_BOX_TOP - 8 + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
-		this.bg2d.setColor(Color.DARK_GRAY);
-		this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH, HOLD_BOX_TOP - 8 + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
-		this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS, HOLD_BOX_TOP - 8 + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
-		this.bg2d.setColor(Color.LIGHT_GRAY);
-		this.bg2d.drawRect(HOLD_BOX_LEFT, HOLD_BOX_TOP - 8, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
-
-		//Next boxes
-		final short nextPosX = (short)(BOARD_LEFT + boardSquareWidth + 20);
-		this.bg2d.drawImage(this.next, nextPosX + 3, 11, null);
-
-		for (byte i = 0; i < 6; i++) {
-			short nextPosY = (short)((i * 100) - 8);
-			this.bg2d.setColor(this.theme.getBgBoardColor());
-			this.bg2d.fillRect(HOLD_BOX_LEFT + 1 + nextPosX, HOLD_BOX_TOP + nextPosY + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
-			this.bg2d.setColor(Color.DARK_GRAY);
-			this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH + nextPosX, HOLD_BOX_TOP + nextPosY + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
-			this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS + nextPosX, HOLD_BOX_TOP + nextPosY + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
-			this.bg2d.setColor(Color.LIGHT_GRAY);
-			this.bg2d.drawRect(HOLD_BOX_LEFT + nextPosX, HOLD_BOX_TOP + nextPosY, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
-		}
-	}
-
-	/**
-	 * Move the game
-	 * @param keyCode
-	 */
-	public synchronized void move(int keyCode, boolean releaseAfter) {
-		if (!this.stopped) {
-			if (keyCode == 39) { //right
-				this.getActualPiece().moveRight();
-				this.move.play();
-			} else if (keyCode == 37) { //left
-				this.getActualPiece().moveLeft();
-				this.move.play();
-			} else if (keyCode == 38) { //up
-				if (this.canRotate) {
-					this.getActualPiece().rotateRight();
-					this.turn.play();
-					this.canRotate = releaseAfter;
-				}
-			} else if (keyCode == 40) { //down
-				this.getActualPiece().downOneLine(false);
-				this.gameRef.getScore().addScore(Score.HARDDROP, this.currentLevel);
-				this.move.play();
-			} else if (keyCode == 17) { // r-control
-				this.holdPiece();
-			} else if (keyCode == 32) { //space
-				this.getActualPiece().allDown();
-			}
-		}
-	}
-
-	/**
-	 * Move the game
-	 * @param keyCode
-	 */
-	public synchronized void move(int keyCode) {
-		this.move(keyCode, false);
-	}
-	
 	/**
 	 * Hold piece method
 	 */
-	public void holdPiece() {
+	private void holdPiece() {
 		if (this.canHold) {
 			//no piece holding
 			if (this.holdPiece == null) {
@@ -724,7 +596,7 @@ public class Board {
 		//allow hold
 		this.canHold = true;
 	}
-	
+
 	/**
 	 * Verify if can move to the right
 	 * @return
@@ -873,7 +745,7 @@ public class Board {
 	 * Store the piece position
 	 * @param piece
 	 */
-	public void storePiecePosition(BasePiece piece) {
+	private void storePiecePosition(BasePiece piece) {
 		
 		//recover Y position
 		int startPositionY 	= piece.getActualBottonPosition() - piece.getPieceSquareHeight();
@@ -901,6 +773,77 @@ public class Board {
 		this.splash.play();
 	}
 
+	//----------------------------------------------------//
+    //------------------- Movements ----------------------//
+    //----------------------------------------------------//
+	/**
+	 * Move the game
+	 * @param keyCode
+	 */
+	public synchronized void move(int keyCode, boolean releaseAfter) {
+		if (!this.stopped) {
+			if (keyCode == 39) { //right
+				this.getActualPiece().moveRight();
+				this.move.play();
+			} else if (keyCode == 37) { //left
+				this.getActualPiece().moveLeft();
+				this.move.play();
+			} else if (keyCode == 38) { //up
+				if (this.canRotate) {
+					this.getActualPiece().rotateRight();
+					this.turn.play();
+					this.canRotate = releaseAfter;
+				}
+			} else if (keyCode == 40) { //down
+				this.getActualPiece().downOneLine(false);
+				this.gameRef.getScore().addScore(Score.HARDDROP, this.currentLevel);
+				this.move.play();
+			} else if (keyCode == 17) { // r-control
+				this.holdPiece();
+			} else if (keyCode == 32) { //space
+				this.getActualPiece().allDown();
+			}
+		}
+	}
+
+	/**
+	 * Move the game
+	 * @param keyCode
+	 */
+	public synchronized void move(int keyCode) {
+		this.move(keyCode, false);
+	}
+
+	//----------------------------------------------------//
+    //------------------- Apparence ----------------------//
+    //----------------------------------------------------//
+	/** 
+	 * Toogle color theme
+	*/
+	public void toogleColorTheme() {
+		this.defaultTheme = (byte)(++this.defaultTheme%8);
+		this.theme.setTheme(this.defaultTheme);
+		this.circle = this.theme.getCircle();
+		this.drawGameBoardBG();
+	}
+
+
+	public void resetColorTheme() {
+		this.setColorTheme((byte)0);
+	}
+
+	/** 
+	 * set the color theme
+	*/
+	public void setColorTheme(byte colorTheme) {
+		this.theme.setTheme(colorTheme);
+		this.circle = this.theme.getCircle();
+		this.drawGameBoardBG();
+	}
+
+    //----------------------------------------------------//
+    //--------------- Music & SFX  -----------------------//
+    //----------------------------------------------------//
 	/**
 	 * Decrease SFX Volume
 	 */
@@ -925,6 +868,9 @@ public class Board {
 		this.holdSound.addVolume(1);
     }
 
+	//----------------------------------------------------//
+    //--------------- Pause & Reset ----------------------//
+    //----------------------------------------------------//
 	/**
 	 * Reset game method
 	 */
@@ -936,7 +882,7 @@ public class Board {
 		this.boardSmallSquareWidth	= (short)(this.nonePiece.getPieceSmallSquareWidth() + 1);
 		this.boardSquareWidth 		= (short)((this.boardSmallSquareWidth * BOARD_COLUMNS) + BOARD_BORDER + BOARD_BORDER);
 		this.boardSquareHeight 		= (short)((this.boardSmallSquareHeight * BOARD_LINES) + BOARD_BORDER + BOARD_BORDER);
-		this.level.reset();
+		this.gameRef.resetGameLevel();
 		this.gameBoard				= new short[BOARD_LINES][BOARD_COLUMNS];
 
 		//clear the hold, last & actual piece
@@ -967,7 +913,9 @@ public class Board {
 		this.stopped = !this.stopped;
 	}
 
-	//Getters/setters
+    //----------------------------------------------------//
+    //------------------- Accessors ----------------------//
+    //----------------------------------------------------//
 	public BasePiece getActualPiece() 			{	return (this.actualPiece);				}
 	public short getBoardSmallSquareWidth() 	{	return (this.boardSmallSquareWidth);	}
 	public short getBoardSmallSquareHeight() 	{	return (this.boardSmallSquareHeight);	}
