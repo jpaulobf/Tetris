@@ -378,7 +378,7 @@ public abstract class BasePiece {
 		if (this.boardRef.canMoveDown()) {
 			this.actualPositionY++;
 			if (addPoint) {
-				this.boardRef.getGameRef().getScore().addScore(Score.SINGLELINE, this.boardRef.getCurrentLevel());
+				this.boardRef.getGameRef().getScore().addScore(Score.SINGLELINE, this.boardRef.getGameRef().getCurrentLevel());
 			}
 		} else {
 			this.boardRef.sortPiecesList();
