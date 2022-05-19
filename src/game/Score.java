@@ -364,13 +364,12 @@ public class Score {
         this.level = level;
     }
 
-
     /**
      * Reset method
      */
     public void reset() {
         this.score = 0;
-        this.level = this.gameRef.getBoard().getCurrentLevel();
+        this.level = this.gameRef.getCurrentLevel();
         this.lines = 0;
         if (this.sHiscore != null && !"".equals(this.sHiscore)) {
             this.hiscore = Integer.parseInt(this.sHiscore);
