@@ -105,9 +105,13 @@ public class Game implements GameInterface {
                     if (this.menu.goOptions()) {
                         this.gameState.setCurrentState(StateMachine.OPTIONS);
                     } else if (this.menu.goGame()) {
-                        this.gameState.setCurrentState(StateMachine.STAGING);
+
+                        //get the level defined in the menu
                         this.gameLevel  = new GameLevel(this.menu.getLevel());
                         this.board      = new Board(this);
+
+                        //go to staging status
+                        this.gameState.setCurrentState(StateMachine.STAGING);
                     } else if (this.menu.goExit()) {
                         System.exit(0);
                     }
@@ -283,6 +287,13 @@ public class Game implements GameInterface {
             this.movement(keyCode);
             if (keyCode == 45) {this.decMasterVolume();}
             if (keyCode == 61) {this.incMasterVolume();}
+        }
+
+        //WIP
+        if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+            if (keyCode == 27) {
+                System.exit(0);
+            }
         }
     }
 
