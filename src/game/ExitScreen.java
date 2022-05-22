@@ -1,20 +1,10 @@
-ackage game;
+package game;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-import engine.Tetris;
-import util.LoadingStuffs;
 
-
+/**
+ * Exitscreen class
+ */
 public class ExitScreen {
 
     private int positionX                       = 0;
