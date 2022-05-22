@@ -160,6 +160,13 @@ public class Game implements GameInterface {
                 //     //this.score.reset();
                 //     this.framecounter = 0;
                 // }
+            } else if (this.gameState.getCurrentState() == StateMachine.EXITING) {
+                
+                this.framecounter += frametime;
+                
+                //pause
+
+                
             } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
                 
                 //sum framecounter
@@ -198,10 +205,16 @@ public class Game implements GameInterface {
                 //////////////////////////////////////////////////////////////////////
                 if (this.gameState.getCurrentState() == StateMachine.MENU) { 
                     this.menu.draw(frametime);
-                } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+                } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME ||
+                           this.gameState.getCurrentState() == StateMachine.EXITING) {
                     this.board.draw(frametime);
                     this.score.draw(frametime);
                     this.screenT.draw(frametime);
+                            
+                    if (this.gameState.getCurrentState() == StateMachine.EXITING) {
+                        //TODO: render exit screen...
+                    }
+
                 } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
                     //this.gameOver.draw(frametime);
                 }
@@ -292,7 +305,18 @@ public class Game implements GameInterface {
         //WIP
         if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
             if (keyCode == 27) {
-                System.exit(0);
+                //game pause
+                //game status exiting
+                //open confirmation screen
+                //wait for confirmation
+                //if (true)
+                this.gameState.setCurrentState(StateMachine.EXITING);
+                //System.exit(0);
+
+                //else
+                //close confirmation screen
+                //game status InGame
+                //game unpause
             }
         }
     }
