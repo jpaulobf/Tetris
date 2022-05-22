@@ -54,6 +54,7 @@ public class Game implements GameInterface {
     private Score score                     = null;
     private ScreenTransition screenT        = null;
     private GameLevel gameLevel			    = null;
+    private ExitScreen exitScreen           = null;
 
     /**
      * Game constructor
@@ -78,6 +79,7 @@ public class Game implements GameInterface {
         this.menu               = new Menu(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
+        this.exitScreen         = new ExitScreen(g2d, this.wwm, this.whm);
     }
     
     /**
@@ -164,6 +166,7 @@ public class Game implements GameInterface {
                 
                 this.framecounter += frametime;
                 
+                this.exitScreen.update(frametime);
                 //pause
 
                 
@@ -212,7 +215,7 @@ public class Game implements GameInterface {
                     this.screenT.draw(frametime);
                             
                     if (this.gameState.getCurrentState() == StateMachine.EXITING) {
-                        //TODO: render exit screen...
+                        this.exitScreen.draw(frametime);
                     }
 
                 } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
