@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import interfaces.GameInterface;
 
 /**
  * Exitscreen class
@@ -16,7 +17,7 @@ public class ExitScreen {
     private short buttonHeight                  = 20;
     private int resolutionH                     = 0;
     private int resolutionW                     = 0;
-    private Graphics2D g2d                      = null;
+    private GameInterface game                  = null;
     private Rectangle2D.Double mainBox          = null;
     private Rectangle2D.Double yesBox           = null;
     private Rectangle2D.Double noBox            = null;
@@ -34,7 +35,7 @@ public class ExitScreen {
      * @param resolutionW
      * @param resolutionH
      */
-    public ExitScreen(Graphics2D g2d, int resolutionW, int resolutionH) {
+    public ExitScreen(GameInterface game, int resolutionW, int resolutionH) {
 
         this.resolutionW = resolutionW;
         this.resolutionH = resolutionH;
@@ -46,13 +47,13 @@ public class ExitScreen {
         this.yesBox = new Rectangle2D.Double(this.positionX, this.positionY, buttonWidth, buttonHeight);
         this.noBox = new Rectangle2D.Double(this.positionX, this.positionY, buttonWidth, buttonHeight);
 
-
-        this.g2d = g2d;
+        this.game = game;
     }
 
     public void draw(long frametime) {
        
-
+        this.getG2D().drawRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
+            
 
 
     }
@@ -88,4 +89,6 @@ public class ExitScreen {
     public int action() {
         return 0;
     }
+
+    public Graphics2D getG2D()  { 	return (this.game.getG2D());    }
 }
