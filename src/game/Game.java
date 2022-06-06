@@ -79,7 +79,7 @@ public class Game implements GameInterface {
         this.menu               = new Menu(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
-        this.exitScreen         = new ExitScreen(g2d, this.wwm, this.whm);
+        this.exitScreen         = new ExitScreen(this, this.wwm, this.whm);
     }
     
     /**
