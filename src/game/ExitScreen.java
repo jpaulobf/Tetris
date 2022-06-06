@@ -25,8 +25,10 @@ public class ExitScreen {
     private short mainBoxMinHeight              = 0;
     private short mainBoxCurWidth               = this.mainBoxMinWidth;
     private short mainBoxCurHeight              = this.mainBoxMinHeight;
+    private short centerX                       = 0;
+    private short centerY                       = 0;
     private volatile long framecounter          = 0;
-    private final byte step                     = 10;
+    private final byte step                     = 20;
     private final byte halfStep                 = step/2;
 
     /**
@@ -40,8 +42,7 @@ public class ExitScreen {
         this.resolutionW = resolutionW;
         this.resolutionH = resolutionH;
 
-        this.positionX = (short)((resolutionW / 2) - (this.width / 2));
-        this.positionY = (short)((resolutionH / 2) - (this.height / 2));
+
 
         this.mainBox = new Rectangle2D.Double(this.positionX, this.positionY, width, height);
         this.yesBox = new Rectangle2D.Double(this.positionX, this.positionY, buttonWidth, buttonHeight);
@@ -52,7 +53,7 @@ public class ExitScreen {
 
     public void draw(long frametime) {
        
-        this.getG2D().drawRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
+        this.getG2D().fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
             
 
 
@@ -64,22 +65,44 @@ public class ExitScreen {
      */
     public void update(long frametime) {
         
+        //update framecounter
         this.framecounter += frametime;
         
+        //calc the box width / height / position
         if (this.mainBoxCurWidth < this.width) {
-            if (this.framecounter > 100_000_000) {
-                
-                this.mainBoxCurWidth += step;
-                this.mainBoxCurHeight += halfStep;
+            if (this.framecounter > 10_000_000) {
 
+                //calc current width/height
+                this.mainBoxCurWidth    += step;
+                this.mainBoxCurHeight   += halfStep;
+
+                //calc current x/y position
+                this.positionX = (short)((this.resolutionW / 2) - (this.mainBoxCurWidth / 2));
+                this.positionY = (short)((this.resolutionH / 2) - (this.mainBoxCurHeight / 2));
+
+                //reset
                 this.framecounter = 0;
             }
         } else {
             if (this.mainBoxCurWidth > this.width || this.mainBoxCurHeight > this.height) {
-                this.mainBoxCurWidth = this.width;
-                this.mainBoxCurHeight = this.height;
+
+                //run once
+                if (this.framecounter == frametime) {
+                    //define the definitive width/height
+                    this.mainBoxCurWidth    = this.width;
+                    this.mainBoxCurHeight   = this.height;
+
+                    //define the definitive x/y position
+                    this.positionX          = (short)((resolutionW / 2) - (this.width / 2));
+                    this.positionY          = (short)((resolutionH / 2) - (this.height / 2));
+                }
             }
         }
+
+        this.mainBox.x      = this.positionX;
+        this.mainBox.y      = this.positionY;
+        this.mainBox.width  = this.mainBoxCurWidth;
+        this.mainBox.height = this.mainBoxCurHeight;
     }
 
     public void move(int keyCode) {
