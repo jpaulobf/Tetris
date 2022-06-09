@@ -3,6 +3,7 @@ package game;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import interfaces.GameInterface;
+import java.awt.Color;
 
 /**
  * Exitscreen class
@@ -42,21 +43,23 @@ public class ExitScreen {
         this.resolutionW = resolutionW;
         this.resolutionH = resolutionH;
 
+        this.mainBox    = new Rectangle2D.Double(-width, -height, width, height);
+        this.yesBox     = new Rectangle2D.Double(-buttonWidth, -buttonHeight, buttonWidth, buttonHeight);
+        this.noBox      = new Rectangle2D.Double(-buttonWidth, -buttonHeight, buttonWidth, buttonHeight);
 
-
-        this.mainBox = new Rectangle2D.Double(this.positionX, this.positionY, width, height);
-        this.yesBox = new Rectangle2D.Double(this.positionX, this.positionY, buttonWidth, buttonHeight);
-        this.noBox = new Rectangle2D.Double(this.positionX, this.positionY, buttonWidth, buttonHeight);
-
-        this.game = game;
+        this.game       = game;
     }
 
     public void draw(long frametime) {
 
-        //TODO: set color
+        this.getG2D().setBackground(new Color(0,66,147));
         this.getG2D().fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
         
-        //TODO: look for color
+        //button shadow
+        this.getG2D().setBackground(Color.black);
+        this.getG2D().fillRect((int)yesBox.x + 1, (int)yesBox.y + 1, (int)yesBox.width, (int)yesBox.height);
+
+        this.getG2D().setBackground(Color.red);
         this.getG2D().fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
 
         //TODO: look for color
