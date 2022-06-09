@@ -52,11 +52,15 @@ public class ExitScreen {
     }
 
     public void draw(long frametime) {
-       
+
+        //TODO: set color
         this.getG2D().fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
-            
+        
+        //TODO: look for color
+        this.getG2D().fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
 
-
+        //TODO: look for color
+        this.getG2D().fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
     }
 
     /**
