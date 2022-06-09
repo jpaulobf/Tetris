@@ -44,25 +44,33 @@ public class ExitScreen {
         this.resolutionH = resolutionH;
 
         this.mainBox    = new Rectangle2D.Double(-width, -height, width, height);
-        this.yesBox     = new Rectangle2D.Double(-buttonWidth, -buttonHeight, buttonWidth, buttonHeight);
-        this.noBox      = new Rectangle2D.Double(-buttonWidth, -buttonHeight, buttonWidth, buttonHeight);
+        this.yesBox     = new Rectangle2D.Double(-width, -height, buttonWidth, buttonHeight);
+        this.noBox      = new Rectangle2D.Double(-width, -height, buttonWidth, buttonHeight);
 
         this.game       = game;
     }
 
     public void draw(long frametime) {
 
-        this.getG2D().setBackground(new Color(0,66,147));
-        this.getG2D().fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
-        
         //button shadow
-        this.getG2D().setBackground(Color.black);
+        this.getG2D().setColor(Color.BLACK);
+        this.getG2D().fillRect((int)mainBox.x + 1, (int)mainBox.y + 1, (int)mainBox.width, (int)mainBox.height);
+        
+        this.getG2D().setColor(new Color(0,66,147));
+        this.getG2D().fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
+
+        //button shadow
+        this.getG2D().setColor(Color.black);
         this.getG2D().fillRect((int)yesBox.x + 1, (int)yesBox.y + 1, (int)yesBox.width, (int)yesBox.height);
 
-        this.getG2D().setBackground(Color.red);
+        this.getG2D().setColor(Color.red);
         this.getG2D().fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
 
-        //TODO: look for color
+        //button shadow
+        this.getG2D().setColor(Color.black);
+        this.getG2D().fillRect((int)noBox.x + 1, (int)noBox.y + 1, (int)noBox.width, (int)noBox.height);
+
+        this.getG2D().setColor(Color.blue);
         this.getG2D().fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
     }
 
@@ -91,17 +99,26 @@ public class ExitScreen {
                 this.framecounter = 0;
             }
         } else {
-            if (this.mainBoxCurWidth > this.width || this.mainBoxCurHeight > this.height) {
+            if (this.mainBoxCurWidth >= this.width || this.mainBoxCurHeight >= this.height) {
 
                 //run once
                 if (this.framecounter == frametime) {
+
                     //define the definitive width/height
                     this.mainBoxCurWidth    = this.width;
                     this.mainBoxCurHeight   = this.height;
 
                     //define the definitive x/y position
-                    this.positionX          = (short)((resolutionW / 2) - (this.width / 2));
-                    this.positionY          = (short)((resolutionH / 2) - (this.height / 2));
+                    this.positionX  = (short)((resolutionW / 2) - (this.width / 2));
+                    this.positionY  = (short)((resolutionH / 2) - (this.height / 2));
+
+                    //define yes box button position
+                    this.yesBox.x   = this.positionX + 50;
+                    this.yesBox.y   = this.positionY + 50;
+
+                    //define no box button position
+                    this.noBox.x    = this.positionX + 150;
+                    this.noBox.y    = this.positionY + 50;
                 }
             }
         }
