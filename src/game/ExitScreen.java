@@ -3,7 +3,11 @@ package game;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import interfaces.GameInterface;
+import util.LoadingStuffs;
+
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 
 /**
  * Exitscreen class
@@ -14,8 +18,8 @@ public class ExitScreen {
     private short positionY                     = 0;
     private short width                         = 300;
     private short height                        = 150;
-    private short buttonWidth                   = 50;
-    private short buttonHeight                  = 20;
+    private short buttonWidth                   = 80;
+    private short buttonHeight                  = 32;
     private int resolutionH                     = 0;
     private int resolutionW                     = 0;
     private GameInterface game                  = null;
@@ -31,6 +35,8 @@ public class ExitScreen {
     private volatile long framecounter          = 0;
     private final byte step                     = 20;
     private final byte halfStep                 = step/2;
+    private Graphics2D g2d                      = null;
+    private BufferedImage really  				= null;
 
     /**
      * Constructor
@@ -48,30 +54,35 @@ public class ExitScreen {
         this.noBox      = new Rectangle2D.Double(-width, -height, buttonWidth, buttonHeight);
 
         this.game       = game;
+        this.g2d        = this.getG2D();
+
+        this.really     = (BufferedImage)LoadingStuffs.getInstance().getStuff("really");
     }
 
     public void draw(long frametime) {
-
+      
         //button shadow
-        this.getG2D().setColor(Color.BLACK);
-        this.getG2D().fillRect((int)mainBox.x + 1, (int)mainBox.y + 1, (int)mainBox.width, (int)mainBox.height);
+        this.g2d.setColor(Color.BLACK);
+        this.g2d.fillRect((int)mainBox.x + 1, (int)mainBox.y + 1, (int)mainBox.width, (int)mainBox.height);
         
-        this.getG2D().setColor(new Color(0,66,147));
-        this.getG2D().fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
+        this.g2d.setColor(new Color(0,66,147));
+        this.g2d.fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
 
         //button shadow
-        this.getG2D().setColor(Color.black);
-        this.getG2D().fillRect((int)yesBox.x + 1, (int)yesBox.y + 1, (int)yesBox.width, (int)yesBox.height);
+        this.g2d.setColor(Color.black);
+        this.g2d.fillRect((int)yesBox.x + 1, (int)yesBox.y + 1, (int)yesBox.width, (int)yesBox.height);
 
-        this.getG2D().setColor(Color.red);
-        this.getG2D().fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
+        this.g2d.setColor(Color.red);
+        this.g2d.fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
 
         //button shadow
-        this.getG2D().setColor(Color.black);
-        this.getG2D().fillRect((int)noBox.x + 1, (int)noBox.y + 1, (int)noBox.width, (int)noBox.height);
+        this.g2d.setColor(Color.black);
+        this.g2d.fillRect((int)noBox.x + 1, (int)noBox.y + 1, (int)noBox.width, (int)noBox.height);
 
-        this.getG2D().setColor(Color.blue);
-        this.getG2D().fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
+        this.g2d.setColor(Color.blue);
+        this.g2d.fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
+
+        this.g2d.drawImage(this.really, ((int)yesBox.x + 10), ((int)mainBox.y + 30), null);
     }
 
     /**
@@ -114,11 +125,11 @@ public class ExitScreen {
 
                     //define yes box button position
                     this.yesBox.x   = this.positionX + 50;
-                    this.yesBox.y   = this.positionY + 50;
+                    this.yesBox.y   = this.positionY + 80;
 
                     //define no box button position
                     this.noBox.x    = this.positionX + 150;
-                    this.noBox.y    = this.positionY + 50;
+                    this.noBox.y    = this.positionY + 80;
                 }
             }
         }
