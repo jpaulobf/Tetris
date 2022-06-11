@@ -108,6 +108,7 @@ public class Game implements GameInterface {
                         this.gameState.setCurrentState(StateMachine.OPTIONS);
                     } else if (this.menu.goGame()) {
 
+                        //stop the game music
                         this.menu.stopMusic();
                         
                         //get the level defined in the menu
