@@ -37,6 +37,8 @@ public class ExitScreen {
     private final byte halfStep                 = step/2;
     private Graphics2D g2d                      = null;
     private BufferedImage really  				= null;
+    private short reallyXPosition               = -1000;
+    private short reallyYPosition               = -1000;
 
     /**
      * Constructor
@@ -82,7 +84,7 @@ public class ExitScreen {
         this.g2d.setColor(Color.blue);
         this.g2d.fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
 
-        this.g2d.drawImage(this.really, ((int)yesBox.x + 10), ((int)mainBox.y + 30), null);
+        this.g2d.drawImage(this.really, this.reallyXPosition, this.reallyYPosition, null);
     }
 
     /**
@@ -128,8 +130,11 @@ public class ExitScreen {
                     this.yesBox.y   = this.positionY + 80;
 
                     //define no box button position
-                    this.noBox.x    = this.positionX + 150;
+                    this.noBox.x    = this.positionX + 170;
                     this.noBox.y    = this.positionY + 80;
+
+                    this.reallyXPosition = (short)(this.positionX + ((this.width/2) - (this.really.getWidth()/2)));
+                    this.reallyYPosition = (short)(this.positionY + 35);
                 }
             }
         }
