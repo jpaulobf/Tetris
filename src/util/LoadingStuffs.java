@@ -196,6 +196,9 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\start_unselected.png"));
             stuffs.put("starUnselected", image);
 
+            image = ImageIO.read(new File("images\\really.png"));
+            stuffs.put("really", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
