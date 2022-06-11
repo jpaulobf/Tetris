@@ -5,7 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import util.LoadingStuffs;
 import java.awt.image.BufferedImage;
+import util.Audio;
 
+/**
+ * Class representing the menu
+ */
 public class Menu {
     
     @SuppressWarnings("unused")
@@ -25,6 +29,8 @@ public class Menu {
     private BufferedImage starSelected      = null;
     private BufferedImage starUnselected    = null;
     private BufferedImage [] stars          = null;
+
+    private Audio intro                     = null;
 
     private byte selectorPosition           = 0;
     private byte selectors[]                = {0, 2, 3};
@@ -47,6 +53,8 @@ public class Menu {
 
         this.starSelected       = (BufferedImage)LoadingStuffs.getInstance().getStuff("starSelected");
         this.starUnselected     = (BufferedImage)LoadingStuffs.getInstance().getStuff("starUnselected");
+
+        this.intro              = (Audio)LoadingStuffs.getInstance().getStuff("intro");
 
         this.stars              = new BufferedImage[8];
         this.stars[0]           = this.starSelected;
@@ -74,6 +82,10 @@ public class Menu {
             this.stars[i] = this.starUnselected;
         }
     }
+
+    public void stopMusic() {
+        this.intro.stop();
+    }
     
     public synchronized void draw(long frametime) {
        
@@ -98,8 +110,12 @@ public class Menu {
 
     }
 
+    /**
+     * 
+     * @param frametime
+     */
     public synchronized void firstUpdate(long frametime) {
-        
+        this.intro.playContinuously();
     }
 
     //getters
