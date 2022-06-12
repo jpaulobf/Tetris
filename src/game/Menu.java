@@ -31,6 +31,7 @@ public class Menu {
     private BufferedImage [] stars          = null;
 
     private Audio intro                     = null;
+    private Audio item                      = null;
 
     private byte selectorPosition           = 0;
     private byte selectors[]                = {0, 2, 3};
@@ -55,6 +56,7 @@ public class Menu {
         this.starUnselected     = (BufferedImage)LoadingStuffs.getInstance().getStuff("starUnselected");
 
         this.intro              = (Audio)LoadingStuffs.getInstance().getStuff("intro");
+        this.item               = (Audio)LoadingStuffs.getInstance().getStuff("menuitem");
 
         this.stars              = new BufferedImage[8];
         this.stars[0]           = this.starSelected;
@@ -136,12 +138,14 @@ public class Menu {
             } else {
                 this.selectorPosition = 2;
             }
+            this.item.play();
         } else if (key == 40) { //DOWN
             if (this.selectorPosition < 2) {
                 this.selectorPosition++;
             } else {
                 this.selectorPosition = 0;
             }
+            this.item.play();
         } else if (key == 10) { //ENTER
             this.goExit     = false;
             this.goOptions  = false;
