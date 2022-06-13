@@ -30,6 +30,7 @@ public class Menu {
     //sounds
     private Audio intro                     = null;
     private Audio item                      = null;
+    private Audio star                      = null;
 
     //menu control
     private byte selectorPosition           = 0;
@@ -66,7 +67,8 @@ public class Menu {
 
         //load the sounds
         this.intro              = (Audio)LoadingStuffs.getInstance().getStuff("intro");
-        this.item               = (Audio)LoadingStuffs.getInstance().getStuff("menuitem");
+        this.item               = (Audio)LoadingStuffs.getInstance().getStuff("star");
+        this.star               = (Audio)LoadingStuffs.getInstance().getStuff("menuitem");
 
         //create stars array
         this.stars              = new BufferedImage[8];
@@ -183,12 +185,14 @@ public class Menu {
                 } else {
                     this.level = 8;
                 }
+                this.star.play();
             } else if (key == 39) { //RIGHT
                 if (this.level < 8) {
                     this.level++;
                 } else {
                     this.level = 1;
                 }
+                this.star.play();
             }
         }
     }
