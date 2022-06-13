@@ -261,6 +261,21 @@ public class LoadingStuffs {
                 stuffs.put("star", audio);
             }
 
+            audio = new Audio("audio\\opening.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("opening", audio);
+            }
+
+            audio = new Audio("audio\\closing.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("closing", audio);
+            }
+
+            audio = new Audio("audio\\start.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("start", audio);
+            }
+
             Logger.INFO("read all audio...", this);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
