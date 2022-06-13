@@ -31,6 +31,7 @@ public class Menu {
     private Audio intro                     = null;
     private Audio item                      = null;
     private Audio star                      = null;
+    private Audio start                     = null;
 
     //menu control
     private byte selectorPosition           = 0;
@@ -69,6 +70,7 @@ public class Menu {
         this.intro              = (Audio)LoadingStuffs.getInstance().getStuff("intro");
         this.item               = (Audio)LoadingStuffs.getInstance().getStuff("star");
         this.star               = (Audio)LoadingStuffs.getInstance().getStuff("menuitem");
+        this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
 
         //create stars array
         this.stars              = new BufferedImage[8];
@@ -170,6 +172,7 @@ public class Menu {
             this.goGame     = false;
             if (this.selectorPosition == 0) {
                 this.goGame = true;
+                this.start.play();
             } else if (this.selectorPosition == 1) {
                 this.goOptions = true;
             } else if (this.selectorPosition == 2) {
