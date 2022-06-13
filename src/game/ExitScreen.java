@@ -4,16 +4,18 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import interfaces.GameInterface;
 import util.LoadingStuffs;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
+import util.Audio;
 
 /**
  * Exitscreen class
  */
 public class ExitScreen {
 
+    private GameInterface game                  = null;
+    private Graphics2D g2d                      = null;
+    
     private short positionX                     = 0;
     private short positionY                     = 0;
     private short width                         = 300;
@@ -22,23 +24,26 @@ public class ExitScreen {
     private short buttonHeight                  = 32;
     private int resolutionH                     = 0;
     private int resolutionW                     = 0;
-    private GameInterface game                  = null;
-    private Rectangle2D.Double mainBox          = null;
-    private Rectangle2D.Double yesBox           = null;
-    private Rectangle2D.Double noBox            = null;
     private short mainBoxMinWidth               = 0;
     private short mainBoxMinHeight              = 0;
     private short mainBoxCurWidth               = this.mainBoxMinWidth;
     private short mainBoxCurHeight              = this.mainBoxMinHeight;
     private short centerX                       = 0;
     private short centerY                       = 0;
-    private volatile long framecounter          = 0;
-    private final byte step                     = 20;
-    private final byte halfStep                 = step/2;
-    private Graphics2D g2d                      = null;
-    private BufferedImage really  				= null;
     private short reallyXPosition               = -1000;
     private short reallyYPosition               = -1000;
+
+    private Rectangle2D.Double mainBox          = null;
+    private Rectangle2D.Double yesBox           = null;
+    private Rectangle2D.Double noBox            = null;
+    
+    private volatile long framecounter          = 0;
+    private final byte animationStep            = 20;
+    private final byte halfStep                 = animationStep/2;
+    
+    private BufferedImage really  				= null;
+    private Audio opening                       = null;
+    private Audio closing                       = null;
 
     /**
      * Constructor
@@ -59,6 +64,9 @@ public class ExitScreen {
         this.g2d        = this.getG2D();
 
         this.really     = (BufferedImage)LoadingStuffs.getInstance().getStuff("really");
+
+        this.opening    = (Audio)LoadingStuffs.getInstance().getStuff("opening");
+        this.closing    = (Audio)LoadingStuffs.getInstance().getStuff("closing");
     }
 
     public void draw(long frametime) {
@@ -87,12 +95,19 @@ public class ExitScreen {
         this.g2d.drawImage(this.really, this.reallyXPosition, this.reallyYPosition, null);
     }
 
+    public void playOpening() {
+        if (this.opening != null) {
+            System.out.println("aui...");
+            this.opening.play();
+        }
+    }
+
     /**
      * Update the exit screen window
      * @param frametime
      */
     public void update(long frametime) {
-        
+
         //update framecounter
         this.framecounter += frametime;
         
@@ -101,7 +116,7 @@ public class ExitScreen {
             if (this.framecounter > 10_000_000) {
 
                 //calc current width/height
-                this.mainBoxCurWidth    += step;
+                this.mainBoxCurWidth    += animationStep;
                 this.mainBoxCurHeight   += halfStep;
 
                 //calc current x/y position
