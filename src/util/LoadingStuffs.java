@@ -256,6 +256,11 @@ public class LoadingStuffs {
                 stuffs.put("menuitem", audio);
             }
 
+            audio = new Audio("audio\\star.wav", 0);
+            if (audio != null && audio.isReady()) {
+                stuffs.put("star", audio);
+            }
+
             Logger.INFO("read all audio...", this);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
