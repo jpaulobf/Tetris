@@ -15,28 +15,33 @@ public class Menu {
     @SuppressWarnings("unused")
     private volatile long framecounter      = 0L;
     private GameInterface gameRef           = null;
+    private Graphics2D g2d                  = null;
 
-    private volatile boolean goOptions      = false;
-    private volatile boolean goGame         = false;
-    private volatile boolean goExit         = false;
-
+    //images
     private BufferedImage tlogo             = null;
     private BufferedImage selector          = null;
     private BufferedImage labelPlay         = null;
     private BufferedImage labelOptions      = null;
     private BufferedImage labelExit         = null;
-
     private BufferedImage starSelected      = null;
     private BufferedImage starUnselected    = null;
     private BufferedImage [] stars          = null;
 
+    //sounds
     private Audio intro                     = null;
     private Audio item                      = null;
 
+    //menu control
     private byte selectorPosition           = 0;
     private byte selectors[]                = {0, 2, 3};
     private short optionsSpace              = 65;
     private byte level                      = 1;
+    private volatile boolean goOptions      = false;
+    private volatile boolean goGame         = false;
+    private volatile boolean goExit         = false;
+    private final Color menuColor           = new Color(0, 66, 147);
+    private int resolutionW                 = 0;
+    private int resolutionH                 = 0;
 
     /**
      * Constructor
@@ -44,20 +49,26 @@ public class Menu {
      */
     public Menu(GameInterface game) {
 
+        //get the game pointer
         this.gameRef            = game;
+        this.g2d                = this.getG2D();
+        this.resolutionW        = this.gameRef.getInternalResolutionWidth();
+        this.resolutionH        = this.gameRef.getInternalResolutionHeight();
+
+        //load the images
         this.tlogo              = (BufferedImage)LoadingStuffs.getInstance().getStuff("tlogo");
         this.selector           = (BufferedImage)LoadingStuffs.getInstance().getStuff("selector");
-
         this.labelPlay          = (BufferedImage)LoadingStuffs.getInstance().getStuff("lplaygame");
         this.labelOptions       = (BufferedImage)LoadingStuffs.getInstance().getStuff("loptions");
         this.labelExit          = (BufferedImage)LoadingStuffs.getInstance().getStuff("lexit");
-
         this.starSelected       = (BufferedImage)LoadingStuffs.getInstance().getStuff("starSelected");
         this.starUnselected     = (BufferedImage)LoadingStuffs.getInstance().getStuff("starUnselected");
 
+        //load the sounds
         this.intro              = (Audio)LoadingStuffs.getInstance().getStuff("intro");
         this.item               = (Audio)LoadingStuffs.getInstance().getStuff("menuitem");
 
+        //create stars array
         this.stars              = new BufferedImage[8];
         this.stars[0]           = this.starSelected;
         this.stars[1]           = this.starUnselected;
@@ -79,37 +90,42 @@ public class Menu {
         }
     }
 
+    /**
+     * Revert each start image to unselected
+     */
     private void allStarsUnselected() {
         for (byte i = 0; i < this.stars.length; i++) {
             this.stars[i] = this.starUnselected;
         }
     }
 
+    /**
+     * Stop the menu music
+     */
     public void stopMusic() {
         this.intro.stop();
     }
-    
+
+    /**
+     * Draw method
+     * @param frametime
+     */    
     public synchronized void draw(long frametime) {
-       
-        this.getG2D().setBackground(new Color(0, 66, 147));
-        this.getG2D().clearRect(0, 0, this.gameRef.getInternalResolutionWidth(), this.gameRef.getInternalResolutionHeight());
-
-        this.getG2D().drawImage(this.tlogo, 401, 18, null);
-        this.getG2D().drawImage(this.selector, 116, 480 + (selectors[selectorPosition] * optionsSpace), null);
-
-        this.getG2D().drawImage(this.labelPlay, 545, 475, null);
-        this.getG2D().drawImage(this.labelOptions, 611, 605, null);
-        this.getG2D().drawImage(this.labelExit, 592, 670, null);
-
-        this.getG2D().drawImage(this.stars[0], 500, 527, null);
-        this.getG2D().drawImage(this.stars[1], 546, 527, null);
-        this.getG2D().drawImage(this.stars[2], 593, 527, null);
-        this.getG2D().drawImage(this.stars[3], 639, 527, null);
-        this.getG2D().drawImage(this.stars[4], 686, 527, null);
-        this.getG2D().drawImage(this.stars[5], 732, 527, null);
-        this.getG2D().drawImage(this.stars[6], 779, 527, null);
-        this.getG2D().drawImage(this.stars[7], 826, 527, null);
-
+        this.g2d.setBackground(this.menuColor);
+        this.g2d.clearRect(0, 0, resolutionW, resolutionH);
+        this.g2d.drawImage(this.tlogo, 401, 18, null);
+        this.g2d.drawImage(this.selector, 116, 480 + (selectors[selectorPosition] * optionsSpace), null);
+        this.g2d.drawImage(this.labelPlay, 545, 475, null);
+        this.g2d.drawImage(this.labelOptions, 611, 605, null);
+        this.g2d.drawImage(this.labelExit, 592, 670, null);
+        this.g2d.drawImage(this.stars[0], 500, 527, null);
+        this.g2d.drawImage(this.stars[1], 546, 527, null);
+        this.g2d.drawImage(this.stars[2], 593, 527, null);
+        this.g2d.drawImage(this.stars[3], 639, 527, null);
+        this.g2d.drawImage(this.stars[4], 686, 527, null);
+        this.g2d.drawImage(this.stars[5], 732, 527, null);
+        this.g2d.drawImage(this.stars[6], 779, 527, null);
+        this.g2d.drawImage(this.stars[7], 826, 527, null);
     }
 
     /**
