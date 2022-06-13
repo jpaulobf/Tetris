@@ -169,8 +169,11 @@ public class Game implements GameInterface {
                 
                 this.framecounter += frametime;
                 
+                if (this.framecounter == frametime) {
+                    this.exitScreen.playOpening();
+                }
+                
                 this.exitScreen.update(frametime);
-                //pause
 
                 
             } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
@@ -317,6 +320,7 @@ public class Game implements GameInterface {
                 //wait for confirmation
                 //if (true)
                 this.gameState.setCurrentState(StateMachine.EXITING);
+                this.framecounter = 0;
                 //System.exit(0);
 
                 //else
