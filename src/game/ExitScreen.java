@@ -182,7 +182,7 @@ public class ExitScreen {
      * @param keyCode
      */
     public void move(int keyCode) {
-
+        System.out.println(keyCode);
     }
 
     public int action() {
