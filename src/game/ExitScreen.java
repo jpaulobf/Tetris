@@ -182,6 +182,15 @@ public class ExitScreen {
      * @param keyCode
      */
     public void move(int keyCode) {
+
+        if (keyCode == 39) { //Right
+
+        } else if (keyCode == 37) { //Left
+
+        } else if (keyCode == 27) { //ESC = no
+
+        }
+
         System.out.println(keyCode);
     }
 
