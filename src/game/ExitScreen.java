@@ -53,51 +53,66 @@ public class ExitScreen {
      */
     public ExitScreen(GameInterface game, int resolutionW, int resolutionH) {
 
+        //store the screen resolution
         this.resolutionW = resolutionW;
         this.resolutionH = resolutionH;
 
+        //define the box x, y, w, h
         this.mainBox    = new Rectangle2D.Double(-width, -height, width, height);
         this.yesBox     = new Rectangle2D.Double(-width, -height, buttonWidth, buttonHeight);
         this.noBox      = new Rectangle2D.Double(-width, -height, buttonWidth, buttonHeight);
 
+        //store the game object & the Graphics2D
         this.game       = game;
         this.g2d        = this.getG2D();
 
+        //load the question image
         this.really     = (BufferedImage)LoadingStuffs.getInstance().getStuff("really");
 
+        //store the sounds
         this.opening    = (Audio)LoadingStuffs.getInstance().getStuff("opening");
         this.closing    = (Audio)LoadingStuffs.getInstance().getStuff("closing");
     }
 
+    /**
+     * Draw method
+     * @param frametime
+     */
     public void draw(long frametime) {
       
-        //button shadow
+        //main box shadow
         this.g2d.setColor(Color.BLACK);
         this.g2d.fillRect((int)mainBox.x + 1, (int)mainBox.y + 1, (int)mainBox.width, (int)mainBox.height);
         
+        //draw the main box 
         this.g2d.setColor(new Color(0,66,147));
         this.g2d.fillRect((int)mainBox.x, (int)mainBox.y, (int)mainBox.width, (int)mainBox.height);
 
-        //button shadow
+        //yes button shadow
         this.g2d.setColor(Color.black);
         this.g2d.fillRect((int)yesBox.x + 1, (int)yesBox.y + 1, (int)yesBox.width, (int)yesBox.height);
 
+        //draw yes buttom
         this.g2d.setColor(Color.red);
         this.g2d.fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
 
-        //button shadow
+        //no button shadow
         this.g2d.setColor(Color.black);
         this.g2d.fillRect((int)noBox.x + 1, (int)noBox.y + 1, (int)noBox.width, (int)noBox.height);
 
+        //draw the no buttom
         this.g2d.setColor(Color.blue);
         this.g2d.fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
 
+        //draw the question image
         this.g2d.drawImage(this.really, this.reallyXPosition, this.reallyYPosition, null);
     }
 
+    /**
+     * Play the open menu sound (from outside) 
+     */
     public void playOpening() {
         if (this.opening != null) {
-            System.out.println("aui...");
             this.opening.play();
         }
     }
@@ -112,6 +127,7 @@ public class ExitScreen {
         this.framecounter += frametime;
         
         //calc the box width / height / position
+        //Animate
         if (this.mainBoxCurWidth < this.width) {
             if (this.framecounter > 10_000_000) {
 
@@ -127,8 +143,8 @@ public class ExitScreen {
                 this.framecounter = 0;
             }
         } else {
+            //final main box form
             if (this.mainBoxCurWidth >= this.width || this.mainBoxCurHeight >= this.height) {
-
                 //run once
                 if (this.framecounter == frametime) {
 
@@ -154,12 +170,17 @@ public class ExitScreen {
             }
         }
 
+        //store the x, y, w, h values
         this.mainBox.x      = this.positionX;
         this.mainBox.y      = this.positionY;
         this.mainBox.width  = this.mainBoxCurWidth;
         this.mainBox.height = this.mainBoxCurHeight;
     }
 
+    /**
+     * Treat the key movement
+     * @param keyCode
+     */
     public void move(int keyCode) {
 
     }
@@ -168,5 +189,6 @@ public class ExitScreen {
         return 0;
     }
 
+    //getter
     public Graphics2D getG2D()  { 	return (this.game.getG2D());    }
 }
