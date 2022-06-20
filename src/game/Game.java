@@ -328,7 +328,16 @@ public class Game implements GameInterface {
                 //game status InGame
                 //game unpause
             }
+        } else if (this.gameState.getCurrentState() == StateMachine.EXITING) {
+            this.exitScreen.move(keyCode);
         }
+    }
+
+    /**
+     * Exit the game (after confirmation)
+     */
+    public void exitGame() {
+        System.exit(0);
     }
 
     /**
