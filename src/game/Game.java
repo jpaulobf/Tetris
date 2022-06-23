@@ -545,4 +545,12 @@ public class Game implements GameInterface {
     public Score getScore()                         {   return (this.score);        }
     public Board getBoard()                         {   return (this.board);        }
     public void updateGraphics2D(Graphics2D g2d)    {   this.g2dFS = g2d;           }
+
+    /**
+     * Change the game state
+     */
+    @Override
+    public void changeGameState(int state) {
+        this.gameState.currentState = state;
+    }
 }
