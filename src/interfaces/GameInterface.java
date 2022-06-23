@@ -2,6 +2,7 @@ package interfaces;
 
 import java.awt.Graphics2D;
 import java.awt.image.VolatileImage;
+import game.StateMachine;
 
 /**
  * All games need to implement the IGame interface
@@ -117,6 +118,11 @@ public interface GameInterface {
     public void softReset();
 
     /**
+     * Exit the game
+     */
+    public void exitGame();
+
+    /**
      * Key pressed
      * @param keyCode
      */
@@ -133,4 +139,10 @@ public interface GameInterface {
      * @param keyCode
      */
     public void keyReleased(int keyCode);
+
+    /**
+     * Update the 
+     * @param state
+     */
+    public void changeGameState(int state);
 }
