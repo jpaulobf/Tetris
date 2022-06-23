@@ -13,9 +13,11 @@ import util.Audio;
  */
 public class ExitScreen {
 
+    //pointers
     private GameInterface game                  = null;
     private Graphics2D g2d                      = null;
     
+    //box & images positions & sizes
     private short positionX                     = 0;
     private short positionY                     = 0;
     private short width                         = 300;
@@ -24,23 +26,24 @@ public class ExitScreen {
     private short buttonHeight                  = 32;
     private int resolutionH                     = 0;
     private int resolutionW                     = 0;
-    private short mainBoxMinWidth               = 0;
-    private short mainBoxMinHeight              = 0;
-    private short mainBoxCurWidth               = this.mainBoxMinWidth;
-    private short mainBoxCurHeight              = this.mainBoxMinHeight;
-    private short centerX                       = 0;
-    private short centerY                       = 0;
+    private short mainBoxCurWidth               = 0;
+    private short mainBoxCurHeight              = 0;
     private short reallyXPosition               = -1000;
     private short reallyYPosition               = -1000;
 
+    private byte currentButtonSelected          = 0; //0 yes | 1 no 
+
+    //exit box (and buttons)
     private Rectangle2D.Double mainBox          = null;
     private Rectangle2D.Double yesBox           = null;
     private Rectangle2D.Double noBox            = null;
     
+    //counter & animation parameters
     private volatile long framecounter          = 0;
     private final byte animationStep            = 20;
     private final byte halfStep                 = animationStep/2;
     
+    //images & sounds
     private BufferedImage really  				= null;
     private Audio opening                       = null;
     private Audio closing                       = null;
@@ -92,8 +95,12 @@ public class ExitScreen {
         this.g2d.setColor(Color.black);
         this.g2d.fillRect((int)yesBox.x + 1, (int)yesBox.y + 1, (int)yesBox.width, (int)yesBox.height);
 
-        //draw yes buttom
-        this.g2d.setColor(Color.red);
+        //draw yes button
+        if (this.currentButtonSelected == 0) {
+            this.g2d.setColor(Color.red);
+        } else {
+            this.g2d.setColor(Color.blue);
+        }
         this.g2d.fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
 
         //no button shadow
@@ -101,7 +108,11 @@ public class ExitScreen {
         this.g2d.fillRect((int)noBox.x + 1, (int)noBox.y + 1, (int)noBox.width, (int)noBox.height);
 
         //draw the no buttom
-        this.g2d.setColor(Color.blue);
+        if (this.currentButtonSelected == 0) {
+            this.g2d.setColor(Color.blue);
+        } else {
+            this.g2d.setColor(Color.red);
+        }
         this.g2d.fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
 
         //draw the question image
@@ -184,14 +195,20 @@ public class ExitScreen {
     public void move(int keyCode) {
 
         if (keyCode == 39) { //Right
-
+            this.currentButtonSelected = (byte)((this.currentButtonSelected + 1)%2);
         } else if (keyCode == 37) { //Left
-
+            this.currentButtonSelected = (byte)Math.abs(((this.currentButtonSelected - 1)%2));
         } else if (keyCode == 27) { //ESC = no
-
+            this.currentButtonSelected = 0;
+            this.game.changeGameState(StateMachine.IN_GAME);
+        } else if (keyCode == 10) { //Enter
+            if (this.currentButtonSelected == 0) {
+                this.game.exitGame();
+            } else {
+                this.currentButtonSelected = 0;
+                this.game.changeGameState(StateMachine.IN_GAME);
+            }
         }
-
-        System.out.println(keyCode);
     }
 
     public int action() {
