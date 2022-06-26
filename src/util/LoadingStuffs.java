@@ -199,6 +199,12 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\really.png"));
             stuffs.put("really", image);
 
+            image = ImageIO.read(new File("images\\yes.png"));
+            stuffs.put("lb-yes", image);
+
+            image = ImageIO.read(new File("images\\no.png"));
+            stuffs.put("lb-no", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
