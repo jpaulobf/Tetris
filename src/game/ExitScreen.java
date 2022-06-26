@@ -45,6 +45,8 @@ public class ExitScreen {
     
     //images & sounds
     private BufferedImage really  				= null;
+    private BufferedImage labelYes				= null;
+    private BufferedImage labelNo  				= null;
     private Audio opening                       = null;
     private Audio closing                       = null;
 
@@ -71,6 +73,8 @@ public class ExitScreen {
 
         //load the question image
         this.really     = (BufferedImage)LoadingStuffs.getInstance().getStuff("really");
+        this.labelYes   = (BufferedImage)LoadingStuffs.getInstance().getStuff("lb-yes");
+        this.labelNo    = (BufferedImage)LoadingStuffs.getInstance().getStuff("lb-no");
 
         //store the sounds
         this.opening    = (Audio)LoadingStuffs.getInstance().getStuff("opening");
@@ -97,11 +101,13 @@ public class ExitScreen {
 
         //draw yes button
         if (this.currentButtonSelected == 0) {
-            this.g2d.setColor(Color.red);
+            this.g2d.setColor(new Color(0, 152, 255));
         } else {
-            this.g2d.setColor(Color.blue);
+            this.g2d.setColor(new Color(126, 126, 126));
         }
         this.g2d.fillRect((int)yesBox.x, (int)yesBox.y, (int)yesBox.width, (int)yesBox.height);
+        this.g2d.drawImage(this.labelYes, (int)yesBox.x + 8, (int)yesBox.y + 5, null);
+
 
         //no button shadow
         this.g2d.setColor(Color.black);
@@ -109,11 +115,12 @@ public class ExitScreen {
 
         //draw the no buttom
         if (this.currentButtonSelected == 0) {
-            this.g2d.setColor(Color.blue);
+            this.g2d.setColor(new Color(126, 126, 126));
         } else {
-            this.g2d.setColor(Color.red);
+            this.g2d.setColor(new Color(0, 152, 255));
         }
         this.g2d.fillRect((int)noBox.x, (int)noBox.y, (int)noBox.width, (int)noBox.height);
+        this.g2d.drawImage(this.labelNo, (int)noBox.x + 19, (int)noBox.y + 5, null);
 
         //draw the question image
         this.g2d.drawImage(this.really, this.reallyXPosition, this.reallyYPosition, null);
