@@ -62,7 +62,7 @@ public class Tetris implements Runnable {
         private boolean showFPS                     = true;
 
         //control and fullscreen controller
-        private boolean fullscreen                  = true;
+        private boolean fullscreen                  = false;
         private boolean isFullScreenAvailable       = false;
 
         /**
