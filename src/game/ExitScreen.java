@@ -206,16 +206,35 @@ public class ExitScreen {
         } else if (keyCode == 37) { //Left
             this.currentButtonSelected = (byte)Math.abs(((this.currentButtonSelected - 1)%2));
         } else if (keyCode == 27) { //ESC = no
-            this.currentButtonSelected = 0;
+            this.resetExitScreen();
+            this.closing.play();
             this.game.changeGameState(StateMachine.IN_GAME);
         } else if (keyCode == 10) { //Enter
             if (this.currentButtonSelected == 0) {
                 this.game.exitGame();
             } else {
-                this.currentButtonSelected = 0;
+                this.resetExitScreen();
+                this.closing.play();
                 this.game.changeGameState(StateMachine.IN_GAME);
             }
         }
+    }
+
+    /**
+     * Reset Exit screen
+     */
+    private void resetExitScreen() {
+        this.currentButtonSelected  = 0;
+        this.mainBoxCurWidth        = 0;
+        this.mainBoxCurHeight       = 0;
+        this.mainBox.x              = -width; 
+        this.mainBox.y              = -height;
+        this.yesBox.x               = -width;
+        this.yesBox.y               = -height;
+        this.noBox.x                = -width;
+        this.noBox.y                = -height;
+        this.reallyXPosition        = -1000;
+        this.reallyYPosition        = -1000;
     }
 
     public int action() {
