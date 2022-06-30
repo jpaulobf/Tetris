@@ -2,7 +2,6 @@ package interfaces;
 
 import java.awt.Graphics2D;
 import java.awt.image.VolatileImage;
-import game.StateMachine;
 
 /**
  * All games need to implement the IGame interface
