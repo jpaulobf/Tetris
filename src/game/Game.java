@@ -49,7 +49,8 @@ public class Game implements GameInterface {
     private boolean sortPiece 				= true;
 
     //game components
-    private Menu menu                       = null;
+    private MenuScreen menu                 = null;
+    private OptionsScreen options           = null;
 	private Board board						= null;
     private Score score                     = null;
     private ScreenTransition screenT        = null;
@@ -76,7 +77,8 @@ public class Game implements GameInterface {
         this.music3             = (Audio)LoadingStuffs.getInstance().getStuff("theme3");
         this.theme              = this.music1;
         this.currentMusicTheme  = 0;
-        this.menu               = new Menu(this);
+        this.menu               = new MenuScreen(this);
+        this.options            = new OptionsScreen(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
         this.exitScreen         = new ExitScreen(this, this.wwm, this.whm);
@@ -121,8 +123,12 @@ public class Game implements GameInterface {
                         System.exit(0);
                     }
                 }
-            }
-            else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
+            } else if (this.gameState.getCurrentState() == StateMachine.OPTIONS) {
+
+                //TODO:
+
+
+            } else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
                 
                 //sum framecounter
                 this.framecounter += frametime;
@@ -214,6 +220,8 @@ public class Game implements GameInterface {
                 //////////////////////////////////////////////////////////////////////
                 if (this.gameState.getCurrentState() == StateMachine.MENU) { 
                     this.menu.draw(frametime);
+                } else if (this.gameState.getCurrentState() == StateMachine.OPTIONS) {
+                    this.options.draw(frametime);
                 } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME ||
                            this.gameState.getCurrentState() == StateMachine.EXITING) {
                     this.board.draw(frametime);
@@ -287,6 +295,8 @@ public class Game implements GameInterface {
             this.menu.keyMovement(keyDirection);
         } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
             this.board.move(keyDirection);
+        } else if (this.gameState.getCurrentState() == StateMachine.OPTIONS) {
+            this.options.keyMovement(keyDirection);
         }
     }
 
@@ -311,22 +321,11 @@ public class Game implements GameInterface {
             if (keyCode == 61) {this.incMasterVolume();}
         }
 
-        //WIP
         if (this.gameState.getCurrentState() == StateMachine.IN_GAME) {
+            //when ESC is pressed
             if (keyCode == 27) {
-                //game pause
-                //game status exiting
-                //open confirmation screen
-                //wait for confirmation
-                //if (true)
                 this.gameState.setCurrentState(StateMachine.EXITING);
                 this.framecounter = 0;
-                //System.exit(0);
-
-                //else
-                //close confirmation screen
-                //game status InGame
-                //game unpause
             }
         } else if (this.gameState.getCurrentState() == StateMachine.EXITING) {
             this.exitScreen.move(keyCode);
