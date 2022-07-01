@@ -59,6 +59,7 @@ public class OptionsScreen {
     public synchronized void draw(long frametime) {
         this.g2d.clearRect(0, 0, resolutionW, resolutionH);
         this.g2d.drawImage(this.selector, 116, 480, null);
+        this.g2d.drawString("Aqui...", 100, 100);
     }
 
     /**
