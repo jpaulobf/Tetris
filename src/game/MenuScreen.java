@@ -43,6 +43,12 @@ public class MenuScreen {
     private int resolutionW                 = 0;
     private int resolutionH                 = 0;
 
+    public void reset() {
+        this.goOptions  = false;
+        this.goGame     = false;
+        this.goExit     = false;
+    }
+
     /**
      * Constructor
      * @param game
