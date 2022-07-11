@@ -62,6 +62,29 @@ public class OptionsScreen {
         this.g2d.clearRect(0, 0, resolutionW, resolutionH);
         
         this.g2d.drawImage(this.selector, 116, 480, null);
+
+        //options logo x=852,y=23
+        //selector x=(0), 223, 308, 393, 477, 696
+        //toogle 1 x=1141, y=218
+        //toogle 2 x=1141, y=303
+        //label music x=69, y=218
+        //label sfx x=69, y=303
+        //label music vol x=69, y=388
+        //label sfx vol x=69, y=472
+        //exit x=69, y=685
+        //v6 1 x=1141, y=392
+        //v5 1 x=1172, y=396
+        //v4 1 x=1203, y=400
+        //v3 1 x=1234, y=404
+        //v2 1 x=1265, y=408
+        //v1 1 x=1296, y=412
+        //v6 2 x=1141, y=476
+        //v5 2 x=1172, y=480
+        //v4 2 x=1203, y=484
+        //v3 2 x=1234, y=488
+        //v2 2 x=1265, y=492
+        //v1 2 x=1296, y=496
+
     }
 
     /**
