@@ -25,11 +25,6 @@ public class OptionsScreen {
     private int resolutionW                 = 0;
     private int resolutionH                 = 0;
 
-    public void reset() {
-        this.goMenuApply = false;
-        this.goMenuCancel = false;
-    }
-
     /**
      * Constructor
      * @param game
@@ -105,5 +100,13 @@ public class OptionsScreen {
         } else if (key == 27) { //Esc - Back to Menu
             this.goMenuCancel  = true;
         }
+    }
+
+    /**
+     * Reset game options
+     */
+    public void reset() {
+        this.goMenuApply = false;
+        this.goMenuCancel = false;
     }
 }
