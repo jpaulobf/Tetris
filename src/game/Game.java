@@ -91,6 +91,7 @@ public class Game implements GameInterface {
     @Override
     public synchronized void update(long frametime) {
         
+        //if changing stage or stopped do nothing.
         if (!this.changingStage && !this.stopped) {
             
             //update based on game state
@@ -103,11 +104,21 @@ public class Game implements GameInterface {
                 if (this.framecounter == frametime) { 
                     //if necessary
                     this.menu.firstUpdate(frametime);
+                
                 } else {
+                    
+                    //update menu
                     this.menu.update(frametime);
 
+                    //then, check the selections
                     if (this.menu.goOptions()) {
+                        
+                        //reset the menu selection parameters
+                        this.menu.reset();
+
+                        //define the current state as option
                         this.gameState.setCurrentState(StateMachine.OPTIONS);
+
                     } else if (this.menu.goGame()) {
 
                         //stop the game music
@@ -117,6 +128,9 @@ public class Game implements GameInterface {
                         this.gameLevel  = new GameLevel(this.menu.getLevel());
                         this.board      = new Board(this);
 
+                        //reset the menu selection parameters
+                        this.menu.reset();
+
                         //go to staging status
                         this.gameState.setCurrentState(StateMachine.STAGING);
                     } else if (this.menu.goExit()) {
@@ -125,8 +139,18 @@ public class Game implements GameInterface {
                 }
             } else if (this.gameState.getCurrentState() == StateMachine.OPTIONS) {
 
-                //TODO:
+                if (this.options.goMenuApply()) {
 
+                } else if (this.options.goMenuCancel()) {
+                    //reset the options options
+                    this.options.reset();
+                    
+                    //revert the state to menu
+                    this.gameState.setCurrentState(StateMachine.MENU);
+
+                    //skip next draw
+                    this.skipDraw = true;
+                }
 
             } else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
                 
