@@ -15,6 +15,7 @@ public class OptionsScreen {
     private Graphics2D g2d                  = null;
     private BufferedImage selector          = null;
     private BufferedImage optionsLogo       = null;
+    private BufferedImage labelPlayMusic    = null;
 
     //sounds
     private Audio start                     = null;
@@ -43,6 +44,7 @@ public class OptionsScreen {
         //load images
         this.selector           = (BufferedImage)LoadingStuffs.getInstance().getStuff("selector");
         this.optionsLogo        = (BufferedImage)LoadingStuffs.getInstance().getStuff("options-logo");
+        this.labelPlayMusic     = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-play-music");
 
         //load the sounds
         this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
@@ -67,6 +69,9 @@ public class OptionsScreen {
         
         this.g2d.drawImage(this.selector, 0, selectorP, null);
         this.g2d.drawImage(this.optionsLogo, 852, 23, null);
+
+        this.g2d.drawImage(this.labelPlayMusic, 69, 218, null);
+
 
         //selector x=(0), 223, 308, 393, 478, 696
         //toogle 1 x=1141, y=218
