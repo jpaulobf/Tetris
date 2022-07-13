@@ -14,6 +14,7 @@ public class OptionsScreen {
     private GameInterface gameRef           = null;
     private Graphics2D g2d                  = null;
     private BufferedImage selector          = null;
+    private BufferedImage optionsLogo       = null;
 
     //sounds
     private Audio start                     = null;
@@ -24,6 +25,8 @@ public class OptionsScreen {
     private volatile boolean goMenuCancel   = false;
     private int resolutionW                 = 0;
     private int resolutionH                 = 0;
+    private int selectorO                   = 0;
+    private int selectorP                   = 223 + (selectorO * 85);
 
     /**
      * Constructor
@@ -39,6 +42,7 @@ public class OptionsScreen {
 
         //load images
         this.selector           = (BufferedImage)LoadingStuffs.getInstance().getStuff("selector");
+        this.optionsLogo        = (BufferedImage)LoadingStuffs.getInstance().getStuff("options-logo");
 
         //load the sounds
         this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
@@ -61,10 +65,10 @@ public class OptionsScreen {
         this.g2d.setBackground(new Color(0, 66, 147));
         this.g2d.clearRect(0, 0, resolutionW, resolutionH);
         
-        this.g2d.drawImage(this.selector, 116, 480, null);
+        this.g2d.drawImage(this.selector, 0, selectorP, null);
+        this.g2d.drawImage(this.optionsLogo, 852, 23, null);
 
-        //options logo x=852,y=23
-        //selector x=(0), 223, 308, 393, 477, 696
+        //selector x=(0), 223, 308, 393, 478, 696
         //toogle 1 x=1141, y=218
         //toogle 2 x=1141, y=303
         //label music x=69, y=218
