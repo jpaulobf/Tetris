@@ -156,7 +156,9 @@ public class MenuScreen {
      */
     public void keyMovement(int key) {
         
-        if (key == 38) { //UP
+        if (key == 27) { //esc
+            this.goExit = true;
+        } else if (key == 38) { //UP
             if (this.selectorPosition > 0) {
                 this.selectorPosition--;
             } else {
