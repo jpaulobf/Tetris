@@ -205,6 +205,9 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\no.png"));
             stuffs.put("lb-no", image);
 
+            image = ImageIO.read(new File("images\\options_logo.png"));
+            stuffs.put("options-logo", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
