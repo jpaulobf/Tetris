@@ -17,6 +17,11 @@ public class OptionsScreen {
     private BufferedImage optionsLogo       = null;
     private BufferedImage labelPlayMusic    = null;
 
+    private BufferedImage toogleOn          = null;
+    private BufferedImage toogleOff         = null;
+    private BufferedImage toogleMusic       = null;
+    private BufferedImage toogleSfx         = null;
+
     //sounds
     private Audio start                     = null;
 
@@ -45,6 +50,11 @@ public class OptionsScreen {
         this.selector           = (BufferedImage)LoadingStuffs.getInstance().getStuff("selector");
         this.optionsLogo        = (BufferedImage)LoadingStuffs.getInstance().getStuff("options-logo");
         this.labelPlayMusic     = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-play-music");
+        this.toogleOn           = (BufferedImage)LoadingStuffs.getInstance().getStuff("toogle-on");
+        this.toogleOff          = (BufferedImage)LoadingStuffs.getInstance().getStuff("toogle-off");
+
+        this.toogleMusic        = this.toogleOn;
+        this.toogleSfx          = this.toogleOn;
 
         //load the sounds
         this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
@@ -72,10 +82,12 @@ public class OptionsScreen {
 
         this.g2d.drawImage(this.labelPlayMusic, 69, 218, null);
 
+        this.g2d.drawImage(this.toogleMusic, 1141, 218, null);
+
+        this.g2d.drawImage(this.toogleSfx, 1141, 303, null);
+
 
         //selector x=(0), 223, 308, 393, 478, 696
-        //toogle 1 x=1141, y=218
-        //toogle 2 x=1141, y=303
         //label music x=69, y=218
         //label sfx x=69, y=303
         //label music vol x=69, y=388
