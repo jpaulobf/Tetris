@@ -211,6 +211,13 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\lb_play_music.png"));
             stuffs.put("label-play-music", image);
 
+
+            image = ImageIO.read(new File("images\\toogle_off.png"));
+            stuffs.put("toogle-off", image);
+
+            image = ImageIO.read(new File("images\\toogle_on.png"));
+            stuffs.put("toogle-on", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
