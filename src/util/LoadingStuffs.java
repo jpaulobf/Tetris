@@ -229,6 +229,39 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\lb_exit_option.png"));
             stuffs.put("label-exit-option", image);
 
+            image = ImageIO.read(new File("images\\v1_on.png"));
+            stuffs.put("v1-on", image);
+
+            image = ImageIO.read(new File("images\\v2_on.png"));
+            stuffs.put("v2-on", image);
+
+            image = ImageIO.read(new File("images\\v3_on.png"));
+            stuffs.put("v3-on", image);
+
+            image = ImageIO.read(new File("images\\v4_on.png"));
+            stuffs.put("v4-on", image);
+
+            image = ImageIO.read(new File("images\\v5_on.png"));
+            stuffs.put("v5-on", image);
+
+            image = ImageIO.read(new File("images\\v6_on.png"));
+            stuffs.put("v6-on", image);
+
+            image = ImageIO.read(new File("images\\v2_off.png"));
+            stuffs.put("v2-off", image);
+
+            image = ImageIO.read(new File("images\\v3_off.png"));
+            stuffs.put("v3-off", image);
+
+            image = ImageIO.read(new File("images\\v4_off.png"));
+            stuffs.put("v4-off", image);
+
+            image = ImageIO.read(new File("images\\v5_off.png"));
+            stuffs.put("v5-off", image);
+
+            image = ImageIO.read(new File("images\\v6_off.png"));
+            stuffs.put("v6-off", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
