@@ -34,7 +34,6 @@ public class OptionsScreen {
     private BufferedImage volume5On         = null;
     private BufferedImage volume6On         = null;
 
-    private BufferedImage volume1Off        = null;
     private BufferedImage volume2Off        = null;
     private BufferedImage volume3Off        = null;
     private BufferedImage volume4Off        = null;
@@ -95,6 +94,11 @@ public class OptionsScreen {
         this.volume4On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v4-on");
         this.volume5On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v5-on");
         this.volume6On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v6-on");
+        this.volume2Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v2-off");
+        this.volume3Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v3-off");
+        this.volume4Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v4-off");
+        this.volume5Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v5-off");
+        this.volume6Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v6-off");
 
         this.toogleMusic        = this.toogleOn;
         this.toogleSfx          = this.toogleOn;
