@@ -25,7 +25,36 @@ public class OptionsScreen {
     private BufferedImage labelPlaySfx      = null;
     private BufferedImage labelMusicVolume  = null;
     private BufferedImage labelSfxVolume    = null;
+    private BufferedImage labelExit         = null;
 
+    private BufferedImage volume1On         = null;
+    private BufferedImage volume2On         = null;
+    private BufferedImage volume3On         = null;
+    private BufferedImage volume4On         = null;
+    private BufferedImage volume5On         = null;
+    private BufferedImage volume6On         = null;
+
+    private BufferedImage volume1Off        = null;
+    private BufferedImage volume2Off        = null;
+    private BufferedImage volume3Off        = null;
+    private BufferedImage volume4Off        = null;
+    private BufferedImage volume5Off        = null;
+    private BufferedImage volume6Off        = null;
+
+    private BufferedImage musicVolume1      = null;
+    private BufferedImage musicVolume2      = null;
+    private BufferedImage musicVolume3      = null;
+    private BufferedImage musicVolume4      = null;
+    private BufferedImage musicVolume5      = null;
+    private BufferedImage musicVolume6      = null;
+
+    private BufferedImage sfxVolume1        = null;
+    private BufferedImage sfxVolume2        = null;
+    private BufferedImage sfxVolume3        = null;
+    private BufferedImage sfxVolume4        = null;
+    private BufferedImage sfxVolume5        = null;
+    private BufferedImage sfxVolume6        = null;
+    
     //sounds
     private Audio start                     = null;
 
@@ -59,9 +88,29 @@ public class OptionsScreen {
         this.labelPlaySfx       = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-play-sfx");
         this.labelMusicVolume   = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-music-vol");
         this.labelSfxVolume     = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-sfx-vol");
-        
+        this.labelExit          = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-exit-option");
+        this.volume1On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v1-on");
+        this.volume2On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v2-on");
+        this.volume3On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v3-on");
+        this.volume4On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v4-on");
+        this.volume5On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v5-on");
+        this.volume6On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v6-on");
+
         this.toogleMusic        = this.toogleOn;
         this.toogleSfx          = this.toogleOn;
+
+        this.musicVolume1       = this.volume1On;
+        this.musicVolume2       = this.volume2On;
+        this.musicVolume3       = this.volume3On;
+        this.musicVolume4       = this.volume4On;
+        this.musicVolume5       = this.volume5On;
+        this.musicVolume6       = this.volume6On;
+        this.sfxVolume1         = this.volume1On;
+        this.sfxVolume2         = this.volume2On;
+        this.sfxVolume3         = this.volume3On;
+        this.sfxVolume4         = this.volume4On;
+        this.sfxVolume5         = this.volume5On;
+        this.sfxVolume6         = this.volume6On;
 
         //load the sounds
         this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
@@ -86,27 +135,29 @@ public class OptionsScreen {
         
         this.g2d.drawImage(this.selector, 0, selectorP, null);
         this.g2d.drawImage(this.optionsLogo, 852, 23, null);
-
         this.g2d.drawImage(this.labelPlayMusic, 69, 218, null);
-
         this.g2d.drawImage(this.labelPlaySfx, 69, 303, null);
-        
         this.g2d.drawImage(this.labelMusicVolume, 69, 388, null);
-
         this.g2d.drawImage(this.labelSfxVolume, 69, 472, null);
-        
         this.g2d.drawImage(this.toogleMusic, 1141, 218, null);
-
         this.g2d.drawImage(this.toogleSfx, 1141, 303, null);
+        this.g2d.drawImage(this.labelExit, 69, 685, null);
+
+        this.g2d.drawImage(this.musicVolume6, 1141, 392, null);
+        this.g2d.drawImage(this.musicVolume5, 1172, 396, null);
+        this.g2d.drawImage(this.musicVolume4, 1203, 400, null);
+        this.g2d.drawImage(this.musicVolume3, 1234, 404, null);
+        this.g2d.drawImage(this.musicVolume2, 1265, 408, null);
+        this.g2d.drawImage(this.musicVolume1, 1296, 412, null);
+
+        this.g2d.drawImage(this.sfxVolume6, 1141, 476, null);
+        this.g2d.drawImage(this.sfxVolume5, 1172, 480, null);
+        this.g2d.drawImage(this.sfxVolume4, 1203, 484, null);
+        this.g2d.drawImage(this.sfxVolume3, 1234, 488, null);
+        this.g2d.drawImage(this.sfxVolume2, 1265, 492, null);
+        this.g2d.drawImage(this.sfxVolume1, 1296, 496, null);
 
         //selector x=(0), 223, 308, 393, 478, 696
-        //exit x=69, y=685
-        //v6 1 x=1141, y=392
-        //v5 1 x=1172, y=396
-        //v4 1 x=1203, y=400
-        //v3 1 x=1234, y=404
-        //v2 1 x=1265, y=408
-        //v1 1 x=1296, y=412
         //v6 2 x=1141, y=476
         //v5 2 x=1172, y=480
         //v4 2 x=1203, y=484
