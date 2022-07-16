@@ -211,12 +211,20 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\lb_play_music.png"));
             stuffs.put("label-play-music", image);
 
-
             image = ImageIO.read(new File("images\\toogle_off.png"));
             stuffs.put("toogle-off", image);
 
             image = ImageIO.read(new File("images\\toogle_on.png"));
             stuffs.put("toogle-on", image);
+
+            image = ImageIO.read(new File("images\\lb_play_sfx.png"));
+            stuffs.put("label-play-sfx", image);
+
+            image = ImageIO.read(new File("images\\lb_music_volume.png"));
+            stuffs.put("label-music-vol", image);
+
+            image = ImageIO.read(new File("images\\lb_sfx_volume.png"));
+            stuffs.put("label-sfx-vol", image);
 
             Logger.INFO("read all images...", this);
 
