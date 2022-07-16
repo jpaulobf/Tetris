@@ -226,6 +226,9 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\lb_sfx_volume.png"));
             stuffs.put("label-sfx-vol", image);
 
+            image = ImageIO.read(new File("images\\lb_exit_option.png"));
+            stuffs.put("label-exit-option", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0);
