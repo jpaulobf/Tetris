@@ -139,17 +139,29 @@ public class Game implements GameInterface {
                 }
             } else if (this.gameState.getCurrentState() == StateMachine.OPTIONS) {
 
-                if (this.options.goMenuApply()) {
+                //sum framecounter
+                this.framecounter += frametime;
 
-                } else if (this.options.goMenuCancel()) {
-                    //reset the options options
-                    this.options.reset();
-                    
-                    //revert the state to menu
-                    this.gameState.setCurrentState(StateMachine.MENU);
+                //update just one time
+                if (this.framecounter == frametime) { 
+                    //if necessary
+                    this.menu.firstUpdate(frametime);
+                
+                } else {
 
-                    //skip next draw
-                    this.skipDraw = true;
+                    //update the options screen
+                    this.options.update(frametime);
+
+                    if (this.options.goMenu()) {
+                        //reset the options options
+                        this.options.reset();
+                        
+                        //revert the state to menu
+                        this.gameState.setCurrentState(StateMachine.MENU);
+
+                        //skip next draw
+                        this.skipDraw = true;
+                    }
                 }
 
             } else if (this.gameState.getCurrentState() == StateMachine.STAGING) {
