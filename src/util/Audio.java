@@ -16,13 +16,31 @@ public class Audio {
     private AudioInputStream audioInputStream   = null;
     private boolean ready                       = false;
     private long microsecondPosition            = 0;
-  
+    public static final byte MUSIC              = 10;
+    public static final byte SFX                = 20;
+    private byte type                           = 0;
+
+    public byte getType() {
+        return (this.type);
+    }
+
+    /**
+     * New constructor
+     * @param filePath
+     * @param loop
+     * @param type
+     */
+    public Audio(String filePath, int loop, byte type) {
+        this(filePath, loop);
+        this.type = type;
+    }
+
     /**
      * Audio class
      * @param filePath
      * @param loop
      */
-    public Audio(String filePath, int loop) {
+    private Audio(String filePath, int loop) {
         try {
             audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
         } catch (Exception e) {
@@ -63,6 +81,16 @@ public class Audio {
         FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
         float value = control.getValue() - volume;
         control.setValue(value);
+    }
+
+    public void mute() {
+        FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+        control.setValue(control.getMinimum());
+    }
+
+    public void unmute() {
+        FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+        control.setValue(0f);
     }
 
     public void play(int loop) {
