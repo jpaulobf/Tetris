@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.awt.GraphicsEnvironment;
@@ -21,7 +23,12 @@ public class LoadingStuffs {
     private int chargeStatus                = 0;
 
     //Stuffs Map
-    private Map<String, Object> stuffs      = new HashMap<String, Object>();
+    private Map<String, BufferedImage> images   = new HashMap<String, BufferedImage>();
+    private Map<String, Audio> audios           = new HashMap<String, Audio>();
+
+    public List<Audio> getAudioList() {
+        return (new ArrayList<Audio>(this.audios.values()));
+    }
 
     /**
      * Constructor... load the game stuffs...
@@ -32,311 +39,311 @@ public class LoadingStuffs {
             
             BufferedImage image = null;
             image = ImageIO.read(new File("images\\splashImage.png"));
-            stuffs.put("splashImage", image);
+            images.put("splashImage", image);
 
             image = ImageIO.read(new File("images\\background1.png"));
-            stuffs.put("background1", image);
+            images.put("background1", image);
 
             image = ImageIO.read(new File("images\\background2.png"));
-            stuffs.put("background2", image);
+            images.put("background2", image);
 
             image = ImageIO.read(new File("images\\background3.png"));
-            stuffs.put("background3", image);
+            images.put("background3", image);
 
             image = ImageIO.read(new File("images\\background4.png"));
-            stuffs.put("background4", image);
+            images.put("background4", image);
 
             image = ImageIO.read(new File("images\\background5.png"));
-            stuffs.put("background5", image);
+            images.put("background5", image);
 
             image = ImageIO.read(new File("images\\background6.png"));
-            stuffs.put("background6", image);
+            images.put("background6", image);
 
             image = ImageIO.read(new File("images\\background7.png"));
-            stuffs.put("background7", image);
+            images.put("background7", image);
 
             image = ImageIO.read(new File("images\\background8.png"));
-            stuffs.put("background8", image);
+            images.put("background8", image);
 
             image = ImageIO.read(new File("images\\score.png"));
-            stuffs.put("score", image);
+            images.put("score", image);
 
             image = ImageIO.read(new File("images\\hiscore.png"));
-            stuffs.put("hiscore", image);
+            images.put("hiscore", image);
 
             image = ImageIO.read(new File("images\\hold_b.png"));
-            stuffs.put("hold_b", image);
+            images.put("hold_b", image);
 
             image = ImageIO.read(new File("images\\hold_bl.png"));
-            stuffs.put("hold_bl", image);
+            images.put("hold_bl", image);
 
             image = ImageIO.read(new File("images\\hold_bb.png"));
-            stuffs.put("hold_bb", image);
+            images.put("hold_bb", image);
 
             image = ImageIO.read(new File("images\\hold_w.png"));
-            stuffs.put("hold_w", image);
+            images.put("hold_w", image);
 
             image = ImageIO.read(new File("images\\hold_ww.png"));
-            stuffs.put("hold_ww", image);
+            images.put("hold_ww", image);
 
             image = ImageIO.read(new File("images\\next_b.png"));
-            stuffs.put("next_b", image);
+            images.put("next_b", image);
 
             image = ImageIO.read(new File("images\\next_bl.png"));
-            stuffs.put("next_bl", image);
+            images.put("next_bl", image);
 
             image = ImageIO.read(new File("images\\next_bb.png"));
-            stuffs.put("next_bb", image);
+            images.put("next_bb", image);
 
             image = ImageIO.read(new File("images\\next_w.png"));
-            stuffs.put("next_w", image);
+            images.put("next_w", image);
 
             image = ImageIO.read(new File("images\\next_ww.png"));
-            stuffs.put("next_ww", image);
+            images.put("next_ww", image);
 
             image = ImageIO.read(new File("images\\circle.png"));
-            stuffs.put("circle", image);
+            images.put("circle", image);
 
             image = ImageIO.read(new File("images\\circle70.png"));
-            stuffs.put("circle70", image);
+            images.put("circle70", image);
             
             image = ImageIO.read(new File("images\\circle100.png"));
-            stuffs.put("circle100", image);
+            images.put("circle100", image);
 
             image = ImageIO.read(new File("images\\circle120.png"));
-            stuffs.put("circle120", image);
+            images.put("circle120", image);
 
             image = ImageIO.read(new File("images\\lb_level.png"));
-            stuffs.put("labelLevel", image);
+            images.put("labelLevel", image);
 
             image = ImageIO.read(new File("images\\lb_line.png"));
-            stuffs.put("labelLine", image);
+            images.put("labelLine", image);
 
             image = ImageIO.read(new File("images\\n0m.png"));
-            stuffs.put("number-0-m", image);
+            images.put("number-0-m", image);
 
             image = ImageIO.read(new File("images\\n1m.png"));
-            stuffs.put("number-1-m", image);
+            images.put("number-1-m", image);
 
             image = ImageIO.read(new File("images\\n2m.png"));
-            stuffs.put("number-2-m", image);
+            images.put("number-2-m", image);
 
             image = ImageIO.read(new File("images\\n3m.png"));
-            stuffs.put("number-3-m", image);
+            images.put("number-3-m", image);
 
             image = ImageIO.read(new File("images\\n4m.png"));
-            stuffs.put("number-4-m", image);
+            images.put("number-4-m", image);
 
             image = ImageIO.read(new File("images\\n5m.png"));
-            stuffs.put("number-5-m", image);
+            images.put("number-5-m", image);
 
             image = ImageIO.read(new File("images\\n6m.png"));
-            stuffs.put("number-6-m", image);
+            images.put("number-6-m", image);
 
             image = ImageIO.read(new File("images\\n7m.png"));
-            stuffs.put("number-7-m", image);
+            images.put("number-7-m", image);
 
             image = ImageIO.read(new File("images\\n8m.png"));
-            stuffs.put("number-8-m", image);
+            images.put("number-8-m", image);
 
             image = ImageIO.read(new File("images\\n9m.png"));
-            stuffs.put("number-9-m", image);
+            images.put("number-9-m", image);
 
             image = ImageIO.read(new File("images\\n0b.png"));
-            stuffs.put("number-0-b", image);
+            images.put("number-0-b", image);
 
             image = ImageIO.read(new File("images\\n1b.png"));
-            stuffs.put("number-1-b", image);
+            images.put("number-1-b", image);
 
             image = ImageIO.read(new File("images\\n2b.png"));
-            stuffs.put("number-2-b", image);
+            images.put("number-2-b", image);
 
             image = ImageIO.read(new File("images\\n3b.png"));
-            stuffs.put("number-3-b", image);
+            images.put("number-3-b", image);
 
             image = ImageIO.read(new File("images\\n4b.png"));
-            stuffs.put("number-4-b", image);
+            images.put("number-4-b", image);
 
             image = ImageIO.read(new File("images\\n5b.png"));
-            stuffs.put("number-5-b", image);
+            images.put("number-5-b", image);
 
             image = ImageIO.read(new File("images\\n6b.png"));
-            stuffs.put("number-6-b", image);
+            images.put("number-6-b", image);
 
             image = ImageIO.read(new File("images\\n7b.png"));
-            stuffs.put("number-7-b", image);
+            images.put("number-7-b", image);
 
             image = ImageIO.read(new File("images\\n8b.png"));
-            stuffs.put("number-8-b", image);
+            images.put("number-8-b", image);
 
             image = ImageIO.read(new File("images\\n9b.png"));
-            stuffs.put("number-9-b", image);
+            images.put("number-9-b", image);
 
             image = ImageIO.read(new File("images\\bean.png"));
-            stuffs.put("bean", image);
+            images.put("bean", image);
 
             image = ImageIO.read(new File("images\\tlogo.png"));
-            stuffs.put("tlogo", image);
+            images.put("tlogo", image);
 
             image = ImageIO.read(new File("images\\selector.png"));
-            stuffs.put("selector", image);
+            images.put("selector", image);
 
             image = ImageIO.read(new File("images\\lexit.png"));
-            stuffs.put("lexit", image);
+            images.put("lexit", image);
 
             image = ImageIO.read(new File("images\\loptions.png"));
-            stuffs.put("loptions", image);
+            images.put("loptions", image);
 
             image = ImageIO.read(new File("images\\lplaygame.png"));
-            stuffs.put("lplaygame", image);
+            images.put("lplaygame", image);
 
             image = ImageIO.read(new File("images\\start_selected.png"));
-            stuffs.put("starSelected", image);
+            images.put("starSelected", image);
 
             image = ImageIO.read(new File("images\\start_unselected.png"));
-            stuffs.put("starUnselected", image);
+            images.put("starUnselected", image);
 
             image = ImageIO.read(new File("images\\really.png"));
-            stuffs.put("really", image);
+            images.put("really", image);
 
             image = ImageIO.read(new File("images\\yes.png"));
-            stuffs.put("lb-yes", image);
+            images.put("lb-yes", image);
 
             image = ImageIO.read(new File("images\\no.png"));
-            stuffs.put("lb-no", image);
+            images.put("lb-no", image);
 
             image = ImageIO.read(new File("images\\options_logo.png"));
-            stuffs.put("options-logo", image);
+            images.put("options-logo", image);
 
             image = ImageIO.read(new File("images\\lb_play_music.png"));
-            stuffs.put("label-play-music", image);
+            images.put("label-play-music", image);
 
             image = ImageIO.read(new File("images\\toogle_off.png"));
-            stuffs.put("toogle-off", image);
+            images.put("toogle-off", image);
 
             image = ImageIO.read(new File("images\\toogle_on.png"));
-            stuffs.put("toogle-on", image);
+            images.put("toogle-on", image);
 
             image = ImageIO.read(new File("images\\lb_play_sfx.png"));
-            stuffs.put("label-play-sfx", image);
+            images.put("label-play-sfx", image);
 
             image = ImageIO.read(new File("images\\lb_music_volume.png"));
-            stuffs.put("label-music-vol", image);
+            images.put("label-music-vol", image);
 
             image = ImageIO.read(new File("images\\lb_sfx_volume.png"));
-            stuffs.put("label-sfx-vol", image);
+            images.put("label-sfx-vol", image);
 
             image = ImageIO.read(new File("images\\lb_exit_option.png"));
-            stuffs.put("label-exit-option", image);
+            images.put("label-exit-option", image);
 
             image = ImageIO.read(new File("images\\v1_on.png"));
-            stuffs.put("v1-on", image);
+            images.put("v1-on", image);
 
             image = ImageIO.read(new File("images\\v2_on.png"));
-            stuffs.put("v2-on", image);
+            images.put("v2-on", image);
 
             image = ImageIO.read(new File("images\\v3_on.png"));
-            stuffs.put("v3-on", image);
+            images.put("v3-on", image);
 
             image = ImageIO.read(new File("images\\v4_on.png"));
-            stuffs.put("v4-on", image);
+            images.put("v4-on", image);
 
             image = ImageIO.read(new File("images\\v5_on.png"));
-            stuffs.put("v5-on", image);
+            images.put("v5-on", image);
 
             image = ImageIO.read(new File("images\\v6_on.png"));
-            stuffs.put("v6-on", image);
+            images.put("v6-on", image);
 
             image = ImageIO.read(new File("images\\v2_off.png"));
-            stuffs.put("v2-off", image);
+            images.put("v2-off", image);
 
             image = ImageIO.read(new File("images\\v3_off.png"));
-            stuffs.put("v3-off", image);
+            images.put("v3-off", image);
 
             image = ImageIO.read(new File("images\\v4_off.png"));
-            stuffs.put("v4-off", image);
+            images.put("v4-off", image);
 
             image = ImageIO.read(new File("images\\v5_off.png"));
-            stuffs.put("v5-off", image);
+            images.put("v5-off", image);
 
             image = ImageIO.read(new File("images\\v6_off.png"));
-            stuffs.put("v6-off", image);
+            images.put("v6-off", image);
 
             Logger.INFO("read all images...", this);
 
-            Audio audio = new Audio("audio\\theme1.wav", 0);
+            Audio audio = new Audio("audio\\theme1.wav", 0, Audio.MUSIC);
             if (audio != null && audio.isReady()) {
-                stuffs.put("theme1", audio);
+                audios.put("theme1", audio);
             }
 
-            audio = new Audio("audio\\theme2.wav", 0);
+            audio = new Audio("audio\\theme2.wav", 0, Audio.MUSIC);
             if (audio != null && audio.isReady()) {
-                stuffs.put("theme2", audio);
+                audios.put("theme2", audio);
             }
 
-            audio = new Audio("audio\\theme3.wav", 0);
+            audio = new Audio("audio\\theme3.wav", 0, Audio.MUSIC);
             if (audio != null && audio.isReady()) {
-                stuffs.put("theme3", audio);
+                audios.put("theme3", audio);
             }
 
-            audio = new Audio("audio\\turn.wav", 0);
+            audio = new Audio("audio\\turn.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("turn", audio);
+                audios.put("turn", audio);
             }
 
-            audio = new Audio("audio\\move.wav", 0);
+            audio = new Audio("audio\\move.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("move", audio);
+                audios.put("move", audio);
             }
 
-            audio = new Audio("audio\\splash2.wav", 0);
+            audio = new Audio("audio\\splash2.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("splash", audio);
+                audios.put("splash", audio);
             }
 
-            audio = new Audio("audio\\drop.wav", 0);
+            audio = new Audio("audio\\drop.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("drop", audio);
+                audios.put("drop", audio);
             }
 
-            audio = new Audio("audio\\hold.wav", 0);
+            audio = new Audio("audio\\hold.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("hold", audio);
+                audios.put("hold", audio);
             }
 
-            audio = new Audio("audio\\tetris.wav", 0);
+            audio = new Audio("audio\\tetris.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("tetris", audio);
+                audios.put("tetris", audio);
             }
 
-            audio = new Audio("audio\\intro.wav", 0);
+            audio = new Audio("audio\\intro.wav", 0, Audio.MUSIC);
             if (audio != null && audio.isReady()) {
-                stuffs.put("intro", audio);
+                audios.put("intro", audio);
             }
 
-            audio = new Audio("audio\\menuitem.wav", 0);
+            audio = new Audio("audio\\menuitem.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("menuitem", audio);
+                audios.put("menuitem", audio);
             }
 
-            audio = new Audio("audio\\star.wav", 0);
+            audio = new Audio("audio\\star.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("star", audio);
+                audios.put("star", audio);
             }
 
-            audio = new Audio("audio\\opening.wav", 0);
+            audio = new Audio("audio\\opening.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("opening", audio);
+                audios.put("opening", audio);
             }
 
-            audio = new Audio("audio\\closing.wav", 0);
+            audio = new Audio("audio\\closing.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("closing", audio);
+                audios.put("closing", audio);
             }
 
-            audio = new Audio("audio\\start.wav", 0);
+            audio = new Audio("audio\\start.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
-                stuffs.put("start", audio);
+                audios.put("start", audio);
             }
 
             Logger.INFO("read all audio...", this);
@@ -364,12 +371,21 @@ public class LoadingStuffs {
     }
 
     /**
-     * Recover the stored object
-     * @param objectName
+     * Return the stored image
+     * @param imageName
      * @return
      */
-    public Object getStuff(String objectName) {
-        return (this.stuffs.get(objectName));
+    public BufferedImage getImage(String imageName) {
+        return (this.images.get(imageName));
+    }
+
+    /**
+     * Return the stored audio
+     * @param audioName
+     * @return
+     */
+    public Audio getAudio(String audioName) {
+        return (this.audios.get(audioName));
     }
 
     /**
