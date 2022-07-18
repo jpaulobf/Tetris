@@ -10,6 +10,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.Point;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Class responsable for the game
@@ -25,6 +27,8 @@ public class Game implements GameInterface {
     //the game variables go here...
     //private GameOver gameOver               = null;
     //private volatile Audio gameoverTheme    = null;
+
+    private List<Audio> audioList           = new ArrayList<Audio>();
 
     private volatile byte currentMusicTheme = 0;
     private volatile Audio theme            = null;
@@ -72,16 +76,19 @@ public class Game implements GameInterface {
         // ->>>  create the game elements objects
         //////////////////////////////////////////////////////////////////////
         this.gameState          = new StateMachine(this);
-        this.music1             = (Audio)LoadingStuffs.getInstance().getStuff("theme1");
-        this.music2             = (Audio)LoadingStuffs.getInstance().getStuff("theme2");
-        this.music3             = (Audio)LoadingStuffs.getInstance().getStuff("theme3");
+        this.music1             = LoadingStuffs.getInstance().getAudio("theme1");
+        this.music2             = LoadingStuffs.getInstance().getAudio("theme2");
+        this.music3             = LoadingStuffs.getInstance().getAudio("theme3");
         this.theme              = this.music1;
+
         this.currentMusicTheme  = 0;
         this.menu               = new MenuScreen(this);
         this.options            = new OptionsScreen(this);
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
         this.exitScreen         = new ExitScreen(this, this.wwm, this.whm);
+
+        this.audioList          = LoadingStuffs.getInstance().getAudioList();
     }
     
     /**
@@ -477,6 +484,21 @@ public class Game implements GameInterface {
      */
     public void decVolumeSFX() {this.board.decVolumeSFX();}
     public void incVolumeSFX() {this.board.incVolumeSFX();}
+
+    /**
+     * Generic audio control
+     */
+    public void audioMuteControl(byte type, boolean mute) {
+        for (Audio audio : audioList) {
+            if (audio.getType() == type) {
+                if (mute) {
+                    audio.mute();
+                } else {
+                    audio.unmute();
+                }
+            }
+        }
+    }
 
     //----------------------------------------------------//
     //--------------- 	Game Level  ----------------------//
