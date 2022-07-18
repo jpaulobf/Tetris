@@ -92,7 +92,7 @@ public class SplashScreen extends JFrame implements Runnable {
         this.g2d            = (Graphics2D)bufferImage.getGraphics();
         
         //Get the already loaded image from loader
-        this.splashImage    = (BufferedImage)LoadingStuffs.getInstance().getStuff("splashImage");
+        this.splashImage    = LoadingStuffs.getInstance().getImage("splashImage");
 
         //////////////////////////////////////////////////////////////////////
         // ->>>  now, for the canvas

@@ -35,7 +35,7 @@ public class ScreenTransition {
         
         this.gameRef        = game;
 
-        this.bean           = (BufferedImage)LoadingStuffs.getInstance().getStuff("bean");
+        this.bean           = LoadingStuffs.getInstance().getImage("bean");
 
         this.screenWidth    = (short)this.gameRef.getInternalResolutionWidth();
         this.screenHeight   = (short)this.gameRef.getInternalResolutionHeight();
@@ -47,7 +47,7 @@ public class ScreenTransition {
         this.center         = (byte)(this.beansCount / 2);
 
         for (byte i = 0; i < this.beansCount; i++) {
-            this.beans[i]            = (BufferedImage)LoadingStuffs.getInstance().getStuff("bean");
+            this.beans[i]            = LoadingStuffs.getInstance().getImage("bean");
             this.beansPosition[i]    = new Point();
             this.beansPosition[i].x  = i * -500;
             this.beansPosition[i].y  = i * this.bean.getHeight();
