@@ -132,18 +132,18 @@ public class Board {
 		this.drawGameBoardBG();
 
 		//load the labels
-		this.score					= (BufferedImage)LoadingStuffs.getInstance().getStuff("score");
-		this.hiscore				= (BufferedImage)LoadingStuffs.getInstance().getStuff("hiscore");
-		this.labelLevel				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLevel");
-		this.labelLine				= (BufferedImage)LoadingStuffs.getInstance().getStuff("labelLine");
+		this.score					= LoadingStuffs.getInstance().getImage("score");
+		this.hiscore				= LoadingStuffs.getInstance().getImage("hiscore");
+		this.labelLevel				= LoadingStuffs.getInstance().getImage("labelLevel");
+		this.labelLine				= LoadingStuffs.getInstance().getImage("labelLine");
 
 		//load audios
-		this.turn 					= (Audio)LoadingStuffs.getInstance().getStuff("turn"); 
-		this.move 					= (Audio)LoadingStuffs.getInstance().getStuff("move"); 
-		this.splash 				= (Audio)LoadingStuffs.getInstance().getStuff("splash");
-		this.drop 					= (Audio)LoadingStuffs.getInstance().getStuff("drop");
-		this.holdSound				= (Audio)LoadingStuffs.getInstance().getStuff("hold");
-		this.tetris					= (Audio)LoadingStuffs.getInstance().getStuff("tetris");
+		this.turn 					= LoadingStuffs.getInstance().getAudio("turn"); 
+		this.move 					= LoadingStuffs.getInstance().getAudio("move"); 
+		this.splash 				= LoadingStuffs.getInstance().getAudio("splash");
+		this.drop 					= LoadingStuffs.getInstance().getAudio("drop");
+		this.holdSound				= LoadingStuffs.getInstance().getAudio("hold");
+		this.tetris					= LoadingStuffs.getInstance().getAudio("tetris");
 
 		//calc the render position
 		this.renderPositionX 		= (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));

@@ -40,7 +40,7 @@ public class GameOver {
      */
     private void drawGameOverInBuffer() {
         if (this.bgd2 == null) {
-            this.gameover = (BufferedImage)LoadingStuffs.getInstance().getStuff("gameover");
+            this.gameover = LoadingStuffs.getInstance().getImage("gameover");
 
             //create a backbuffer image for doublebuffer
             this.bgBufferImage  = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleVolatileImage(this.windowWidth, this.windowHeight);

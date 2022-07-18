@@ -62,19 +62,19 @@ public class MenuScreen {
         this.resolutionH        = this.gameRef.getInternalResolutionHeight();
 
         //load the images
-        this.tlogo              = (BufferedImage)LoadingStuffs.getInstance().getStuff("tlogo");
-        this.selector           = (BufferedImage)LoadingStuffs.getInstance().getStuff("selector");
-        this.labelPlay          = (BufferedImage)LoadingStuffs.getInstance().getStuff("lplaygame");
-        this.labelOptions       = (BufferedImage)LoadingStuffs.getInstance().getStuff("loptions");
-        this.labelExit          = (BufferedImage)LoadingStuffs.getInstance().getStuff("lexit");
-        this.starSelected       = (BufferedImage)LoadingStuffs.getInstance().getStuff("starSelected");
-        this.starUnselected     = (BufferedImage)LoadingStuffs.getInstance().getStuff("starUnselected");
+        this.tlogo              = LoadingStuffs.getInstance().getImage("tlogo");
+        this.selector           = LoadingStuffs.getInstance().getImage("selector");
+        this.labelPlay          = LoadingStuffs.getInstance().getImage("lplaygame");
+        this.labelOptions       = LoadingStuffs.getInstance().getImage("loptions");
+        this.labelExit          = LoadingStuffs.getInstance().getImage("lexit");
+        this.starSelected       = LoadingStuffs.getInstance().getImage("starSelected");
+        this.starUnselected     = LoadingStuffs.getInstance().getImage("starUnselected");
 
         //load the sounds
-        this.intro              = (Audio)LoadingStuffs.getInstance().getStuff("intro");
-        this.item               = (Audio)LoadingStuffs.getInstance().getStuff("star");
-        this.star               = (Audio)LoadingStuffs.getInstance().getStuff("menuitem");
-        this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
+        this.intro              = LoadingStuffs.getInstance().getAudio("intro");
+        this.item               = LoadingStuffs.getInstance().getAudio("star");
+        this.star               = LoadingStuffs.getInstance().getAudio("menuitem");
+        this.start              = LoadingStuffs.getInstance().getAudio("start");
 
         //create stars array
         this.stars              = new BufferedImage[8];

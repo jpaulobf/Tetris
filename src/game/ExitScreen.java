@@ -72,13 +72,13 @@ public class ExitScreen {
         this.g2d        = this.getG2D();
 
         //load the question image
-        this.really     = (BufferedImage)LoadingStuffs.getInstance().getStuff("really");
-        this.labelYes   = (BufferedImage)LoadingStuffs.getInstance().getStuff("lb-yes");
-        this.labelNo    = (BufferedImage)LoadingStuffs.getInstance().getStuff("lb-no");
+        this.really     = LoadingStuffs.getInstance().getImage("really");
+        this.labelYes   = LoadingStuffs.getInstance().getImage("lb-yes");
+        this.labelNo    = LoadingStuffs.getInstance().getImage("lb-no");
 
         //store the sounds
-        this.opening    = (Audio)LoadingStuffs.getInstance().getStuff("opening");
-        this.closing    = (Audio)LoadingStuffs.getInstance().getStuff("closing");
+        this.opening    = LoadingStuffs.getInstance().getAudio("opening");
+        this.closing    = LoadingStuffs.getInstance().getAudio("closing");
     }
 
     /**
