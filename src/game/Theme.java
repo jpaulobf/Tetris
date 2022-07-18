@@ -38,13 +38,13 @@ public class Theme {
      * @param theme
      */
     public void setTheme(byte theme) {
-        this.bgimage        = (BufferedImage)LoadingStuffs.getInstance().getStuff(bgThemes[theme]);
+        this.bgimage        = LoadingStuffs.getInstance().getImage(bgThemes[theme]);
         this.filledGrid     = this.filledThemes[theme];
         this.bgBoardColor   = this.boardColors[theme];
         this.lineColor      = this.lineColors[theme];
-        this.next           = (BufferedImage)LoadingStuffs.getInstance().getStuff(nextLabels[theme]);
-        this.hold           = (BufferedImage)LoadingStuffs.getInstance().getStuff(holdLabes[theme]);
-        this.circle         = (BufferedImage)LoadingStuffs.getInstance().getStuff(circles[theme]);
+        this.next           = LoadingStuffs.getInstance().getImage(nextLabels[theme]);
+        this.hold           = LoadingStuffs.getInstance().getImage(holdLabes[theme]);
+        this.circle         = LoadingStuffs.getInstance().getImage(circles[theme]);
     }
 
     //getters
