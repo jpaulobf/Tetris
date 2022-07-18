@@ -67,6 +67,13 @@ public interface GameInterface {
     public int getInternalResolutionHeight();
 
     /**
+     * Generic audio control
+     * @param type
+     * @param mute
+     */
+    public void audioMuteControl(byte type, boolean mute);
+
+    /**
      * Mute the music
      */
     public void toogleMuteTheme();
