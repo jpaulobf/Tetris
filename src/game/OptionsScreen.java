@@ -50,7 +50,7 @@ public class OptionsScreen {
     private final byte TOTAL_OPTIONS        = 5;
 
     //sounds
-    private Audio start                     = null;
+    private Audio item                      = null;
 
     //menu control
     private byte selectorPosition           = 0;
@@ -77,26 +77,26 @@ public class OptionsScreen {
         this.resolutionH        = this.gameRef.getInternalResolutionHeight();
 
         //load images
-        this.selector           = (BufferedImage)LoadingStuffs.getInstance().getStuff("selector");
-        this.optionsLogo        = (BufferedImage)LoadingStuffs.getInstance().getStuff("options-logo");
-        this.labelPlayMusic     = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-play-music");
-        this.toogleOn           = (BufferedImage)LoadingStuffs.getInstance().getStuff("toogle-on");
-        this.toogleOff          = (BufferedImage)LoadingStuffs.getInstance().getStuff("toogle-off");
-        this.labelPlaySfx       = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-play-sfx");
-        this.labelMusicVolume   = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-music-vol");
-        this.labelSfxVolume     = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-sfx-vol");
-        this.labelExit          = (BufferedImage)LoadingStuffs.getInstance().getStuff("label-exit-option");
-        this.volume1On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v1-on");
-        this.volume2On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v2-on");
-        this.volume3On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v3-on");
-        this.volume4On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v4-on");
-        this.volume5On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v5-on");
-        this.volume6On          = (BufferedImage)LoadingStuffs.getInstance().getStuff("v6-on");
-        this.volume2Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v2-off");
-        this.volume3Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v3-off");
-        this.volume4Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v4-off");
-        this.volume5Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v5-off");
-        this.volume6Off         = (BufferedImage)LoadingStuffs.getInstance().getStuff("v6-off");
+        this.selector           = LoadingStuffs.getInstance().getImage("selector");
+        this.optionsLogo        = LoadingStuffs.getInstance().getImage("options-logo");
+        this.labelPlayMusic     = LoadingStuffs.getInstance().getImage("label-play-music");
+        this.toogleOn           = LoadingStuffs.getInstance().getImage("toogle-on");
+        this.toogleOff          = LoadingStuffs.getInstance().getImage("toogle-off");
+        this.labelPlaySfx       = LoadingStuffs.getInstance().getImage("label-play-sfx");
+        this.labelMusicVolume   = LoadingStuffs.getInstance().getImage("label-music-vol");
+        this.labelSfxVolume     = LoadingStuffs.getInstance().getImage("label-sfx-vol");
+        this.labelExit          = LoadingStuffs.getInstance().getImage("label-exit-option");
+        this.volume1On          = LoadingStuffs.getInstance().getImage("v1-on");
+        this.volume2On          = LoadingStuffs.getInstance().getImage("v2-on");
+        this.volume3On          = LoadingStuffs.getInstance().getImage("v3-on");
+        this.volume4On          = LoadingStuffs.getInstance().getImage("v4-on");
+        this.volume5On          = LoadingStuffs.getInstance().getImage("v5-on");
+        this.volume6On          = LoadingStuffs.getInstance().getImage("v6-on");
+        this.volume2Off         = LoadingStuffs.getInstance().getImage("v2-off");
+        this.volume3Off         = LoadingStuffs.getInstance().getImage("v3-off");
+        this.volume4Off         = LoadingStuffs.getInstance().getImage("v4-off");
+        this.volume5Off         = LoadingStuffs.getInstance().getImage("v5-off");
+        this.volume6Off         = LoadingStuffs.getInstance().getImage("v6-off");
 
         this.toogleMusic        = this.toogleOn;
         this.toogleSfx          = this.toogleOn;
@@ -115,7 +115,7 @@ public class OptionsScreen {
         this.sfxVolume6         = this.volume6On;
 
         //load the sounds
-        this.start              = (Audio)LoadingStuffs.getInstance().getStuff("start");
+        this.item               = LoadingStuffs.getInstance().getAudio("star");
     }
 
     /**
@@ -237,14 +237,26 @@ public class OptionsScreen {
             if (this.selectorPosition < 0) {
                 this.selectorPosition = TOTAL_OPTIONS - 1;
             }
+            this.item.play();
         } else if (key == 40) { //DOWN
             this.selectorPosition = (byte)((this.selectorPosition+1)%TOTAL_OPTIONS);
+            this.item.play();
         } else if (key == 37) { //LEFT
 
             if (this.selectorPosition == 0) {
                 this.isMusicOn = !this.isMusicOn;
+                if (!this.isMusicOn) {
+                    this.gameRef.audioMuteControl(Audio.MUSIC, true);
+                } else {
+                    this.gameRef.audioMuteControl(Audio.MUSIC, false);
+                }
             } else if (this.selectorPosition == 1) {
                 this.isSfxOn = !this.isSfxOn;
+                if (!this.isSfxOn) {
+                    this.gameRef.audioMuteControl(Audio.SFX, true);
+                } else {
+                    this.gameRef.audioMuteControl(Audio.SFX, false);
+                }
             } else if (this.selectorPosition == 2) {
                 this.musicVolume = (byte)((this.musicVolume + 1)%7);
                 if (this.musicVolume == 0) {
@@ -259,8 +271,18 @@ public class OptionsScreen {
         } else if (key == 39) { //RIGHT
             if (this.selectorPosition == 0) {
                 this.isMusicOn = !this.isMusicOn;
+                if (!this.isMusicOn) {
+                    this.gameRef.audioMuteControl(Audio.MUSIC, true);
+                } else {
+                    this.gameRef.audioMuteControl(Audio.MUSIC, false);
+                }
             } else if (this.selectorPosition == 1) {
                 this.isSfxOn = !this.isSfxOn;
+                if (!this.isSfxOn) {
+                    this.gameRef.audioMuteControl(Audio.SFX, true);
+                } else {
+                    this.gameRef.audioMuteControl(Audio.SFX, false);
+                }
             } else if (this.selectorPosition == 2) {
                 this.musicVolume--;
                 if (this.musicVolume < 1) {
