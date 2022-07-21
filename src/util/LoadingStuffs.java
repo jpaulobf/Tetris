@@ -26,6 +26,10 @@ public class LoadingStuffs {
     private Map<String, BufferedImage> images   = new HashMap<String, BufferedImage>();
     private Map<String, Audio> audios           = new HashMap<String, Audio>();
 
+    /**
+     * Get each audio added.
+     * @return
+     */
     public List<Audio> getAudioList() {
         return (new ArrayList<Audio>(this.audios.values()));
     }
@@ -286,7 +290,8 @@ public class LoadingStuffs {
                 audios.put("theme3", audio);
             }
 
-            audio = new Audio("audio\\turn.wav", 0, Audio.SFX);
+            //turn
+            audio = new Audio("audio\\turnb.wav", 0, Audio.SFX);
             if (audio != null && audio.isReady()) {
                 audios.put("turn", audio);
             }
