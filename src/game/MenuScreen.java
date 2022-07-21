@@ -43,12 +43,6 @@ public class MenuScreen {
     private int resolutionW                 = 0;
     private int resolutionH                 = 0;
 
-    public void reset() {
-        this.goOptions  = false;
-        this.goGame     = false;
-        this.goExit     = false;
-    }
-
     /**
      * Constructor
      * @param game
@@ -204,6 +198,15 @@ public class MenuScreen {
                 this.star.play();
             }
         }
+    }
+
+    /**
+     * Menu screen reset
+     */
+    public void reset() {
+        this.goOptions  = false;
+        this.goGame     = false;
+        this.goExit     = false;
     }
 
     public byte getLevel() {return (this.level);}
