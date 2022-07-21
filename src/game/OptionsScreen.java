@@ -10,7 +10,7 @@ import util.Audio;
 public class OptionsScreen {
     
     //game parameters
-    private volatile long framecounter      = 0L;
+    //private volatile long framecounter      = 0L;
     private GameInterface gameRef           = null;
     private Graphics2D g2d                  = null;
     private BufferedImage selector          = null;
@@ -98,9 +98,11 @@ public class OptionsScreen {
         this.volume5Off         = LoadingStuffs.getInstance().getImage("v5-off");
         this.volume6Off         = LoadingStuffs.getInstance().getImage("v6-off");
 
+        //define the music & sfx toogle image
         this.toogleMusic        = this.toogleOn;
         this.toogleSfx          = this.toogleOn;
 
+        //define the music volume images
         this.musicVolume1       = this.volume1On;
         this.musicVolume2       = this.volume2On;
         this.musicVolume3       = this.volume3On;
@@ -123,23 +125,30 @@ public class OptionsScreen {
      * @param frametime
      */
     public synchronized void update(long frametime) {
+        
+        //calc the selector position
         this.selectorP = (short)(this.selectorO + (this.selectorPosition * 85));
+       
+        //if the selector is in the exit option (go 133 pixel dows)
         if (this.selectorPosition == TOTAL_OPTIONS - 1) {
             this.selectorP += 133;
         }
 
+        //define the music toogle button
         if (this.isMusicOn) {
             this.toogleMusic = this.toogleOn;
         } else {
             this.toogleMusic = this.toogleOff;
         }
 
+        //define the sfx toogle button
         if (this.isSfxOn) {
             this.toogleSfx = this.toogleOn;
         } else {
             this.toogleSfx = this.toogleOff;
         }
 
+        //define the volume image
         this.musicVolume6       = this.volume6On;
         this.musicVolume5       = this.volume5On;
         this.musicVolume4       = this.volume4On;
@@ -189,8 +198,10 @@ public class OptionsScreen {
         this.g2d.setBackground(new Color(0, 66, 147));
         this.g2d.clearRect(0, 0, resolutionW, resolutionH);
         
+        //selector
         this.g2d.drawImage(this.selector,           0, this.selectorP, null);
         
+        //labels
         this.g2d.drawImage(this.optionsLogo,        852, 23, null);
         this.g2d.drawImage(this.labelPlayMusic,     69, 218, null);
         this.g2d.drawImage(this.labelPlaySfx,       69, 303, null);
@@ -200,6 +211,7 @@ public class OptionsScreen {
         this.g2d.drawImage(this.toogleSfx,          1141, 303, null);
         this.g2d.drawImage(this.labelExit,          69, 685, null);
 
+        //music volume
         this.g2d.drawImage(this.musicVolume6,       1141, 392, null);
         this.g2d.drawImage(this.musicVolume5,       1172, 396, null);
         this.g2d.drawImage(this.musicVolume4,       1203, 400, null);
@@ -207,6 +219,7 @@ public class OptionsScreen {
         this.g2d.drawImage(this.musicVolume2,       1265, 408, null);
         this.g2d.drawImage(this.musicVolume1,       1296, 412, null);
 
+        //sfx volume
         this.g2d.drawImage(this.sfxVolume6,         1141, 476, null);
         this.g2d.drawImage(this.sfxVolume5,         1172, 480, null);
         this.g2d.drawImage(this.sfxVolume4,         1203, 484, null);
@@ -215,17 +228,6 @@ public class OptionsScreen {
         this.g2d.drawImage(this.sfxVolume1,         1296, 496, null);
 
     }
-
-    /**
-     * 
-     * @param frametime
-     */
-    public synchronized void firstUpdate(long frametime) {
-    }
-
-    //getters
-    public boolean goMenu()                     {   return (this.goMenu);                   }
-    public Graphics2D getG2D()					{ 	return (this.gameRef.getG2D());		    }
 
     /**
      * 
@@ -310,4 +312,16 @@ public class OptionsScreen {
         this.selectorPosition = 0;
         this.goMenu = false;
     }
+
+    /**
+     * First option execution.
+     * @param frametime
+     */
+    public synchronized void firstUpdate(long frametime) {
+
+    }
+
+    //getters
+    public boolean goMenu()                     {   return (this.goMenu);                   }
+    public Graphics2D getG2D()					{ 	return (this.gameRef.getG2D());		    }
 }
