@@ -240,6 +240,12 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\lb_exit_option.png"));
             images.put("label-exit-option", image);
 
+            image = ImageIO.read(new File("images\\lb_ghost_piece.png"));
+            images.put("label-ghost-piece", image);
+
+            image = ImageIO.read(new File("images\\lb_hold_piece.png"));
+            images.put("label-hold-piece", image);
+
             image = ImageIO.read(new File("images\\v1_on.png"));
             images.put("v1-on", image);
 
