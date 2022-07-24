@@ -20,10 +20,14 @@ public class OptionsScreen {
     private BufferedImage toogleOff         = null;
     private BufferedImage toogleMusic       = null;
     private BufferedImage toogleSfx         = null;
+    private BufferedImage toogleGhost       = null;
+    private BufferedImage toogleHold        = null;
     private BufferedImage labelPlaySfx      = null;
     private BufferedImage labelMusicVolume  = null;
     private BufferedImage labelSfxVolume    = null;
     private BufferedImage labelExit         = null;
+    private BufferedImage labelGhostPiece   = null;
+    private BufferedImage labelHoldPiece    = null;
     private BufferedImage volume1On         = null;
     private BufferedImage volume2On         = null;
     private BufferedImage volume3On         = null;
@@ -47,20 +51,24 @@ public class OptionsScreen {
     private BufferedImage sfxVolume4        = null;
     private BufferedImage sfxVolume5        = null;
     private BufferedImage sfxVolume6        = null;
-    private final byte TOTAL_OPTIONS        = 5;
+    private final byte TOTAL_OPTIONS        = 7;
 
     //sounds
     private Audio item                      = null;
 
     //menu control
+    private final short SELECTOR_START      = 193;
+    private final byte SELECTOR_DIFF        = 77;
     private byte selectorPosition           = 0;
     private volatile boolean goMenu         = false;
     private int resolutionW                 = 0;
     private int resolutionH                 = 0;
-    private short selectorO                  = 223;
+    private short selectorO                 = SELECTOR_START;
     private boolean isMusicOn               = true;
     private boolean isSfxOn                 = true;
-    private short selectorP                 = (short)(selectorO + (selectorPosition * 85));
+    private boolean isGhostOn               = true;
+    private boolean isHoldOn                = true;
+    private short selectorP                 = (short)(selectorO + (selectorPosition * SELECTOR_DIFF));
     private byte musicVolume                = 6;
     private byte sfxVolume                  = 6;
 
@@ -86,6 +94,8 @@ public class OptionsScreen {
         this.labelMusicVolume   = LoadingStuffs.getInstance().getImage("label-music-vol");
         this.labelSfxVolume     = LoadingStuffs.getInstance().getImage("label-sfx-vol");
         this.labelExit          = LoadingStuffs.getInstance().getImage("label-exit-option");
+        this.labelGhostPiece    = LoadingStuffs.getInstance().getImage("label-ghost-piece");
+        this.labelHoldPiece     = LoadingStuffs.getInstance().getImage("label-hold-piece");
         this.volume1On          = LoadingStuffs.getInstance().getImage("v1-on");
         this.volume2On          = LoadingStuffs.getInstance().getImage("v2-on");
         this.volume3On          = LoadingStuffs.getInstance().getImage("v3-on");
@@ -101,6 +111,8 @@ public class OptionsScreen {
         //define the music & sfx toogle image
         this.toogleMusic        = this.toogleOn;
         this.toogleSfx          = this.toogleOn;
+        this.toogleGhost        = this.toogleOn;
+        this.toogleHold         = this.toogleOn;
 
         //define the music volume images
         this.musicVolume1       = this.volume1On;
@@ -127,11 +139,11 @@ public class OptionsScreen {
     public synchronized void update(long frametime) {
         
         //calc the selector position
-        this.selectorP = (short)(this.selectorO + (this.selectorPosition * 85));
+        this.selectorP = (short)(this.selectorO + (this.selectorPosition * SELECTOR_DIFF));
        
         //if the selector is in the exit option (go 133 pixel dows)
         if (this.selectorPosition == TOTAL_OPTIONS - 1) {
-            this.selectorP += 133;
+            this.selectorP += 42;
         }
 
         //define the music toogle button
@@ -146,6 +158,20 @@ public class OptionsScreen {
             this.toogleSfx = this.toogleOn;
         } else {
             this.toogleSfx = this.toogleOff;
+        }
+
+        //define the ghost toogle button
+        if (this.isGhostOn) {
+            this.toogleGhost = this.toogleOn;
+        } else {
+            this.toogleGhost = this.toogleOff;
+        }
+
+        //define the hold toogle button
+        if (this.isHoldOn) {
+            this.toogleHold = this.toogleOn;
+        } else {
+            this.toogleHold = this.toogleOff;
         }
 
         //define the volume image
@@ -201,32 +227,44 @@ public class OptionsScreen {
         //selector
         this.g2d.drawImage(this.selector,           0, this.selectorP, null);
         
-        //labels
+        //logo
         this.g2d.drawImage(this.optionsLogo,        852, 23, null);
-        this.g2d.drawImage(this.labelPlayMusic,     69, 218, null);
-        this.g2d.drawImage(this.labelPlaySfx,       69, 303, null);
-        this.g2d.drawImage(this.labelMusicVolume,   69, 388, null);
-        this.g2d.drawImage(this.labelSfxVolume,     69, 472, null);
-        this.g2d.drawImage(this.toogleMusic,        1141, 218, null);
-        this.g2d.drawImage(this.toogleSfx,          1141, 303, null);
+        
+        //labels
+        this.g2d.drawImage(this.labelPlayMusic,     69, 188, null);
+        this.g2d.drawImage(this.labelMusicVolume,   69, 265, null);
+        
+        //music volume & toogle
+        this.g2d.drawImage(this.toogleMusic,        1141, 188, null);
+        this.g2d.drawImage(this.musicVolume6,       1141, 269, null);
+        this.g2d.drawImage(this.musicVolume5,       1172, 273, null);
+        this.g2d.drawImage(this.musicVolume4,       1203, 277, null);
+        this.g2d.drawImage(this.musicVolume3,       1234, 281, null);
+        this.g2d.drawImage(this.musicVolume2,       1265, 285, null);
+        this.g2d.drawImage(this.musicVolume1,       1296, 289, null);
+
+        //labels
+        this.g2d.drawImage(this.labelPlaySfx,       69, 342, null);
+        this.g2d.drawImage(this.labelSfxVolume,     69, 419, null);
+
+        //music volume & toogle
+        this.g2d.drawImage(this.toogleSfx,          1141, 342, null);
+        this.g2d.drawImage(this.sfxVolume6,         1141, 423, null);
+        this.g2d.drawImage(this.sfxVolume5,         1172, 427, null);
+        this.g2d.drawImage(this.sfxVolume4,         1203, 431, null);
+        this.g2d.drawImage(this.sfxVolume3,         1234, 435, null);
+        this.g2d.drawImage(this.sfxVolume2,         1265, 439, null);
+        this.g2d.drawImage(this.sfxVolume1,         1296, 443, null);
+
+        //labels
+        this.g2d.drawImage(this.labelGhostPiece,    69, 496, null);
+        this.g2d.drawImage(this.labelHoldPiece,     69, 573, null);
+
+        //toogle
+        this.g2d.drawImage(this.toogleGhost,        1141, 496, null);
+        this.g2d.drawImage(this.toogleHold,         1141, 573, null);
+        
         this.g2d.drawImage(this.labelExit,          69, 685, null);
-
-        //music volume
-        this.g2d.drawImage(this.musicVolume6,       1141, 392, null);
-        this.g2d.drawImage(this.musicVolume5,       1172, 396, null);
-        this.g2d.drawImage(this.musicVolume4,       1203, 400, null);
-        this.g2d.drawImage(this.musicVolume3,       1234, 404, null);
-        this.g2d.drawImage(this.musicVolume2,       1265, 408, null);
-        this.g2d.drawImage(this.musicVolume1,       1296, 412, null);
-
-        //sfx volume
-        this.g2d.drawImage(this.sfxVolume6,         1141, 476, null);
-        this.g2d.drawImage(this.sfxVolume5,         1172, 480, null);
-        this.g2d.drawImage(this.sfxVolume4,         1203, 484, null);
-        this.g2d.drawImage(this.sfxVolume3,         1234, 488, null);
-        this.g2d.drawImage(this.sfxVolume2,         1265, 492, null);
-        this.g2d.drawImage(this.sfxVolume1,         1296, 496, null);
-
     }
 
     /**
@@ -243,7 +281,8 @@ public class OptionsScreen {
         } else if (key == 40) { //DOWN
             this.selectorPosition = (byte)((this.selectorPosition+1)%TOTAL_OPTIONS);
             this.item.play();
-        } else if (key == 37) { //LEFT
+
+        } else if (key == 37 || key == 39) { //LEFT
 
             if (this.selectorPosition == 0) {
                 this.isMusicOn = !this.isMusicOn;
@@ -252,48 +291,46 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.audioMuteControl(Audio.MUSIC, false);
                 }
-            } else if (this.selectorPosition == 1) {
-                this.isSfxOn = !this.isSfxOn;
-                if (!this.isSfxOn) {
-                    this.gameRef.audioMuteControl(Audio.SFX, true);
-                } else {
-                    this.gameRef.audioMuteControl(Audio.SFX, false);
-                }
-            } else if (this.selectorPosition == 2) {
+            } else if (this.selectorPosition == 1 && key == 37) {
                 this.musicVolume = (byte)((this.musicVolume + 1)%7);
                 if (this.musicVolume == 0) {
                     this.musicVolume = 1;
                 }
-            } else if (this.selectorPosition == 3) {
-                this.sfxVolume = (byte)((this.sfxVolume + 1)%7);
-                if (this.sfxVolume == 0) {
-                    this.sfxVolume = 1;
+            } else if (this.selectorPosition == 1 && key == 39) {
+                this.musicVolume--;
+                if (this.musicVolume < 1) {
+                    this.musicVolume = 6;
                 }
-            }
-        } else if (key == 39) { //RIGHT
-            if (this.selectorPosition == 0) {
-                this.isMusicOn = !this.isMusicOn;
-                if (!this.isMusicOn) {
-                    this.gameRef.audioMuteControl(Audio.MUSIC, true);
-                } else {
-                    this.gameRef.audioMuteControl(Audio.MUSIC, false);
-                }
-            } else if (this.selectorPosition == 1) {
+            } else if (this.selectorPosition == 2) {
                 this.isSfxOn = !this.isSfxOn;
                 if (!this.isSfxOn) {
                     this.gameRef.audioMuteControl(Audio.SFX, true);
                 } else {
                     this.gameRef.audioMuteControl(Audio.SFX, false);
                 }
-            } else if (this.selectorPosition == 2) {
-                this.musicVolume--;
-                if (this.musicVolume < 1) {
-                    this.musicVolume = 6;
-                }                
-            } else if (this.selectorPosition == 3) {
+            } else if (this.selectorPosition == 3 && key == 37) {
+                this.sfxVolume = (byte)((this.sfxVolume + 1)%7);
+                if (this.sfxVolume == 0) {
+                    this.sfxVolume = 1;
+                }
+            } else if (this.selectorPosition == 3 && key == 39) {
                 this.sfxVolume--;
                 if (this.sfxVolume < 1) {
                     this.sfxVolume = 6;
+                }
+            } else if (this.selectorPosition == 4) {
+                this.isGhostOn = !this.isGhostOn;
+                if (!this.isGhostOn) {
+                    //todo
+                } else {
+                    //todo
+                }
+            } else if (this.selectorPosition == 5) {
+                this.isHoldOn = !this.isHoldOn;
+                if (!this.isHoldOn) {
+                    //todo
+                } else {
+                    //todo
                 }
             }
         } else if (key == 10) { //ENTER
