@@ -151,4 +151,16 @@ public interface GameInterface {
      * @param state
      */
     public void changeGameState(int state);
+
+
+    
+    public boolean isToAllowGhostPiece();
+
+    public void setIsToAllowGhostPiece(boolean show);
+
+    public boolean isToAllowHold();
+
+    public void setIsToAllowHold(boolean hold);
+
+
 }
