@@ -59,7 +59,6 @@ public class Board {
 	protected short boardSmallSquareHeight 			= 0;
 	protected short boardSquareWidth 				= 0;
 	protected short boardSquareHeight 				= 0;
-	private boolean drawPieceGhost					= true;
 	private short [][] gameBoard					= null;
 	private Color [][] gameBoardColor				= null;
 	private Audio turn            					= null;
@@ -83,6 +82,11 @@ public class Board {
 	//Variables to control lines to drop
 	protected volatile boolean hasLineFull			= false;
 	protected volatile byte firstline				= -1;
+
+	//allow ghost/hold
+	private boolean allowGhostPiece					= true;
+	private boolean allowHold						= true;
+	private byte showHowManyNext					= 6;
 
 	/**
 	 * Construtor
@@ -128,6 +132,10 @@ public class Board {
 		//get the G2D (from backbuffered image)
 		this.bg2d					= (Graphics2D)this.gameBoardBG.getGraphics();
 
+		//verify if draw or not the piece ghost
+		this.allowGhostPiece		= this.gameRef.isToAllowGhostPiece();
+		this.allowHold				= this.gameRef.isToAllowHold();
+
 		//just one, draw game background
 		this.drawGameBoardBG();
 
@@ -148,6 +156,10 @@ public class Board {
 		//calc the render position
 		this.renderPositionX 		= (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
 		this.renderPositionY 		= (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
+
+		if (this.showHowManyNext < 1) {
+			this.showHowManyNext = 1;
+		}
 	}
 
 	/**
@@ -158,7 +170,7 @@ public class Board {
 			//add framecounter
 			this.framecounter += frametime;
 
-			if (this.drawPieceGhost) {
+			if (this.allowGhostPiece) {
 				this.actualPiece.updateGhost(frametime);
 			}
 
@@ -204,7 +216,7 @@ public class Board {
 		this.getG2D().drawImage(this.labelLine,  76, 553, null);
 
 		//Draw hold piece
-		if (this.holdPiece != null) {
+		if (this.allowHold && this.holdPiece != null) {
 			byte actual = 0;
 			this.holdPiece.setPieceActualState(actual);
 			this.holdPiece.drawHold(frametime);
@@ -217,11 +229,11 @@ public class Board {
 		if (this.actualPiece.getActualPositionY() == -10) {
 			this.actualPiece.setActualPositionY(this.actualPiece.getDefaultInitialSquareY());
 		}
-		this.actualPiece.draw(frametime, true);
+		this.actualPiece.draw(frametime, this.allowGhostPiece);
 		
 		//draw list of sorted pieces
 		BasePiece nextPiece = null;
-		for (byte cnt = 0; this.nextPieces != null && cnt < this.nextPieces.size(); cnt++) {
+		for (byte cnt = 0; this.nextPieces != null && cnt < this.nextPieces.size() && cnt < this.showHowManyNext; cnt++) {
 			nextPiece = this.nextPieces.get(cnt);
 			nextPiece.drawNext(frametime, cnt);
 		}
@@ -270,7 +282,7 @@ public class Board {
 
 		boolean filled 		= this.theme.getFilledGrid();
 		this.next			= this.theme.getNextLabel();
-		this.hold			= this.theme.getHoldLabel();
+		this.hold 			= this.theme.getHoldLabel();
 		
 		//fill the bg with theme color, case selected not checkered filled
 		if (!filled) {
@@ -322,21 +334,25 @@ public class Board {
 		this.bg2d.setColor(Color.DARK_GRAY);
 		this.bg2d.fillRect(BOARD_LEFT + SHADOW_THICKNESS, BOARD_TOP + this.boardSquareHeight + 1, this.boardSquareWidth, SHADOW_THICKNESS);
 		
-		//Draw hold box
-		this.bg2d.drawImage(this.hold, 5, 11, null);
-		this.bg2d.setColor(this.theme.getBgBoardColor());
-		this.bg2d.fillRect(HOLD_BOX_LEFT + 1, HOLD_BOX_TOP - 8 + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
-		this.bg2d.setColor(Color.DARK_GRAY);
-		this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH, HOLD_BOX_TOP - 8 + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
-		this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS, HOLD_BOX_TOP - 8 + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
-		this.bg2d.setColor(Color.LIGHT_GRAY);
-		this.bg2d.drawRect(HOLD_BOX_LEFT, HOLD_BOX_TOP - 8, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
+		if (this.allowHold) {
+			//Draw hold box
+			this.bg2d.drawImage(this.hold, 5, 11, null);
+			this.bg2d.setColor(this.theme.getBgBoardColor());
+			this.bg2d.fillRect(HOLD_BOX_LEFT + 1, HOLD_BOX_TOP - 8 + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
+			this.bg2d.setColor(Color.DARK_GRAY);
+			this.bg2d.fillRect(HOLD_BOX_LEFT + HOLD_BOX_WIDTH, HOLD_BOX_TOP - 8 + SHADOW_THICKNESS, SHADOW_THICKNESS, HOLD_BOX_HEIGHT);
+			this.bg2d.fillRect(HOLD_BOX_LEFT + SHADOW_THICKNESS, HOLD_BOX_TOP - 8 + HOLD_BOX_HEIGHT, HOLD_BOX_WIDTH, SHADOW_THICKNESS);
+			this.bg2d.setColor(Color.LIGHT_GRAY);
+			this.bg2d.drawRect(HOLD_BOX_LEFT, HOLD_BOX_TOP - 8, HOLD_BOX_WIDTH, HOLD_BOX_HEIGHT);
+		}
 
 		//Next boxes
 		final short nextPosX = (short)(BOARD_LEFT + boardSquareWidth + 20);
-		this.bg2d.drawImage(this.next, nextPosX + 3, 11, null);
+		if (this.showHowManyNext > 0) {
+			this.bg2d.drawImage(this.next, nextPosX + 3, 11, null);
+		}
 
-		for (byte i = 0; i < 6; i++) {
+		for (byte i = 0; i < this.showHowManyNext; i++) {
 			short nextPosY = (short)((i * 100) - 8);
 			this.bg2d.setColor(this.theme.getBgBoardColor());
 			this.bg2d.fillRect(HOLD_BOX_LEFT + 1 + nextPosX, HOLD_BOX_TOP + nextPosY + 1, HOLD_BOX_WIDTH - 1, HOLD_BOX_HEIGHT - 1);
@@ -798,7 +814,7 @@ public class Board {
 				this.getActualPiece().downOneLine(false);
 				this.gameRef.getScore().addScore(Score.HARDDROP, this.currentLevel);
 				this.move.play();
-			} else if (keyCode == 17) { // r-control
+			} else if (keyCode == 17 && this.allowHold) { // r-control
 				this.holdPiece();
 			} else if (keyCode == 32) { //space
 				this.getActualPiece().allDown();
@@ -875,7 +891,6 @@ public class Board {
 	 * Reset game method
 	 */
 	public synchronized void resetGame() {
-		
 		//re-initialize the variables
 		this.nonePiece 				= new NonePiece(this);
 		this.boardSmallSquareHeight = (short)(this.nonePiece.getPieceSmallSquareHeight() + 1);
@@ -920,7 +935,7 @@ public class Board {
 	public short getBoardSmallSquareWidth() 	{	return (this.boardSmallSquareWidth);	}
 	public short getBoardSmallSquareHeight() 	{	return (this.boardSmallSquareHeight);	}
 	public short[][] getGameBoard() 			{	return (this.gameBoard);				}
-	public boolean isToDrawGhost() 				{	return (this.drawPieceGhost);			}
+	public boolean isToDrawGhost() 				{	return (this.allowGhostPiece);			}
 	public short getRenderPositionX() 			{	return (this.renderPositionX);			}
 	public short getRenderPositionY() 			{ 	return (this.renderPositionY);			}
 	public Graphics2D getG2D()					{ 	return (this.gameRef.getG2D());			}
