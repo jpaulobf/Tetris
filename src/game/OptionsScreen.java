@@ -264,6 +264,7 @@ public class OptionsScreen {
         this.g2d.drawImage(this.toogleGhost,        1141, 496, null);
         this.g2d.drawImage(this.toogleHold,         1141, 573, null);
         
+        //label exit
         this.g2d.drawImage(this.labelExit,          69, 685, null);
     }
 
@@ -320,18 +321,10 @@ public class OptionsScreen {
                 }
             } else if (this.selectorPosition == 4) {
                 this.isGhostOn = !this.isGhostOn;
-                if (!this.isGhostOn) {
-                    //todo
-                } else {
-                    //todo
-                }
+                this.gameRef.setIsToAllowGhostPiece(this.isGhostOn);
             } else if (this.selectorPosition == 5) {
                 this.isHoldOn = !this.isHoldOn;
-                if (!this.isHoldOn) {
-                    //todo
-                } else {
-                    //todo
-                }
+                this.gameRef.setIsToAllowHold(this.isHoldOn);
             }
         } else if (key == 10) { //ENTER
             if (this.selectorPosition == (TOTAL_OPTIONS - 1)) {
