@@ -60,6 +60,8 @@ public class Game implements GameInterface {
     private ScreenTransition screenT        = null;
     private GameLevel gameLevel			    = null;
     private ExitScreen exitScreen           = null;
+    private boolean isToShowPieceGhost      = true;
+    private boolean isToAllowHold           = true;
 
     /**
      * Game constructor
@@ -609,5 +611,27 @@ public class Game implements GameInterface {
     @Override
     public void changeGameState(int state) {
         this.gameState.currentState = state;
+    }
+
+    /**
+     * Verify if has or not to show the ghost piece
+     * @return
+     */
+    public boolean isToAllowGhostPiece() {
+        return (this.isToShowPieceGhost);
+    }
+
+    public void setIsToAllowGhostPiece(boolean show) {
+        this.isToShowPieceGhost = show;
+    }
+
+    @Override
+    public boolean isToAllowHold() {
+        return (this.isToAllowHold);
+    }
+
+    @Override
+    public void setIsToAllowHold(boolean hold) {
+        this.isToAllowHold = hold;
     }
 }
