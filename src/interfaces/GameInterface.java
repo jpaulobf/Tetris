@@ -152,15 +152,27 @@ public interface GameInterface {
      */
     public void changeGameState(int state);
 
-
-    
+    /**
+     * Verify if Ghost Piece is allowed
+     * @return
+     */
     public boolean isToAllowGhostPiece();
 
+    /**
+     * Define the visibility of Ghost Pieces
+     * @param show
+     */
     public void setIsToAllowGhostPiece(boolean show);
 
+    /**
+     * Verify if Hold Piece is allowed
+     * @return
+     */
     public boolean isToAllowHold();
 
+    /**
+     * Define the visibility of Hold Pieces
+     * @param hold
+     */
     public void setIsToAllowHold(boolean hold);
-
-
 }
