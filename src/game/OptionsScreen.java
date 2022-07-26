@@ -292,15 +292,24 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.audioMuteControl(Audio.MUSIC, false);
                 }
-            } else if (this.selectorPosition == 1 && key == 37) {
+
+                //todo: disable music volume
+
+            } else if (this.selectorPosition == 1 && key == 37) { //music - left
                 this.musicVolume = (byte)((this.musicVolume + 1)%7);
                 if (this.musicVolume == 0) {
                     this.musicVolume = 1;
+                    this.gameRef.decVolumeMusic(25f);
+                } else {
+                    this.gameRef.incVolumeMusic(5f);
                 }
-            } else if (this.selectorPosition == 1 && key == 39) {
+            } else if (this.selectorPosition == 1 && key == 39) { //music - right
                 this.musicVolume--;
                 if (this.musicVolume < 1) {
                     this.musicVolume = 6;
+                    this.gameRef.incVolumeMusic(25f);
+                } else {
+                    this.gameRef.decVolumeMusic(5f);
                 }
             } else if (this.selectorPosition == 2) {
                 this.isSfxOn = !this.isSfxOn;
@@ -309,15 +318,24 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.audioMuteControl(Audio.SFX, false);
                 }
-            } else if (this.selectorPosition == 3 && key == 37) {
+
+                //todo: disable sfx volume
+
+            } else if (this.selectorPosition == 3 && key == 37) { //sfx - left
                 this.sfxVolume = (byte)((this.sfxVolume + 1)%7);
                 if (this.sfxVolume == 0) {
                     this.sfxVolume = 1;
+                    this.gameRef.decVolumeSFX(25f);
+                } else {
+                    this.gameRef.incVolumeSFX(5f);
                 }
-            } else if (this.selectorPosition == 3 && key == 39) {
+            } else if (this.selectorPosition == 3 && key == 39) { //sfx - right
                 this.sfxVolume--;
                 if (this.sfxVolume < 1) {
                     this.sfxVolume = 6;
+                    this.gameRef.incVolumeSFX(25f);
+                } else {
+                    this.gameRef.decVolumeSFX(5f);
                 }
             } else if (this.selectorPosition == 4) {
                 this.isGhostOn = !this.isGhostOn;
