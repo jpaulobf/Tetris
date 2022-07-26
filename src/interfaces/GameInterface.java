@@ -109,6 +109,30 @@ public interface GameInterface {
     public void incVolumeSFX();
 
     /**
+     * Decrease the volume of the music
+     * @param volume
+     */
+    public void decVolumeMusic(float volume);
+
+    /**
+     * Increase the volume of the music
+     * @param volume
+     */
+    public void incVolumeMusic(float volume);
+
+    /**
+     * Decrease the volume of the SFX
+     * @param volume
+     */
+    public void decVolumeSFX(float volume);
+
+    /**
+     * Increase the volume of the SFX
+     * @param volume
+     */
+    public void incVolumeSFX(float volume);
+    
+    /**
      * Stop the music
      */
     public void stopTheme();
