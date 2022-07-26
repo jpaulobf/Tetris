@@ -480,6 +480,56 @@ public class Game implements GameInterface {
      */
     public void decVolumeTheme() {this.theme.decVolume(1);}
     public void incVolumeTheme() {this.theme.addVolume(1);}
+    
+    /**
+     * Decrease the volume of the music
+     * @param volume
+     */
+    public void decVolumeMusic(float volume) {
+        this.controlVolume(volume, Audio.MUSIC, Audio.DECREASE);
+    }
+
+    /**
+     * Increase the volume of the music
+     * @param volume
+     */
+    public void incVolumeMusic(float volume) {
+        this.controlVolume(volume, Audio.MUSIC, Audio.INCREASE);
+    }
+
+    /**
+     * Decrease the volume of the SFX
+     * @param volume
+     */
+    public void decVolumeSFX(float volume) {
+        this.controlVolume(volume, Audio.SFX, Audio.DECREASE);
+    }
+
+    /**
+     * Increase the volume of the SFX
+     * @param volume
+     */
+    public void incVolumeSFX(float volume) {
+        this.controlVolume(volume, Audio.SFX, Audio.INCREASE);
+    }
+
+    /**
+     * Control the audio volume
+     * @param volume - float with the increment/decrement
+     * @param type - Music or SFX
+     * @param action - Increase or Decrease
+     */
+    private void controlVolume(float volume, byte type, byte action) {
+        for (Audio audio : audioList) {
+            if (audio.getType() == type) {
+                if (action == Audio.DECREASE) {
+                    audio.decVolume(volume);
+                } else {
+                    audio.addVolume(volume);
+                }
+            }
+        }
+    }
 
     /**
      * Increase/Decrease the SFX Volume
@@ -591,20 +641,6 @@ public class Game implements GameInterface {
 		}
 	}
 
-    //----------------------------------------------------//
-    //------------------- Accessors ----------------------//
-    //----------------------------------------------------//
-    //public Score getScore()                     {   return (this.score);        }
-    //public GameOver getGameOver()               {   return this.gameOver;       }
-    public StateMachine getGameState()              {   return this.gameState;      }
-    public int getInternalResolutionWidth()         {   return (this.wwm);          }
-    public int getInternalResolutionHeight()        {   return (this.whm);          }
-    public VolatileImage getBufferedImage()         {   return (this.bufferImage);  }
-    public Graphics2D getG2D()                      {   return (this.g2d);          }
-    public Score getScore()                         {   return (this.score);        }
-    public Board getBoard()                         {   return (this.board);        }
-    public void updateGraphics2D(Graphics2D g2d)    {   this.g2dFS = g2d;           }
-
     /**
      * Change the game state
      */
@@ -634,4 +670,18 @@ public class Game implements GameInterface {
     public void setIsToAllowHold(boolean hold) {
         this.isToAllowHold = hold;
     }
+
+    //----------------------------------------------------//
+    //------------------- Accessors ----------------------//
+    //----------------------------------------------------//
+    //public Score getScore()                     {   return (this.score);        }
+    //public GameOver getGameOver()               {   return this.gameOver;       }
+    public StateMachine getGameState()              {   return this.gameState;      }
+    public int getInternalResolutionWidth()         {   return (this.wwm);          }
+    public int getInternalResolutionHeight()        {   return (this.whm);          }
+    public VolatileImage getBufferedImage()         {   return (this.bufferImage);  }
+    public Graphics2D getG2D()                      {   return (this.g2d);          }
+    public Score getScore()                         {   return (this.score);        }
+    public Board getBoard()                         {   return (this.board);        }
+    public void updateGraphics2D(Graphics2D g2d)    {   this.g2dFS = g2d;           }
 }
