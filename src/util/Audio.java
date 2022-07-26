@@ -18,6 +18,8 @@ public class Audio {
     private long microsecondPosition            = 0;
     public static final byte MUSIC              = 10;
     public static final byte SFX                = 20;
+    public static final byte INCREASE           = 1;
+    public static final byte DECREASE           = -1;
     private byte type                           = 0;
 
     public byte getType() {
