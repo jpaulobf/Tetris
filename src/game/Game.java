@@ -62,6 +62,7 @@ public class Game implements GameInterface {
     private ExitScreen exitScreen           = null;
     private boolean isToShowPieceGhost      = true;
     private boolean isToAllowHold           = true;
+    private byte showHowManyNextPieces      = 6;
 
     /**
      * Game constructor
@@ -653,10 +654,12 @@ public class Game implements GameInterface {
      * Verify if has or not to show the ghost piece
      * @return
      */
+    @Override
     public boolean isToAllowGhostPiece() {
         return (this.isToShowPieceGhost);
     }
 
+    @Override
     public void setIsToAllowGhostPiece(boolean show) {
         this.isToShowPieceGhost = show;
     }
@@ -669,6 +672,16 @@ public class Game implements GameInterface {
     @Override
     public void setIsToAllowHold(boolean hold) {
         this.isToAllowHold = hold;
+    }
+
+    @Override
+    public void setHowManyNextPieces(byte pieces) {
+        this.showHowManyNextPieces = pieces;
+    }
+    
+    @Override
+    public byte getHowManyNextPieces() {
+        return (this.showHowManyNextPieces);
     }
 
     //----------------------------------------------------//
