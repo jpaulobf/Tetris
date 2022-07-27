@@ -199,4 +199,16 @@ public interface GameInterface {
      * @param hold
      */
     public void setIsToAllowHold(boolean hold);
+
+    /**
+     * Define how many "next pieces" is to show
+     * @param pieces
+     */
+    public void setHowManyNextPieces(byte pieces);
+
+    /**
+     * Recover how many "next pieces" is to show
+     * @return
+     */
+    public byte getHowManyNextPieces();
 }
