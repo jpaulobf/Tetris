@@ -264,6 +264,9 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\v6_on.png"));
             images.put("v6-on", image);
 
+            image = ImageIO.read(new File("images\\v1_off.png"));
+            images.put("v1-off", image);
+
             image = ImageIO.read(new File("images\\v2_off.png"));
             images.put("v2-off", image);
 
@@ -278,6 +281,9 @@ public class LoadingStuffs {
 
             image = ImageIO.read(new File("images\\v6_off.png"));
             images.put("v6-off", image);
+
+            image = ImageIO.read(new File("images\\lb_how_many_next.png"));
+            images.put("label-how-many-next", image);
 
             Logger.INFO("read all images...", this);
 
