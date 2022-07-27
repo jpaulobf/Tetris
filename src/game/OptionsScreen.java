@@ -28,37 +28,20 @@ public class OptionsScreen {
     private BufferedImage labelExit         = null;
     private BufferedImage labelGhostPiece   = null;
     private BufferedImage labelHoldPiece    = null;
-    private BufferedImage volume1On         = null;
-    private BufferedImage volume2On         = null;
-    private BufferedImage volume3On         = null;
-    private BufferedImage volume4On         = null;
-    private BufferedImage volume5On         = null;
-    private BufferedImage volume6On         = null;
-    private BufferedImage volume2Off        = null;
-    private BufferedImage volume3Off        = null;
-    private BufferedImage volume4Off        = null;
-    private BufferedImage volume5Off        = null;
-    private BufferedImage volume6Off        = null;
-    private BufferedImage musicVolume1      = null;
-    private BufferedImage musicVolume2      = null;
-    private BufferedImage musicVolume3      = null;
-    private BufferedImage musicVolume4      = null;
-    private BufferedImage musicVolume5      = null;
-    private BufferedImage musicVolume6      = null;
-    private BufferedImage sfxVolume1        = null;
-    private BufferedImage sfxVolume2        = null;
-    private BufferedImage sfxVolume3        = null;
-    private BufferedImage sfxVolume4        = null;
-    private BufferedImage sfxVolume5        = null;
-    private BufferedImage sfxVolume6        = null;
-    private final byte TOTAL_OPTIONS        = 7;
+    private BufferedImage labelHowManyNext  = null;
+    private BufferedImage [] volumeOn       = null;
+    private BufferedImage [] volumeOff      = null;
+    private BufferedImage [] musicVolIcon   = null;
+    private BufferedImage [] sfxVolIcon     = null;
+    private BufferedImage [] howManyIcon    = null;
+    private final byte TOTAL_OPTIONS        = 8;
 
     //sounds
     private Audio item                      = null;
 
     //menu control
     private final short SELECTOR_START      = 193;
-    private final byte SELECTOR_DIFF        = 77;
+    private final byte SELECTOR_DIFF        = 69;
     private byte selectorPosition           = 0;
     private volatile boolean goMenu         = false;
     private int resolutionW                 = 0;
@@ -71,6 +54,7 @@ public class OptionsScreen {
     private short selectorP                 = (short)(selectorO + (selectorPosition * SELECTOR_DIFF));
     private byte musicVolume                = 6;
     private byte sfxVolume                  = 6;
+    private byte howManyNext                = 6;
 
     /**
      * Constructor
@@ -84,6 +68,13 @@ public class OptionsScreen {
         this.resolutionW        = this.gameRef.getInternalResolutionWidth();
         this.resolutionH        = this.gameRef.getInternalResolutionHeight();
 
+        //define images arrays
+        this.volumeOn           = new BufferedImage[6];
+        this.volumeOff          = new BufferedImage[6];
+        this.musicVolIcon       = new BufferedImage[6];
+        this.sfxVolIcon         = new BufferedImage[6];
+        this.howManyIcon        = new BufferedImage[6];
+
         //load images
         this.selector           = LoadingStuffs.getInstance().getImage("selector");
         this.optionsLogo        = LoadingStuffs.getInstance().getImage("options-logo");
@@ -96,17 +87,22 @@ public class OptionsScreen {
         this.labelExit          = LoadingStuffs.getInstance().getImage("label-exit-option");
         this.labelGhostPiece    = LoadingStuffs.getInstance().getImage("label-ghost-piece");
         this.labelHoldPiece     = LoadingStuffs.getInstance().getImage("label-hold-piece");
-        this.volume1On          = LoadingStuffs.getInstance().getImage("v1-on");
-        this.volume2On          = LoadingStuffs.getInstance().getImage("v2-on");
-        this.volume3On          = LoadingStuffs.getInstance().getImage("v3-on");
-        this.volume4On          = LoadingStuffs.getInstance().getImage("v4-on");
-        this.volume5On          = LoadingStuffs.getInstance().getImage("v5-on");
-        this.volume6On          = LoadingStuffs.getInstance().getImage("v6-on");
-        this.volume2Off         = LoadingStuffs.getInstance().getImage("v2-off");
-        this.volume3Off         = LoadingStuffs.getInstance().getImage("v3-off");
-        this.volume4Off         = LoadingStuffs.getInstance().getImage("v4-off");
-        this.volume5Off         = LoadingStuffs.getInstance().getImage("v5-off");
-        this.volume6Off         = LoadingStuffs.getInstance().getImage("v6-off");
+        this.labelHowManyNext   = LoadingStuffs.getInstance().getImage("label-how-many-next");
+        
+
+        //get the volume icons
+        this.volumeOn[0]        = LoadingStuffs.getInstance().getImage("v1-on");
+        this.volumeOn[1]        = LoadingStuffs.getInstance().getImage("v2-on");
+        this.volumeOn[2]        = LoadingStuffs.getInstance().getImage("v3-on");
+        this.volumeOn[3]        = LoadingStuffs.getInstance().getImage("v4-on");
+        this.volumeOn[4]        = LoadingStuffs.getInstance().getImage("v5-on");
+        this.volumeOn[5]        = LoadingStuffs.getInstance().getImage("v6-on");
+        this.volumeOff[0]       = LoadingStuffs.getInstance().getImage("v1-off");
+        this.volumeOff[1]       = LoadingStuffs.getInstance().getImage("v2-off");
+        this.volumeOff[2]       = LoadingStuffs.getInstance().getImage("v3-off");
+        this.volumeOff[3]       = LoadingStuffs.getInstance().getImage("v4-off");
+        this.volumeOff[4]       = LoadingStuffs.getInstance().getImage("v5-off");
+        this.volumeOff[5]       = LoadingStuffs.getInstance().getImage("v6-off");
 
         //define the music & sfx toogle image
         this.toogleMusic        = this.toogleOn;
@@ -115,21 +111,14 @@ public class OptionsScreen {
         this.toogleHold         = this.toogleOn;
 
         //define the music volume images
-        this.musicVolume1       = this.volume1On;
-        this.musicVolume2       = this.volume2On;
-        this.musicVolume3       = this.volume3On;
-        this.musicVolume4       = this.volume4On;
-        this.musicVolume5       = this.volume5On;
-        this.musicVolume6       = this.volume6On;
-        this.sfxVolume1         = this.volume1On;
-        this.sfxVolume2         = this.volume2On;
-        this.sfxVolume3         = this.volume3On;
-        this.sfxVolume4         = this.volume4On;
-        this.sfxVolume5         = this.volume5On;
-        this.sfxVolume6         = this.volume6On;
+        for (byte i = 0; i < this.volumeOn.length; i++) {
+            this.musicVolIcon[i]    = this.volumeOn[i];
+            this.sfxVolIcon[i]      = this.volumeOn[i];
+            this.howManyIcon[i]     = this.volumeOn[i];
+        }
 
         //load the sounds
-        this.item               = LoadingStuffs.getInstance().getAudio("star");
+        this.item = LoadingStuffs.getInstance().getAudio("star");
     }
 
     /**
@@ -141,9 +130,9 @@ public class OptionsScreen {
         //calc the selector position
         this.selectorP = (short)(this.selectorO + (this.selectorPosition * SELECTOR_DIFF));
        
-        //if the selector is in the exit option (go 133 pixel dows)
+        //if the selector is in the exit option (go 22 pixel dows)
         if (this.selectorPosition == TOTAL_OPTIONS - 1) {
-            this.selectorP += 42;
+            this.selectorP += 30;
         }
 
         //define the music toogle button
@@ -175,43 +164,49 @@ public class OptionsScreen {
         }
 
         //define the volume image
-        this.musicVolume6       = this.volume6On;
-        this.musicVolume5       = this.volume5On;
-        this.musicVolume4       = this.volume4On;
-        this.musicVolume3       = this.volume3On;
-        this.musicVolume2       = this.volume2On;
-        this.musicVolume1       = this.volume1On;
-        this.sfxVolume6         = this.volume6On;
-        this.sfxVolume5         = this.volume5On;
-        this.sfxVolume4         = this.volume4On;
-        this.sfxVolume3         = this.volume3On;
-        this.sfxVolume2         = this.volume2On;
-        this.sfxVolume1         = this.volume1On;
-
-        switch(musicVolume) { //no break, in chain
-            case 1:
-                this.musicVolume2 = this.volume2Off;
-            case 2:
-                this.musicVolume3 = this.volume3Off;
-            case 3:
-                this.musicVolume4 = this.volume4Off;
-            case 4:
-                this.musicVolume5 = this.volume5Off;    
-            case 5:
-                this.musicVolume6 = this.volume6Off;    
+        for (byte i = 0; i < this.volumeOn.length; i++) {
+            this.musicVolIcon[i]    = this.volumeOn[i];
+            this.sfxVolIcon[i]      = this.volumeOn[i];
+            this.howManyIcon[i]     = this.volumeOn[i];
         }
 
-        switch(sfxVolume) { //no break, in chain
+        switch(this.musicVolume) { //no break, execute in chain
             case 1:
-                this.sfxVolume2 = this.volume2Off;
+                this.musicVolIcon[1] = this.volumeOff[1];
             case 2:
-                this.sfxVolume3 = this.volume3Off;
+                this.musicVolIcon[2] = this.volumeOff[2];
             case 3:
-                this.sfxVolume4 = this.volume4Off;
+                this.musicVolIcon[3] = this.volumeOff[3];
             case 4:
-                this.sfxVolume5 = this.volume5Off;    
+                this.musicVolIcon[4] = this.volumeOff[4];    
             case 5:
-                this.sfxVolume6 = this.volume6Off;    
+                this.musicVolIcon[5] = this.volumeOff[5];    
+        }
+
+        switch(this.sfxVolume) { //no break, execute in chain
+            case 1:
+                this.sfxVolIcon[1] = this.volumeOff[1];
+            case 2:
+                this.sfxVolIcon[2] = this.volumeOff[2];
+            case 3:
+                this.sfxVolIcon[3] = this.volumeOff[3];
+            case 4:
+                this.sfxVolIcon[4] = this.volumeOff[4];
+            case 5:
+                this.sfxVolIcon[5] = this.volumeOff[5];
+        }
+
+        switch(this.howManyNext) { //no break, execute in chain
+            case 1:
+                this.howManyIcon[1] = this.volumeOff[1];
+            case 2:
+                this.howManyIcon[2] = this.volumeOff[2];
+            case 3:
+                this.howManyIcon[3] = this.volumeOff[3];
+            case 4:
+                this.howManyIcon[4] = this.volumeOff[4];
+            case 5:
+                this.howManyIcon[5] = this.volumeOff[5];
         }
     }
 
@@ -231,41 +226,48 @@ public class OptionsScreen {
         this.g2d.drawImage(this.optionsLogo,        852, 23, null);
         
         //labels
-        this.g2d.drawImage(this.labelPlayMusic,     69, 188, null);
-        this.g2d.drawImage(this.labelMusicVolume,   69, 265, null);
+        this.g2d.drawImage(this.labelPlayMusic,     128, 188, null);
+        this.g2d.drawImage(this.labelMusicVolume,   128, 258, null);
         
         //music volume & toogle
         this.g2d.drawImage(this.toogleMusic,        1141, 188, null);
-        this.g2d.drawImage(this.musicVolume6,       1141, 269, null);
-        this.g2d.drawImage(this.musicVolume5,       1172, 273, null);
-        this.g2d.drawImage(this.musicVolume4,       1203, 277, null);
-        this.g2d.drawImage(this.musicVolume3,       1234, 281, null);
-        this.g2d.drawImage(this.musicVolume2,       1265, 285, null);
-        this.g2d.drawImage(this.musicVolume1,       1296, 289, null);
+        this.g2d.drawImage(this.musicVolIcon[5],    1141, 261, null);
+        this.g2d.drawImage(this.musicVolIcon[4],    1172, 265, null);
+        this.g2d.drawImage(this.musicVolIcon[3],    1203, 269, null);
+        this.g2d.drawImage(this.musicVolIcon[2],    1234, 273, null);
+        this.g2d.drawImage(this.musicVolIcon[1],    1265, 277, null);
+        this.g2d.drawImage(this.musicVolIcon[0],    1296, 281, null);
 
         //labels
-        this.g2d.drawImage(this.labelPlaySfx,       69, 342, null);
-        this.g2d.drawImage(this.labelSfxVolume,     69, 419, null);
+        this.g2d.drawImage(this.labelPlaySfx,       128, 327, null);
+        this.g2d.drawImage(this.labelSfxVolume,     128, 396, null);
 
         //music volume & toogle
-        this.g2d.drawImage(this.toogleSfx,          1141, 342, null);
-        this.g2d.drawImage(this.sfxVolume6,         1141, 423, null);
-        this.g2d.drawImage(this.sfxVolume5,         1172, 427, null);
-        this.g2d.drawImage(this.sfxVolume4,         1203, 431, null);
-        this.g2d.drawImage(this.sfxVolume3,         1234, 435, null);
-        this.g2d.drawImage(this.sfxVolume2,         1265, 439, null);
-        this.g2d.drawImage(this.sfxVolume1,         1296, 443, null);
+        this.g2d.drawImage(this.toogleSfx,          1141, 327, null);
+        this.g2d.drawImage(this.sfxVolIcon[5],      1141, 399, null);
+        this.g2d.drawImage(this.sfxVolIcon[4],      1172, 403, null);
+        this.g2d.drawImage(this.sfxVolIcon[3],      1203, 407, null);
+        this.g2d.drawImage(this.sfxVolIcon[2],      1234, 411, null);
+        this.g2d.drawImage(this.sfxVolIcon[1],      1265, 415, null);
+        this.g2d.drawImage(this.sfxVolIcon[0],      1296, 419, null);
 
         //labels
-        this.g2d.drawImage(this.labelGhostPiece,    69, 496, null);
-        this.g2d.drawImage(this.labelHoldPiece,     69, 573, null);
+        this.g2d.drawImage(this.labelGhostPiece,    128, 465, null);
+        this.g2d.drawImage(this.labelHoldPiece,     128, 534, null);
+        this.g2d.drawImage(this.labelHowManyNext,   128, 603, null);
 
         //toogle
-        this.g2d.drawImage(this.toogleGhost,        1141, 496, null);
-        this.g2d.drawImage(this.toogleHold,         1141, 573, null);
+        this.g2d.drawImage(this.toogleGhost,        1141, 465, null);
+        this.g2d.drawImage(this.toogleHold,         1141, 534, null);
+        this.g2d.drawImage(this.howManyIcon[5],     1141, 606, null);
+        this.g2d.drawImage(this.howManyIcon[4],     1172, 610, null);
+        this.g2d.drawImage(this.howManyIcon[3],     1203, 614, null);
+        this.g2d.drawImage(this.howManyIcon[2],     1234, 618, null);
+        this.g2d.drawImage(this.howManyIcon[1],     1265, 622, null);
+        this.g2d.drawImage(this.howManyIcon[0],     1296, 626, null);
         
         //label exit
-        this.g2d.drawImage(this.labelExit,          69, 685, null);
+        this.g2d.drawImage(this.labelExit,          38, 695, null);
     }
 
     /**
@@ -343,6 +345,18 @@ public class OptionsScreen {
             } else if (this.selectorPosition == 5) {
                 this.isHoldOn = !this.isHoldOn;
                 this.gameRef.setIsToAllowHold(this.isHoldOn);
+            } else if (this.selectorPosition == 6 && key == 37) { //sfx - left
+                this.howManyNext = (byte)((this.howManyNext + 1)%7);
+                if (this.howManyNext == 0) {
+                    this.howManyNext = 1;
+                }
+                this.gameRef.setHowManyNextPieces(this.howManyNext);
+            } else if (this.selectorPosition == 6 && key == 39) { //sfx - right
+                this.howManyNext--;
+                if (this.howManyNext < 1) {
+                    this.howManyNext = 6;
+                }
+                this.gameRef.setHowManyNextPieces(this.howManyNext);
             }
         } else if (key == 10) { //ENTER
             if (this.selectorPosition == (TOTAL_OPTIONS - 1)) {
