@@ -86,7 +86,7 @@ public class Board {
 	//allow ghost/hold
 	private boolean allowGhostPiece					= true;
 	private boolean allowHold						= true;
-	private byte showHowManyNext					= 6;
+	private byte showHowManyNext					= -1;
 
 	/**
 	 * Construtor
@@ -136,6 +136,11 @@ public class Board {
 		this.allowGhostPiece		= this.gameRef.isToAllowGhostPiece();
 		this.allowHold				= this.gameRef.isToAllowHold();
 
+		//get the next pieces count
+		if (this.showHowManyNext < 1) {
+			this.showHowManyNext = this.gameRef.getHowManyNextPieces();
+		}
+
 		//just one, draw game background
 		this.drawGameBoardBG();
 
@@ -156,10 +161,6 @@ public class Board {
 		//calc the render position
 		this.renderPositionX 		= (short)((this.gameRef.getInternalResolutionWidth() / 2) - (this.boardSquareWidth / 2) - (BOARD_LEFT + 60));
 		this.renderPositionY 		= (short)((this.gameRef.getInternalResolutionHeight() / 2) - (this.boardSquareHeight / 2) - BOARD_TOP);
-
-		if (this.showHowManyNext < 1) {
-			this.showHowManyNext = 1;
-		}
 	}
 
 	/**
