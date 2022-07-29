@@ -226,7 +226,6 @@ public class Game implements GameInterface {
                 }
                 
                 this.exitScreen.update(frametime);
-
                 
             } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
                 
@@ -641,6 +640,22 @@ public class Game implements GameInterface {
 			}
 		}
 	}
+
+    @Override
+    public void gameTerminate() {
+        this.score.reset();
+        this.theme.stop();
+        this.board.terminate();
+        this.board          = null;
+        this.sortPiece      = true;
+        this.board          = new Board(this);
+        this.framecounter   = 0;
+    }
+
+    @Override
+    public void toMainMenu() {
+        this.changeGameState(StateMachine.MENU);
+    }
 
     /**
      * Change the game state
