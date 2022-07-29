@@ -942,4 +942,70 @@ public class Board {
 	public Graphics2D getG2D()					{ 	return (this.gameRef.getG2D());			}
 	public Game getGameRef() 					{	return (this.gameRef);					}
 	public short getLinesCleared() 				{	return (this.linesCleared);				}
+
+	/**
+	 * Terminate the board
+	 */
+	public void terminate() {
+		//images
+		this.gameBoardBG = null;
+		this.next = null;
+		this.hold = null;
+		this.score = null;
+		this.hiscore = null;
+		this.labelLevel = null;
+		this.labelLine = null;
+		this.circle = null;
+
+		//theme
+    	this.bg2d = null;
+		this.fillColor = false;
+		this.theme = null;
+		this.defaultTheme = 0;
+
+		//Game variables
+		this.nextPieces.clear();
+		this.nextPieces = null;
+		this.nonePiece = null;
+		this.holdPiece = null;
+		this.actualPiece = null;
+		this.lastPiece = null;
+		this.boardSquareHeight = 0;
+		this.gameBoard = null;
+		this.gameBoardColor = null;
+		
+		//stop the audio
+		this.turn.stop();
+		this.turn = null;
+		this.move.stop();
+		this.move = null;
+		this.splash.stop();
+		this.splash = null;
+		this.drop.stop();
+		this.drop = null;
+		this.tetris.stop();
+		this.tetris = null;
+		this.holdSound.stop();
+		this.holdSound = null;
+
+		//Gameplay variables
+		this.framecounter = 0;
+		this.renderPositionX = 0;
+		this.renderPositionY = 0;
+		this.gameRef = null;
+		this.canRotate = true;
+		this.canHold = true;
+		this.stopped = false;
+		this.currentLevel = 1;
+		this.linesCleared = 0;
+
+		//Variables to control lines to drop
+		this.hasLineFull = false;
+		this.firstline = -1;
+
+		//allow ghost/hold
+		this.allowGhostPiece = true;
+		this.allowHold = true;
+		this.showHowManyNext = -1;
+	}
 }
