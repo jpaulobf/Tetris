@@ -211,7 +211,8 @@ public class ExitScreen {
             this.game.changeGameState(StateMachine.IN_GAME);
         } else if (keyCode == 10) { //Enter
             if (this.currentButtonSelected == 0) {
-                this.game.exitGame();
+                this.game.gameTerminate();
+                this.game.toMainMenu();
             } else {
                 this.resetExitScreen();
                 this.closing.play();
