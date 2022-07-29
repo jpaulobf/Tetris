@@ -211,4 +211,14 @@ public interface GameInterface {
      * @return
      */
     public byte getHowManyNextPieces();
+
+    /**
+     * Return to main menu
+     */
+    public void toMainMenu();
+
+    /**
+     * Terminate the current game
+     */
+    public void gameTerminate();
 }
