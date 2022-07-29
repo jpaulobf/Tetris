@@ -10,51 +10,51 @@ import util.Audio;
 public class OptionsScreen {
     
     //game parameters
-    //private volatile long framecounter      = 0L;
-    private GameInterface gameRef           = null;
-    private Graphics2D g2d                  = null;
-    private BufferedImage selector          = null;
-    private BufferedImage optionsLogo       = null;
-    private BufferedImage labelPlayMusic    = null;
-    private BufferedImage toogleOn          = null;
-    private BufferedImage toogleOff         = null;
-    private BufferedImage toogleMusic       = null;
-    private BufferedImage toogleSfx         = null;
-    private BufferedImage toogleGhost       = null;
-    private BufferedImage toogleHold        = null;
-    private BufferedImage labelPlaySfx      = null;
-    private BufferedImage labelMusicVolume  = null;
-    private BufferedImage labelSfxVolume    = null;
-    private BufferedImage labelExit         = null;
-    private BufferedImage labelGhostPiece   = null;
-    private BufferedImage labelHoldPiece    = null;
-    private BufferedImage labelHowManyNext  = null;
-    private BufferedImage [] volumeOn       = null;
-    private BufferedImage [] volumeOff      = null;
-    private BufferedImage [] musicVolIcon   = null;
-    private BufferedImage [] sfxVolIcon     = null;
-    private BufferedImage [] howManyIcon    = null;
-    private final byte TOTAL_OPTIONS        = 8;
+    private GameInterface gameRef               = null;
+    private Graphics2D g2d                      = null;
+    private BufferedImage selector              = null;
+    private BufferedImage optionsLogo           = null;
+    private BufferedImage labelPlayMusic        = null;
+    private BufferedImage toogleOn              = null;
+    private BufferedImage toogleOff             = null;
+    private BufferedImage toogleMusic           = null;
+    private BufferedImage toogleSfx             = null;
+    private BufferedImage toogleGhost           = null;
+    private BufferedImage toogleHold            = null;
+    private BufferedImage labelPlaySfx          = null;
+    private BufferedImage labelMusicVolume      = null;
+    private BufferedImage labelSfxVolume        = null;
+    private BufferedImage labelExit             = null;
+    private BufferedImage labelGhostPiece       = null;
+    private BufferedImage labelHoldPiece        = null;
+    private BufferedImage labelHowManyNext      = null;
+    private BufferedImage [] volumeOn           = null;
+    private BufferedImage [] volumeOff          = null;
+    private BufferedImage [] musicVolIcon       = null;
+    private BufferedImage [] sfxVolIcon         = null;
+    private BufferedImage [] howManyIcon        = null;
+    private final byte TOTAL_OPTIONS            = 8;
 
     //sounds
-    private Audio item                      = null;
+    private Audio item                          = null;
 
     //menu control
-    private final short SELECTOR_START      = 193;
-    private final byte SELECTOR_DIFF        = 69;
-    private byte selectorPosition           = 0;
-    private volatile boolean goMenu         = false;
-    private int resolutionW                 = 0;
-    private int resolutionH                 = 0;
-    private short selectorO                 = SELECTOR_START;
-    private boolean isMusicOn               = true;
-    private boolean isSfxOn                 = true;
-    private boolean isGhostOn               = true;
-    private boolean isHoldOn                = true;
-    private short selectorP                 = (short)(selectorO + (selectorPosition * SELECTOR_DIFF));
-    private byte musicVolume                = 6;
-    private byte sfxVolume                  = 6;
-    private byte howManyNext                = 6;
+    private final short SELECTOR_START          = 193;
+    private final byte SELECTOR_DIFF            = 69;
+    private byte selectorPosition               = 0;
+    private volatile boolean goMenu             = false;
+    private int resolutionW                     = 0;
+    private int resolutionH                     = 0;
+    private short selectorO                     = SELECTOR_START;
+    private boolean isMusicOn                   = true;
+    private boolean isSfxOn                     = true;
+    private boolean isGhostOn                   = true;
+    private boolean isHoldOn                    = true;
+    private short selectorP                     = (short)(selectorO + (selectorPosition * SELECTOR_DIFF));
+    private byte musicVolume                    = 6;
+    private byte sfxVolume                      = 6;
+    private byte howManyNext                    = 6;
+    private final byte ADDITIONAL_PIXELS_EXIT   = 30;
 
     /**
      * Constructor
@@ -63,52 +63,51 @@ public class OptionsScreen {
     public OptionsScreen(GameInterface game) {
 
         //get the game pointer
-        this.gameRef            = game;
-        this.g2d                = this.getG2D();
-        this.resolutionW        = this.gameRef.getInternalResolutionWidth();
-        this.resolutionH        = this.gameRef.getInternalResolutionHeight();
+        this.gameRef                = game;
+        this.g2d                    = this.getG2D();
+        this.resolutionW            = this.gameRef.getInternalResolutionWidth();
+        this.resolutionH            = this.gameRef.getInternalResolutionHeight();
 
         //define images arrays
-        this.volumeOn           = new BufferedImage[6];
-        this.volumeOff          = new BufferedImage[6];
-        this.musicVolIcon       = new BufferedImage[6];
-        this.sfxVolIcon         = new BufferedImage[6];
-        this.howManyIcon        = new BufferedImage[6];
+        this.volumeOn               = new BufferedImage[6];
+        this.volumeOff              = new BufferedImage[6];
+        this.musicVolIcon           = new BufferedImage[6];
+        this.sfxVolIcon             = new BufferedImage[6];
+        this.howManyIcon            = new BufferedImage[6];
 
         //load images
-        this.selector           = LoadingStuffs.getInstance().getImage("selector");
-        this.optionsLogo        = LoadingStuffs.getInstance().getImage("options-logo");
-        this.labelPlayMusic     = LoadingStuffs.getInstance().getImage("label-play-music");
-        this.toogleOn           = LoadingStuffs.getInstance().getImage("toogle-on");
-        this.toogleOff          = LoadingStuffs.getInstance().getImage("toogle-off");
-        this.labelPlaySfx       = LoadingStuffs.getInstance().getImage("label-play-sfx");
-        this.labelMusicVolume   = LoadingStuffs.getInstance().getImage("label-music-vol");
-        this.labelSfxVolume     = LoadingStuffs.getInstance().getImage("label-sfx-vol");
-        this.labelExit          = LoadingStuffs.getInstance().getImage("label-exit-option");
-        this.labelGhostPiece    = LoadingStuffs.getInstance().getImage("label-ghost-piece");
-        this.labelHoldPiece     = LoadingStuffs.getInstance().getImage("label-hold-piece");
-        this.labelHowManyNext   = LoadingStuffs.getInstance().getImage("label-how-many-next");
-        
+        this.selector               = LoadingStuffs.getInstance().getImage("selector");
+        this.optionsLogo            = LoadingStuffs.getInstance().getImage("options-logo");
+        this.labelPlayMusic         = LoadingStuffs.getInstance().getImage("label-play-music");
+        this.toogleOn               = LoadingStuffs.getInstance().getImage("toogle-on");
+        this.toogleOff              = LoadingStuffs.getInstance().getImage("toogle-off");
+        this.labelPlaySfx           = LoadingStuffs.getInstance().getImage("label-play-sfx");
+        this.labelMusicVolume       = LoadingStuffs.getInstance().getImage("label-music-vol");
+        this.labelSfxVolume         = LoadingStuffs.getInstance().getImage("label-sfx-vol");
+        this.labelExit              = LoadingStuffs.getInstance().getImage("label-exit-option");
+        this.labelGhostPiece        = LoadingStuffs.getInstance().getImage("label-ghost-piece");
+        this.labelHoldPiece         = LoadingStuffs.getInstance().getImage("label-hold-piece");
+        this.labelHowManyNext       = LoadingStuffs.getInstance().getImage("label-how-many-next");
 
         //get the volume icons
-        this.volumeOn[0]        = LoadingStuffs.getInstance().getImage("v1-on");
-        this.volumeOn[1]        = LoadingStuffs.getInstance().getImage("v2-on");
-        this.volumeOn[2]        = LoadingStuffs.getInstance().getImage("v3-on");
-        this.volumeOn[3]        = LoadingStuffs.getInstance().getImage("v4-on");
-        this.volumeOn[4]        = LoadingStuffs.getInstance().getImage("v5-on");
-        this.volumeOn[5]        = LoadingStuffs.getInstance().getImage("v6-on");
-        this.volumeOff[0]       = LoadingStuffs.getInstance().getImage("v1-off");
-        this.volumeOff[1]       = LoadingStuffs.getInstance().getImage("v2-off");
-        this.volumeOff[2]       = LoadingStuffs.getInstance().getImage("v3-off");
-        this.volumeOff[3]       = LoadingStuffs.getInstance().getImage("v4-off");
-        this.volumeOff[4]       = LoadingStuffs.getInstance().getImage("v5-off");
-        this.volumeOff[5]       = LoadingStuffs.getInstance().getImage("v6-off");
+        this.volumeOn[0]            = LoadingStuffs.getInstance().getImage("v1-on");
+        this.volumeOn[1]            = LoadingStuffs.getInstance().getImage("v2-on");
+        this.volumeOn[2]            = LoadingStuffs.getInstance().getImage("v3-on");
+        this.volumeOn[3]            = LoadingStuffs.getInstance().getImage("v4-on");
+        this.volumeOn[4]            = LoadingStuffs.getInstance().getImage("v5-on");
+        this.volumeOn[5]            = LoadingStuffs.getInstance().getImage("v6-on");
+        this.volumeOff[0]           = LoadingStuffs.getInstance().getImage("v1-off");
+        this.volumeOff[1]           = LoadingStuffs.getInstance().getImage("v2-off");
+        this.volumeOff[2]           = LoadingStuffs.getInstance().getImage("v3-off");
+        this.volumeOff[3]           = LoadingStuffs.getInstance().getImage("v4-off");
+        this.volumeOff[4]           = LoadingStuffs.getInstance().getImage("v5-off");
+        this.volumeOff[5]           = LoadingStuffs.getInstance().getImage("v6-off");
 
         //define the music & sfx toogle image
-        this.toogleMusic        = this.toogleOn;
-        this.toogleSfx          = this.toogleOn;
-        this.toogleGhost        = this.toogleOn;
-        this.toogleHold         = this.toogleOn;
+        this.toogleMusic            = this.toogleOn;
+        this.toogleSfx              = this.toogleOn;
+        this.toogleGhost            = this.toogleOn;
+        this.toogleHold             = this.toogleOn;
 
         //define the music volume images
         for (byte i = 0; i < this.volumeOn.length; i++) {
@@ -130,9 +129,9 @@ public class OptionsScreen {
         //calc the selector position
         this.selectorP = (short)(this.selectorO + (this.selectorPosition * SELECTOR_DIFF));
        
-        //if the selector is in the exit option (go 22 pixel dows)
+        //if the selector is in the exit option (go xx pixel dows)
         if (this.selectorPosition == TOTAL_OPTIONS - 1) {
-            this.selectorP += 30;
+            this.selectorP += ADDITIONAL_PIXELS_EXIT;
         }
 
         //define the music toogle button
@@ -171,42 +170,29 @@ public class OptionsScreen {
         }
 
         switch(this.musicVolume) { //no break, execute in chain
-            case 1:
-                this.musicVolIcon[1] = this.volumeOff[1];
-            case 2:
-                this.musicVolIcon[2] = this.volumeOff[2];
-            case 3:
-                this.musicVolIcon[3] = this.volumeOff[3];
-            case 4:
-                this.musicVolIcon[4] = this.volumeOff[4];    
-            case 5:
-                this.musicVolIcon[5] = this.volumeOff[5];    
+            case 0: this.musicVolIcon[0] = this.volumeOff[0];
+            case 1: this.musicVolIcon[1] = this.volumeOff[1];
+            case 2: this.musicVolIcon[2] = this.volumeOff[2];
+            case 3: this.musicVolIcon[3] = this.volumeOff[3];
+            case 4: this.musicVolIcon[4] = this.volumeOff[4];    
+            case 5: this.musicVolIcon[5] = this.volumeOff[5];    
         }
 
         switch(this.sfxVolume) { //no break, execute in chain
-            case 1:
-                this.sfxVolIcon[1] = this.volumeOff[1];
-            case 2:
-                this.sfxVolIcon[2] = this.volumeOff[2];
-            case 3:
-                this.sfxVolIcon[3] = this.volumeOff[3];
-            case 4:
-                this.sfxVolIcon[4] = this.volumeOff[4];
-            case 5:
-                this.sfxVolIcon[5] = this.volumeOff[5];
+            case 0: this.sfxVolIcon[0] = this.volumeOff[0];
+            case 1: this.sfxVolIcon[1] = this.volumeOff[1];
+            case 2: this.sfxVolIcon[2] = this.volumeOff[2];
+            case 3: this.sfxVolIcon[3] = this.volumeOff[3];
+            case 4: this.sfxVolIcon[4] = this.volumeOff[4];
+            case 5: this.sfxVolIcon[5] = this.volumeOff[5];
         }
 
         switch(this.howManyNext) { //no break, execute in chain
-            case 1:
-                this.howManyIcon[1] = this.volumeOff[1];
-            case 2:
-                this.howManyIcon[2] = this.volumeOff[2];
-            case 3:
-                this.howManyIcon[3] = this.volumeOff[3];
-            case 4:
-                this.howManyIcon[4] = this.volumeOff[4];
-            case 5:
-                this.howManyIcon[5] = this.volumeOff[5];
+            case 1: this.howManyIcon[1] = this.volumeOff[1];
+            case 2: this.howManyIcon[2] = this.volumeOff[2];
+            case 3: this.howManyIcon[3] = this.volumeOff[3];
+            case 4: this.howManyIcon[4] = this.volumeOff[4];
+            case 5: this.howManyIcon[5] = this.volumeOff[5];
         }
     }
 
@@ -275,27 +261,39 @@ public class OptionsScreen {
      * @param key
      */
     public void keyMovement(int key) {
+        
         if (key == 38) { //UP
-            this.selectorPosition = (byte)(this.selectorPosition-1);
+            if ((this.selectorPosition == 2 && !this.isMusicOn) || (this.selectorPosition == 4 && !this.isSfxOn)) {
+                this.selectorPosition -= 2;
+            } else {
+                this.selectorPosition = (byte)(this.selectorPosition-1);
+            }
             if (this.selectorPosition < 0) {
                 this.selectorPosition = TOTAL_OPTIONS - 1;
             }
             this.item.play();
+
         } else if (key == 40) { //DOWN
-            this.selectorPosition = (byte)((this.selectorPosition+1)%TOTAL_OPTIONS);
+            if ((this.selectorPosition == 0 && !this.isMusicOn) || (this.selectorPosition == 2 && !this.isSfxOn)) {
+                this.selectorPosition += 2;
+            } else {
+                this.selectorPosition = (byte)((this.selectorPosition+1)%TOTAL_OPTIONS);
+            }
             this.item.play();
 
         } else if (key == 37 || key == 39) { //LEFT
 
             if (this.selectorPosition == 0) {
                 this.isMusicOn = !this.isMusicOn;
+                //Mute
                 if (!this.isMusicOn) {
                     this.gameRef.audioMuteControl(Audio.MUSIC, true);
+                    this.musicVolume = 0;
+                //Unmute
                 } else {
                     this.gameRef.audioMuteControl(Audio.MUSIC, false);
+                    this.musicVolume = 6;
                 }
-
-                //todo: disable music volume
 
             } else if (this.selectorPosition == 1 && key == 37) { //music - left
                 this.musicVolume = (byte)((this.musicVolume + 1)%7);
@@ -305,6 +303,7 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.incVolumeMusic(5f);
                 }
+                
             } else if (this.selectorPosition == 1 && key == 39) { //music - right
                 this.musicVolume--;
                 if (this.musicVolume < 1) {
@@ -313,15 +312,18 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.decVolumeMusic(5f);
                 }
+
             } else if (this.selectorPosition == 2) {
                 this.isSfxOn = !this.isSfxOn;
+                //mute
                 if (!this.isSfxOn) {
                     this.gameRef.audioMuteControl(Audio.SFX, true);
+                    this.sfxVolume = 0;
+                //unmute
                 } else {
                     this.gameRef.audioMuteControl(Audio.SFX, false);
+                    this.sfxVolume = 6;
                 }
-
-                //todo: disable sfx volume
 
             } else if (this.selectorPosition == 3 && key == 37) { //sfx - left
                 this.sfxVolume = (byte)((this.sfxVolume + 1)%7);
@@ -331,6 +333,7 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.incVolumeSFX(5f);
                 }
+
             } else if (this.selectorPosition == 3 && key == 39) { //sfx - right
                 this.sfxVolume--;
                 if (this.sfxVolume < 1) {
@@ -339,29 +342,35 @@ public class OptionsScreen {
                 } else {
                     this.gameRef.decVolumeSFX(5f);
                 }
+
             } else if (this.selectorPosition == 4) {
                 this.isGhostOn = !this.isGhostOn;
                 this.gameRef.setIsToAllowGhostPiece(this.isGhostOn);
+
             } else if (this.selectorPosition == 5) {
                 this.isHoldOn = !this.isHoldOn;
                 this.gameRef.setIsToAllowHold(this.isHoldOn);
+
             } else if (this.selectorPosition == 6 && key == 37) { //sfx - left
                 this.howManyNext = (byte)((this.howManyNext + 1)%7);
                 if (this.howManyNext == 0) {
                     this.howManyNext = 1;
                 }
                 this.gameRef.setHowManyNextPieces(this.howManyNext);
+
             } else if (this.selectorPosition == 6 && key == 39) { //sfx - right
                 this.howManyNext--;
                 if (this.howManyNext < 1) {
                     this.howManyNext = 6;
                 }
                 this.gameRef.setHowManyNextPieces(this.howManyNext);
+
             }
         } else if (key == 10) { //ENTER
             if (this.selectorPosition == (TOTAL_OPTIONS - 1)) {
                 this.goMenu = true;
             }
+
         } else if (key == 27) { //Esc - Back to Menu
             this.goMenu = true;
         }
@@ -373,14 +382,6 @@ public class OptionsScreen {
     public void reset() {
         this.selectorPosition = 0;
         this.goMenu = false;
-    }
-
-    /**
-     * First option execution.
-     * @param frametime
-     */
-    public synchronized void firstUpdate(long frametime) {
-
     }
 
     //getters
