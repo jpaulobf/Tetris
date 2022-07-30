@@ -601,7 +601,7 @@ public class Game implements GameInterface {
 		private final double defaultGameSpeed 	= 1D;
 		private byte level 						= this.firstLevelDefinition;
 		private double gameSpeed 				= this.defaultGameSpeed;
-		private double speedFactor 				= 1.3D;
+		private double speedFactor 				= 1.35D;
 		private final static byte MIN 			= 1;
 		private final static byte MAX 			= 8;
 
@@ -635,6 +635,7 @@ public class Game implements GameInterface {
 		}
 
 		private void defGameSpeed() {
+            this.gameSpeed = this.defaultGameSpeed;
 			for (int i = MIN; i < this.level; i++) {
 				this.gameSpeed *= speedFactor;
 			}
@@ -642,7 +643,7 @@ public class Game implements GameInterface {
 	}
 
     @Override
-    public void gameTerminate() {
+    public synchronized void gameTerminate() {
         this.score.reset();
         this.theme.stop();
         this.board.terminate();
@@ -650,10 +651,11 @@ public class Game implements GameInterface {
         this.sortPiece      = true;
         this.board          = new Board(this);
         this.framecounter   = 0;
+        this.skipDraw       = true;
     }
 
     @Override
-    public void toMainMenu() {
+    public synchronized void toMainMenu() {
         this.changeGameState(StateMachine.MENU);
     }
 
@@ -661,7 +663,7 @@ public class Game implements GameInterface {
      * Change the game state
      */
     @Override
-    public void changeGameState(int state) {
+    public synchronized void changeGameState(int state) {
         this.gameState.currentState = state;
     }
 
