@@ -268,7 +268,8 @@ public class Game implements GameInterface {
                 } else if (this.gameState.getCurrentState() == StateMachine.OPTIONS) {
                     this.options.draw(frametime);
                 } else if (this.gameState.getCurrentState() == StateMachine.IN_GAME ||
-                           this.gameState.getCurrentState() == StateMachine.EXITING) {
+                           this.gameState.getCurrentState() == StateMachine.EXITING ||
+                           this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
                     this.board.draw(frametime);
                     this.score.draw(frametime);
                     this.screenT.draw(frametime);
@@ -277,8 +278,9 @@ public class Game implements GameInterface {
                         this.exitScreen.draw(frametime);
                     }
 
-                } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
-                    //this.gameOver.draw(frametime);
+                    if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
+                        //this.gameOver.draw(frametime);
+                    }
                 }
             }
         }
@@ -652,6 +654,13 @@ public class Game implements GameInterface {
         this.board          = new Board(this);
         this.framecounter   = 0;
         this.skipDraw       = true;
+    }
+
+    @Override
+    public synchronized void gameOver() {
+        this.framecounter = 0;
+        this.changeGameState(StateMachine.GAME_OVER);
+        this.skipDraw = true;
     }
 
     @Override
