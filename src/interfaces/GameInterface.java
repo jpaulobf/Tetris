@@ -221,4 +221,9 @@ public interface GameInterface {
      * Terminate the current game
      */
     public void gameTerminate();
+
+    /**
+     * Set the game to gameover
+     */
+    public void gameOver();
 }
