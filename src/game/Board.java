@@ -774,17 +774,18 @@ public class Board {
 		short [][] matrix 	= piece.getPieceMatrix();
 
 		for (int cnt = 0; cnt < matrix.length; cnt++) {
-			//--- TODO: gameover...
+			
 			if ((startPositionY + matrix[cnt][0]) >= BOARD_LINES || ((startPositionY + matrix[cnt][0]) < 0)) {
-				this.resetGame();
+				//gameover
+				this.allowGhostPiece = false;
+				this.gameRef.gameOver();
 				break;
 			}
-			
+
 			this.gameBoard[startPositionY + matrix[cnt][0]]
 						  [startPositionX + matrix[cnt][1] + assetLeft] = 1;
 			this.gameBoardColor[startPositionY + matrix[cnt][0]]
 							   [startPositionX + matrix[cnt][1] + assetLeft] = piece.getColor();
-
 		}
 
 		this.splash.play();
@@ -927,6 +928,13 @@ public class Board {
 	 */
 	public void tooglePause() {
 		this.stopped = !this.stopped;
+	}
+
+	/**
+	 * Toogle ghost piece
+	 */
+	public void toogleGhostPiece() {
+		this.allowGhostPiece = !this.allowGhostPiece;
 	}
 
     //----------------------------------------------------//
