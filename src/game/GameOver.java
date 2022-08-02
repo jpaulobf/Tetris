@@ -3,9 +3,7 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.VolatileImage;
-
 import util.LoadingStuffs;
-
 import java.awt.image.BufferedImage;
 import java.awt.GraphicsEnvironment;
 
@@ -13,7 +11,7 @@ import java.awt.GraphicsEnvironment;
  * Class represents the gameover scene
  */
 public class GameOver {
-    //Scenario variables
+
     private Graphics2D bgd2             = null;
     private int windowWidth             = 0;
     private int windowHeight            = 0;
