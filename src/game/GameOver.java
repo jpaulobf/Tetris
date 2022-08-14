@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.VolatileImage;
 import util.LoadingStuffs;
+import util.Audio;
 import java.awt.image.BufferedImage;
 import java.awt.GraphicsEnvironment;
 
@@ -17,7 +18,9 @@ public class GameOver {
     private int windowHeight            = 0;
     private VolatileImage bgBufferImage = null;
     private BufferedImage gameover      = null;
+    private Audio gameoverMusic         = null;
     private Game gameRef                = null;
+    private volatile long framecounter  = 0;
 
     /**
      * Constructor
@@ -29,6 +32,7 @@ public class GameOver {
         this.windowHeight   = windowHeight;
         this.windowWidth    = windowWidth;
         this.gameRef        = game;
+        this.gameoverMusic  = LoadingStuffs.getInstance().getAudio("gameover-m");
         this.drawGameOverInBuffer();
     }
 
@@ -63,6 +67,10 @@ public class GameOver {
      * @param frametime
      */
     public void update(long frametime) {
+        this.framecounter += frametime;
+        if(this.framecounter == frametime) {
+            this.gameoverMusic.play();
+        }
     }
 
     /**
@@ -76,5 +84,12 @@ public class GameOver {
 
         //After construct the bg once, copy it to the graphic device
         this.gameRef.getG2D().drawImage(this.bgBufferImage, 0, 0, null);
+    }
+
+    /**
+     * Reset the GameOver
+     */
+    public void reset() {
+        this.framecounter = 0;
     }
 }
