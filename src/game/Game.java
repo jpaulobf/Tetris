@@ -213,12 +213,6 @@ public class Game implements GameInterface {
                 this.score.update(frametime);
                 this.screenT.update(frametime);
                
-                // if (true) { //this.tetris.getLives() == 0) { //after possible colision, check lives.
-                //     this.gameState.setCurrentState(StateMachine.GAME_OVER);
-                //     //this.score.storeNewHighScore();
-                //     //this.score.reset();
-                //     this.framecounter = 0;
-                // }
             } else if (this.gameState.getCurrentState() == StateMachine.EXITING) {
                 
                 this.framecounter += frametime;
@@ -238,7 +232,7 @@ public class Game implements GameInterface {
                 if (this.framecounter == frametime) { //run just once
                     this.theme.stop();
                     //this.gameoverTheme.play();
-                } else if (this.framecounter >= 7_000_000_000L) {
+                } else if (this.framecounter >= 5_000_000_000L) {
                     this.framecounter = 0;
                     this.softReset();
                     this.gameState.setCurrentState(StateMachine.IN_GAME);
