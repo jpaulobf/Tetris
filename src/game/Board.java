@@ -779,13 +779,14 @@ public class Board {
 				//gameover
 				this.allowGhostPiece = false;
 				this.gameRef.gameOver();
-				break;
 			}
 
-			this.gameBoard[startPositionY + matrix[cnt][0]]
-						  [startPositionX + matrix[cnt][1] + assetLeft] = 1;
-			this.gameBoardColor[startPositionY + matrix[cnt][0]]
-							   [startPositionX + matrix[cnt][1] + assetLeft] = piece.getColor();
+			if (startPositionY + matrix[cnt][0] >= 0) {
+				this.gameBoard[startPositionY + matrix[cnt][0]]
+							  [startPositionX + matrix[cnt][1] + assetLeft] = 1;
+				this.gameBoardColor[startPositionY + matrix[cnt][0]]
+								   [startPositionX + matrix[cnt][1] + assetLeft] = piece.getColor();
+			}
 		}
 
 		this.splash.play();
