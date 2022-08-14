@@ -285,6 +285,9 @@ public class LoadingStuffs {
             image = ImageIO.read(new File("images\\lb_how_many_next.png"));
             images.put("label-how-many-next", image);
 
+            image = ImageIO.read(new File("images\\gameover.png"));
+            images.put("gameover", image);
+
             Logger.INFO("read all images...", this);
 
             Audio audio = new Audio("audio\\theme1.wav", 0, Audio.MUSIC);
