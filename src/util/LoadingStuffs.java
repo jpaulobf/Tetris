@@ -366,7 +366,7 @@ public class LoadingStuffs {
                 audios.put("start", audio);
             }
 
-            audio = new Audio("audio\\gameover.wav", 0, Audio.SFX);
+            audio = new Audio("audio\\gameover.wav", 0, Audio.MUSIC);
             if (audio != null && audio.isReady()) {
                 audios.put("gameover-m", audio);
             }
