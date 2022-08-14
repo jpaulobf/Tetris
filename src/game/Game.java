@@ -60,6 +60,7 @@ public class Game implements GameInterface {
     private ScreenTransition screenT        = null;
     private GameLevel gameLevel			    = null;
     private ExitScreen exitScreen           = null;
+    private GameOver gameOver               = null;
     private boolean isToShowPieceGhost      = true;
     private boolean isToAllowHold           = true;
     private byte showHowManyNextPieces      = 6;
@@ -90,6 +91,7 @@ public class Game implements GameInterface {
         this.score              = new Score(this, new Point(9, 45), new Point(1173, 45), new Point(75, 412), new Point(58, 618));
         this.screenT            = new ScreenTransition(this);
         this.exitScreen         = new ExitScreen(this, this.wwm, this.whm);
+        this.gameOver           = new GameOver(this, this.wwm, this.whm);
 
         this.audioList          = LoadingStuffs.getInstance().getAudioList();
     }
@@ -279,7 +281,7 @@ public class Game implements GameInterface {
                     }
 
                     if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
-                        //this.gameOver.draw(frametime);
+                        this.gameOver.draw(frametime);
                     }
                 }
             }
