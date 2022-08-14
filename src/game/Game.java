@@ -224,18 +224,18 @@ public class Game implements GameInterface {
                 this.exitScreen.update(frametime);
                 
             } else if (this.gameState.getCurrentState() == StateMachine.GAME_OVER) {
-                
                 //sum framecounter
                 this.framecounter += frametime;
 
                 //update just once
                 if (this.framecounter == frametime) { //run just once
                     this.theme.stop();
-                    //this.gameoverTheme.play();
-                } else if (this.framecounter >= 5_000_000_000L) {
+                } else if (this.framecounter >= 4_000_000_000L) {
                     this.framecounter = 0;
                     this.softReset();
                     this.gameState.setCurrentState(StateMachine.IN_GAME);
+                } else {
+                    this.gameOver.update(frametime);
                 }
             }
         }
@@ -310,6 +310,7 @@ public class Game implements GameInterface {
         this.board.resetGame();
         this.screenT.reset();
         this.score.reset();
+        this.gameOver.reset();
     }
 
     /**
