@@ -405,85 +405,68 @@ public class Tetris implements Runnable {
         }
         
         /* Método de execução da thread */
-        @SuppressWarnings("unused") //just temporary, for the counter variable... delete this...
         public void run() {
-            long timeReference      = System.nanoTime();
-            long beforeUpdate       = 0;
-            long afterUpdate        = 0;
-            long beforeDraw         = 0;
-            long afterDraw          = 0;
-            long accumulator        = 0;
-            long timeElapsed        = 0;
-            long timeStamp          = 0;
-            long counter            = 0;
-    
+            long lastTime           = System.nanoTime(); // Usado para calcular o delta time no modo de FPS ilimitado
+            long now                = 0;
+            long elapsed            = 0;
+            long wait               = 0;
+            long overSleep          = 0;
+
             if (UNLIMITED_FPS) {
                 while (isEngineRunning) {
-    
-                    //mark the time before the iteration
-                    timeStamp = System.nanoTime();
-    
-                    //compute the time from previous iteration and the current
-                    timeElapsed = (timeStamp - timeReference);
-    
-                    //save the difference in an accumulator to control the pacing
-                    accumulator += timeElapsed;
-    
-                    //update the game (gathering input from user, and processing the necessary games updates)
-                    this.update(timeElapsed);
-    
-                    //draw
-                    this.draw(timeElapsed);
-    
-                    //update the referencial time with the initial time
-                    timeReference = timeStamp;
+                    now = System.nanoTime();
+                    elapsed = now - lastTime;
+                    lastTime = now;
+
+                    // Cap delta time to avoid huge jumps (e.g. 0.1s)
+                    if (elapsed > 100_000_000) elapsed = 100_000_000;
+
+                    this.update(elapsed);
+                    this.draw(elapsed);
+                    
+                    // Yield to prevent CPU starvation
+                    Thread.yield();
                 }
             } else {
-                
                 while (isEngineRunning) {
-    
-                    accumulator = 0;
-    
-                    //calc the update time
-                    beforeUpdate = System.nanoTime();
-    
-                    //update the game (gathering input from user, and processing the necessary games updates)
-                    this.update(TARGET_FRAMETIME);
-    
-                    //get the timestamp after the update
-                    afterUpdate = System.nanoTime() - beforeUpdate;
-                    
-                    //only draw if there is some (any) enough time
-                    if ((TARGET_FRAMETIME - afterUpdate) > 0) {
-                        
-                        beforeDraw = System.nanoTime();
-    
-                        //draw
-                        this.draw(TARGET_FRAMETIME);
-                        
-                        //and than, store the time spent
-                        afterDraw = System.nanoTime() - beforeDraw;
-                    }
-    
-                    //reset the accumulator
-                    accumulator = TARGET_FRAMETIME - (afterUpdate + afterDraw);
-    
-                    if (accumulator > 0) {
+                    now = System.nanoTime();
+                    elapsed = now - lastTime;
+                    lastTime = now;
+
+                    this.update(elapsed);
+                    this.draw(elapsed);
+
+                    // Calculate time taken
+                    long workTime = System.nanoTime() - now;
+
+                    // Calculate wait time, compensating for previous over-sleep/lag
+                    wait = TARGET_FRAMETIME - workTime - overSleep;
+
+                    if (wait > 0) {
                         try {
-                            Thread.sleep((long)(accumulator * 0.000001));
-                        } catch (Exception e) {}
+                            // Hybrid Sleep Strategy:
+                            // Sleep for (wait - 2ms) to save CPU, then spin-wait for precision
+                            long sleepMs = (wait / 1_000_000) - 2;
+                            if (sleepMs > 0) {
+                                Thread.sleep(sleepMs);
+                            }
+                            
+                            // Busy-wait for the remaining nanoseconds
+                            while (System.nanoTime() < now + TARGET_FRAMETIME - overSleep) {
+                                // Spin-wait for precision (removido yield para maior precisão nos últimos ns)
+                            }
+                            overSleep = 0;
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
                     } else {
-                        /*  
-                        Explanation:
-                            if the total time to execute, consumes more miliseconds than the target-frame's amount, 
-                            is necessary to keep updating without render, to recover the pace.
-                        Important: Something here isn't working with very slow machines. 
-                                   So, this compensation have to be re-tested with this new approuch (exiting beforeUpdate).
-                                   Please test this code with your scenario.
-                        */
-                        //System.out.println("Skip 1 frame... " + ++counter + " time(s)");
-                        if (accumulator < 0) {
-                            this.update(TARGET_FRAMETIME);
+                        // We are behind schedule
+                        overSleep = -wait;
+                        
+                        // Limita o overSleep para evitar que o jogo tente recuperar o tempo perdido indefinidamente
+                        // Isso evita o efeito de aceleração excessiva após um lag spike
+                        if (overSleep > TARGET_FRAMETIME) {
+                            overSleep = TARGET_FRAMETIME;
                         }
                     }
                 }
