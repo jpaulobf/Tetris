@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -60,6 +61,13 @@ public class Tetris implements Runnable {
 
         //show or hide the game FPS
         private boolean showFPS                     = true;
+
+        //FPS calculation
+        private long[] fpsHistory                   = new long[20];
+        private int fpsIndex                        = 0;
+        private int fpsCount                        = 0;
+        private long fpsTotalTime                   = 0;
+        private Font fpsFont;
 
         //control and fullscreen controller
         private boolean fullscreen                  = false;
@@ -146,6 +154,9 @@ public class Tetris implements Runnable {
 
             //thread para o controle (quando presente)
             this.controller = new JoystickController(this);
+
+            // Pré-carrega a fonte para a renderização do FPS
+            this.fpsFont = new Font("Arial", Font.PLAIN, 12);
 
             //KeyListener
             this.addKeyListener(new KeyAdapter() {
@@ -311,8 +322,25 @@ public class Tetris implements Runnable {
         private void renderFPSLayer(long frametime) {
             //verify if the user want to show the FPS
             if (this.showFPS) {
-                this.g2d.setColor(Color.BLACK);
-                this.g2d.drawString("fps: " + (int)(1_000_000_000D / frametime), this.windowWidth - 50, this.windowHeight - 10);
+                // Se o histórico estiver cheio, subtrai o valor mais antigo que será substituído.
+                if (this.fpsCount == this.fpsHistory.length) {
+                    this.fpsTotalTime -= this.fpsHistory[this.fpsIndex];
+                }
+
+                // Adiciona o novo frametime ao total e atualiza o histórico.
+                this.fpsTotalTime += frametime;
+                this.fpsHistory[this.fpsIndex] = frametime;
+
+                this.fpsIndex = (this.fpsIndex + 1) % this.fpsHistory.length;
+                if (this.fpsCount < this.fpsHistory.length) {
+                    this.fpsCount++;
+                }
+
+                double average = (this.fpsCount > 0) ? (double)this.fpsTotalTime / this.fpsCount : frametime;
+
+                g2d.setColor(Color.BLUE);
+                g2d.setFont(this.fpsFont);
+                g2d.drawString("fps: " + (int)(1_000_000_000D / average), windowWidth - 70, windowHeight - 10);
             }
         }
 
